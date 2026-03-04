@@ -1,6 +1,6 @@
 # TravelLens 旅拍指南
 
-[English](./README_EN.md) | 中文
+[English](./README_EN.md) | 中文 | [Русский](./README_RU.md)
 
 ---
 

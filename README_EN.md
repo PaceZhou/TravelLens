@@ -1,6 +1,6 @@
 # TravelLens - Travel Photography Guide
 
-English | [中文](./README.md)
+English | [中文](./README.md) | [Русский](./README_RU.md)
 
 ---
 
