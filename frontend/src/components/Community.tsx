@@ -70,7 +70,37 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   useEffect(() => {
     loadPosts(1)
+    loadUserLikesAndCollections()
   }, [])
+
+  const loadUserLikesAndCollections = async () => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (!user.id) return
+
+    try {
+      // 加载用户点赞的帖子
+      const allPosts = await postsAPI.getAll(1, 1000)
+      const likedPostIds = new Set<string>()
+      const collectedPostIds = new Set<string>()
+
+      for (const post of allPosts.posts) {
+        const likeResult = await likesAPI.check(user.id, post.id)
+        if (likeResult.liked) {
+          likedPostIds.add(post.id)
+        }
+
+        const collectResult = await collectionsAPI.check(user.id, post.id)
+        if (collectResult.collected) {
+          collectedPostIds.add(post.id)
+        }
+      }
+
+      setLikedPosts(likedPostIds)
+      setCollectedPosts(collectedPostIds)
+    } catch (error) {
+      console.error('加载用户状态失败', error)
+    }
+  }
 
   const handleLoadMore = () => {
     const nextPage = page + 1
