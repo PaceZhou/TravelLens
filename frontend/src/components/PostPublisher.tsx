@@ -209,7 +209,8 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
                   onDragStart={(e) => handleDragStart(e, idx)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, idx)}
-                  className="relative aspect-square rounded-2xl overflow-hidden group cursor-move"
+                  onClick={() => setCoverIndex(idx)}
+                  className="relative aspect-square rounded-2xl overflow-hidden group cursor-pointer"
                 >
                   <img 
                     src={img} 
