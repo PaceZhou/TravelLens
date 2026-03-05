@@ -1,0 +1,164 @@
+{
+  "zh": {
+    "app": {
+      "name": "芒一下",
+      "slogan": "芒一下，世界就在眼前"
+    },
+    "nav": {
+      "blindbox": "芒一下",
+      "map": "芒GO MAP",
+      "world": "芒GO Show",
+      "profile": "我的"
+    },
+    "auth": {
+      "login": "登录",
+      "register": "注册",
+      "logout": "退出",
+      "loginTitle": "登录",
+      "loginDesc": "登录后即可使用盲盒功能，每24小时可抽取一次",
+      "loginButton": "立即登录"
+    },
+    "blindbox": {
+      "title": "不知道去哪？",
+      "subtitle": "一键抽取目的地",
+      "draw": "DRAW",
+      "needLogin": "需要登录",
+      "cooldown": "24小时后可用",
+      "nextDraw": "下次抽取时间",
+      "drawing": "正在抽取...",
+      "resultTitle": "今日任务：探索",
+      "resultDesc": "完成以下5个打卡点，解锁城市探索成就！",
+      "saveToCalendar": "保存到我的日历",
+      "scopes": {
+        "city": "同城探秘",
+        "province": "邻省周边",
+        "national": "漫游全国",
+        "global": "瞬息全宇宙"
+      }
+    },
+    "map": {
+      "filters": {
+        "random": "随机",
+        "nearby": "同城",
+        "country": "国家",
+        "province": "省份",
+        "city": "城市"
+      },
+      "spotDetail": {
+        "description": "景点介绍",
+        "history": "历史文化",
+        "gallery": "景点图库",
+        "foods": "美食推荐",
+        "photoGuide": "拍照攻略",
+        "bestTime": "最佳时间"
+      },
+      "stats": {
+        "likes": "点赞",
+        "posts": "博文",
+        "checkins": "打卡"
+      }
+    },
+    "community": {
+      "upload": "发布内容",
+      "selectPhoto": "选择照片",
+      "shareStory": "分享你的故事",
+      "aiPolish": "AI润色",
+      "aiRecommend": "AI推荐",
+      "addTags": "添加标签",
+      "addLocation": "添加位置",
+      "photoInfo": "照片信息",
+      "location": "拍摄地点",
+      "camera": "相机型号",
+      "exposure": "曝光参数",
+      "time": "拍摄时间",
+      "autoReading": "自动读取中...",
+      "imageEnhance": "图像美化",
+      "autoEnhance": "自动增强",
+      "filter": "滤镜",
+      "crop": "裁剪",
+      "comingSoon": "即将上线",
+      "publish": "发布"
+    }
+  },
+  "en": {
+    "app": {
+      "name": "MangoShow",
+      "slogan": "Mango a moment, world in sight"
+    },
+    "nav": {
+      "blindbox": "Mango",
+      "map": "ManGO MAP",
+      "world": "ManGO Show",
+      "profile": "Profile"
+    },
+    "auth": {
+      "login": "Login",
+      "register": "Sign Up",
+      "logout": "Logout",
+      "loginTitle": "Login",
+      "loginDesc": "Login to use blind box feature, once every 24 hours",
+      "loginButton": "Login Now"
+    },
+    "blindbox": {
+      "title": "Where to go?",
+      "subtitle": "Draw your destiny",
+      "draw": "DRAW",
+      "needLogin": "Login Required",
+      "cooldown": "Available in 24h",
+      "nextDraw": "Next draw time",
+      "drawing": "Drawing...",
+      "resultTitle": "Today's Quest: Explore",
+      "resultDesc": "Complete these 5 spots to unlock city achievement!",
+      "saveToCalendar": "Save to Calendar",
+      "scopes": {
+        "city": "Local Mystery",
+        "province": "Nearby Province",
+        "national": "National Roam",
+        "global": "Global Wander"
+      }
+    },
+    "map": {
+      "filters": {
+        "random": "Random",
+        "nearby": "Nearby",
+        "country": "Country",
+        "province": "Province",
+        "city": "City"
+      },
+      "spotDetail": {
+        "description": "Description",
+        "history": "History",
+        "gallery": "Gallery",
+        "foods": "Foods",
+        "photoGuide": "Photo Guide",
+        "bestTime": "Best Time"
+      },
+      "stats": {
+        "likes": "Likes",
+        "posts": "Posts",
+        "checkins": "Checkins"
+      }
+    },
+    "community": {
+      "upload": "Upload",
+      "selectPhoto": "Select Photo",
+      "shareStory": "Share your story",
+      "aiPolish": "AI Polish",
+      "aiRecommend": "AI Recommend",
+      "addTags": "Add Tags",
+      "addLocation": "Add Location",
+      "photoInfo": "Photo Info",
+      "location": "Location",
+      "camera": "Camera",
+      "exposure": "Exposure",
+      "time": "Time",
+      "autoReading": "Auto reading...",
+      "imageEnhance": "Enhance",
+      "autoEnhance": "Auto",
+      "filter": "Filter",
+      "crop": "Crop",
+      "comingSoon": "Coming Soon",
+      "publish": "Publish"
+    }
+  }
+}
