@@ -71,6 +71,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [postContent, setPostContent] = useState('')
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
@@ -254,12 +255,17 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   // 全屏查看模式
   if (selectedPost !== null) {
     const post = posts[selectedPost]
-    const imageUrl = post.image || (post.images && post.images[0]) || ''
+    const images = post.images || [post.image] || []
+    const currentImage = images[currentImageIndex] || ''
+    
     return (
       <div className="fixed inset-0 bg-black z-50 flex flex-col">
         {/* 顶部关闭按钮 */}
         <button 
-          onClick={() => setSelectedPost(null)}
+          onClick={() => {
+            setSelectedPost(null)
+            setCurrentImageIndex(0)
+          }}
           className="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white z-10"
         >
           <X size={20} />
@@ -267,7 +273,40 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
         {/* 内容区 */}
         <div className="flex-1 flex items-center justify-center relative">
-          <img src={imageUrl} alt="Post" className="max-h-full max-w-full object-contain" />
+          <img src={currentImage} alt="Post" className="max-h-full max-w-full object-contain" />
+          
+          {/* 左箭头 */}
+          {images.length > 1 && currentImageIndex > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setCurrentImageIndex(currentImageIndex - 1)
+              }}
+              className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+            >
+              <ChevronRight size={24} className="rotate-180" />
+            </button>
+          )}
+          
+          {/* 右箭头 */}
+          {images.length > 1 && currentImageIndex < images.length - 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setCurrentImageIndex(currentImageIndex + 1)
+              }}
+              className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+            >
+              <ChevronRight size={24} />
+            </button>
+          )}
+          
+          {/* 图片计数 */}
+          {images.length > 1 && (
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm">
+              {currentImageIndex + 1} / {images.length}
+            </div>
+          )}
           
           {/* 左侧信息 */}
           <div className="absolute bottom-20 left-6 right-6 text-white">
