@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './post.entity';
+import { TagsService } from '../tags/tags.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
+    private tagsService: TagsService,
   ) {}
 
   async create(userId: string, data: any) {
@@ -20,7 +22,14 @@ export class PostsService {
       location: data.location || '',
       city: data.city || '',
     });
-    return this.postsRepository.save(post);
+    const savedPost = await this.postsRepository.save(post);
+    
+    // 增加标签计数
+    for (const tag of data.tags || []) {
+      await this.tagsService.incrementCount(tag);
+    }
+    
+    return savedPost;
   }
 
   async findAll(page: number = 1, limit: number = 50) {

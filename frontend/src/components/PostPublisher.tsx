@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, Camera, Hash, ImageIcon } from 'lucide-react'
 import CoverSelector from './CoverSelector'
+import { tagsAPI } from '../api/tags'
 import { postsAPI } from '../api/posts'
 
 interface PostPublisherProps {
@@ -12,8 +13,6 @@ interface PostPublisherProps {
   editPost?: any
 }
 
-const PRESET_TAGS = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
-
 export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showToast, currentCity, editPost }: PostPublisherProps) {
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [postContent, setPostContent] = useState('')
@@ -21,6 +20,12 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
   const [customTag, setCustomTag] = useState('')
   const [showCoverSelector, setShowCoverSelector] = useState(false)
   const [coverIndex, setCoverIndex] = useState(0)
+  const [allTags, setAllTags] = useState<any[]>([])
+
+  // 加载所有标签
+  useEffect(() => {
+    tagsAPI.getAll().then(tags => setAllTags(tags)).catch(() => {})
+  }, [])
 
   // 当editPost变化时，更新表单数据
   useEffect(() => {
@@ -167,17 +172,17 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
               <span className="font-bold text-gray-700">选择标签</span>
             </div>
             <div className="flex flex-wrap gap-2 mb-3">
-              {PRESET_TAGS.map(tag => (
+              {allTags.map(tag => (
                 <button
-                  key={tag}
-                  onClick={() => toggleTag(tag)}
+                  key={tag.id}
+                  onClick={() => toggleTag(tag.name)}
                   className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
-                    selectedTags.includes(tag)
+                    selectedTags.includes(tag.name)
                       ? 'bg-[#0055FF] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  #{tag}
+                  #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
                 </button>
               ))}
             </div>
