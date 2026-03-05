@@ -123,7 +123,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       if (e.key === 'Escape') {
         if (showUpload) {
           setShowUpload(false)
-        } else if (selectedPost) {
+        } else if (selectedPost !== null) {
           setSelectedPost(null)
         }
       }
@@ -408,7 +408,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             if (searchQuery && !post.content.includes(searchQuery)) return false
             return true
           })
-          .map((post, index) => (
+          .map((post, index) => {
+            // 获取第一张图片
+            const imageUrl = post.image || (post.images && post.images[0]) || ''
+            
+            return (
           <div 
             key={post.id} 
             onClick={() => setSelectedPost(index)}
@@ -416,7 +420,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           >
             <div className="relative p-2 pb-0">
               <div className="relative rounded-[1.5rem] overflow-hidden">
-                <img src={post.image} alt="Post" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src={imageUrl} alt="Post" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center text-xs font-black text-gray-900 shadow-sm">
                   <MapPin size={12} className="mr-1 text-[#0055FF]" /> {post.location}
                 </div>
@@ -450,7 +454,9 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               </div>
             </div>
           </div>
-        ))}
+            )
+          }
+        )}
       </div>
       
       {/* 悬浮发布按钮 - 右下角 */}
