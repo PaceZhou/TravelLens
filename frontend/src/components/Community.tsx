@@ -192,6 +192,10 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         onLoadMore={handleLoadMore}
         hasMore={hasMore}
         isLoading={isLoading}
+        onLike={(postId, e) => handleLike(postId)}
+        onCollect={(postId, e) => handleCollect(postId)}
+        likedPosts={likedPosts}
+        collectedPosts={collectedPosts}
       />
 
       {/* 发布弹窗 */}

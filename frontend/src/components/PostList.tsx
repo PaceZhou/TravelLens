@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Heart, MessageCircle, MapPin } from 'lucide-react'
+import { Heart, MessageCircle, MapPin, Bookmark } from 'lucide-react'
 
 interface Post {
   id: string
@@ -22,9 +22,13 @@ interface PostListProps {
   onLoadMore: () => void
   hasMore: boolean
   isLoading: boolean
+  onLike: (postId: string, e: React.MouseEvent) => void
+  onCollect: (postId: string, e: React.MouseEvent) => void
+  likedPosts: Set<string>
+  collectedPosts: Set<string>
 }
 
-export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLoading }: PostListProps) {
+export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLoading, onLike, onCollect, likedPosts, collectedPosts }: PostListProps) {
   const observerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -80,15 +84,29 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
                   <img src={post.avatar} alt={post.author} className="w-8 h-8 rounded-full" />
                   <span className="font-bold text-sm">{post.author}</span>
                 </div>
-                <div className="flex items-center gap-4 text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Heart size={16} />
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onLike(post.id, e); }}
+                    className={`flex items-center gap-1 transition-colors ${
+                      likedPosts.has(post.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-500'
+                    }`}
+                  >
+                    <Heart size={16} fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} />
                     <span className="text-sm">{post.likes}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
+                  </button>
+                  <div className="flex items-center gap-1 text-gray-500">
                     <MessageCircle size={16} />
                     <span className="text-sm">{post.comments}</span>
                   </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onCollect(post.id, e); }}
+                    className={`flex items-center gap-1 transition-colors ${
+                      collectedPosts.has(post.id) ? 'text-[#FFB800]' : 'text-gray-500 hover:text-[#FFB800]'
+                    }`}
+                  >
+                    <Bookmark size={16} fill={collectedPosts.has(post.id) ? 'currentColor' : 'none'} />
+                  </button>
+                </div>
                 </div>
               </div>
             </div>
