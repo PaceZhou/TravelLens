@@ -389,30 +389,21 @@ export default function MapView() {
             <ChevronLeft size={20} />
           </button>
 
-          {/* 图库（开合式） */}
+          {/* 顶部固定图片 */}
           <div className="relative">
             <img 
               src={selectedSpotData.images[currentImageIndex]} 
               alt={selectedSpotData.name} 
-              className="w-full h-64 object-cover cursor-pointer"
-              onClick={() => setShowGallery(!showGallery)}
+              className="w-full h-64 object-cover"
             />
             
-            {showGallery && (
-              <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md p-4">
-                <div className="flex gap-2 overflow-x-auto">
-                  {selectedSpotData.images.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`${selectedSpotData.name} ${idx + 1}`}
-                      className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${idx === currentImageIndex ? 'ring-2 ring-[#CCFF00]' : ''}`}
-                      onClick={() => setCurrentImageIndex(idx)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* 查看图库按钮 */}
+            <button
+              onClick={() => setShowGallery(!showGallery)}
+              className="absolute bottom-4 right-4 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl font-bold text-sm hover:bg-white transition-colors"
+            >
+              📷 查看图库 ({selectedSpotData.images.length})
+            </button>
             
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
               <div className="text-white">
@@ -481,6 +472,42 @@ export default function MapView() {
         </div>
       )}
 
+      {/* 四级页面：图库浮窗 */}
+      {showGallery && selectedSpotData && (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] max-h-[80vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black">📷 景点图库</h2>
+              <button onClick={() => setShowGallery(false)} className="text-gray-500 hover:text-gray-900">
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* 大图预览 */}
+            <div className="mb-4">
+              <img 
+                src={selectedSpotData.images[currentImageIndex]} 
+                alt={selectedSpotData.name}
+                className="w-full h-96 object-cover rounded-2xl"
+              />
+            </div>
+
+            {/* 缩略图列表 */}
+            <div className="grid grid-cols-4 gap-3">
+              {selectedSpotData.images.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`${selectedSpotData.name} ${idx + 1}`}
+                  className={`w-full h-32 object-cover rounded-xl cursor-pointer transition-all ${idx === currentImageIndex ? 'ring-4 ring-[#0055FF]' : 'opacity-60 hover:opacity-100'}`}
+                  onClick={() => setCurrentImageIndex(idx)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 四级页面：美食详情（浮窗式） */}
       {drawerType === 'food' && selectedSpotData && (
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
@@ -534,10 +561,13 @@ export default function MapView() {
       )}
 
       {/* 浮窗背景遮罩 */}
-      {drawerType && (
+      {(drawerType || showGallery) && (
         <div 
           className="fixed inset-0 bg-black/20 z-[2999]"
-          onClick={() => setDrawerType(null)}
+          onClick={() => {
+            setDrawerType(null)
+            setShowGallery(false)
+          }}
         ></div>
       )}
     </div>
