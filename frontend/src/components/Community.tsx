@@ -228,7 +228,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <div className="text-gray-500 text-sm">暂无评论</div>
                 </div>
                 <div className="p-6 border-t flex items-center gap-6">
-                  <button onClick={async (e) => { e.stopPropagation(); try { await postsAPI.like(post.id); loadPosts(); } catch (error) { console.error('点赞失败', error); }}} className="flex items-center gap-2 text-gray-700 hover:text-red-500"><Heart size={24} /><span className="font-medium">{post.likes}</span></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={`flex items-center gap-2 transition-colors ${likedPosts.has(post.id) ? 'text-red-500' : 'text-gray-700 hover:text-red-500'}`}><Heart size={24} fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} /><span className="font-medium">{post.likes}</span></button>
                   <button onClick={(e) => { e.stopPropagation(); showToast('评论功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"><MessageCircle size={24} /><span className="font-medium">{post.comments}</span></button>
                   <button onClick={(e) => { e.stopPropagation(); showToast('收藏功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#FFB800]"><Bookmark size={24} /></button>
                 </div>
@@ -459,7 +459,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <div className="text-gray-500 text-sm">暂无评论</div>
                 </div>
                 <div className="p-6 border-t flex items-center gap-6">
-                  <button onClick={async (e) => { e.stopPropagation(); try { await postsAPI.like(post.id); loadPosts(); } catch (error) { console.error('点赞失败', error); }}} className="flex items-center gap-2 text-gray-700 hover:text-red-500"><Heart size={24} /><span className="font-medium">{post.likes}</span></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={`flex items-center gap-2 transition-colors ${likedPosts.has(post.id) ? 'text-red-500' : 'text-gray-700 hover:text-red-500'}`}><Heart size={24} fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} /><span className="font-medium">{post.likes}</span></button>
                   <button onClick={(e) => { e.stopPropagation(); showToast('评论功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"><MessageCircle size={24} /><span className="font-medium">{post.comments}</span></button>
                   <button onClick={(e) => { e.stopPropagation(); showToast('收藏功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#FFB800]"><Bookmark size={24} /></button>
                 </div>
