@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle } from 'lucide-react'
 import { postsAPI } from '../api/posts'
+import { collectionsAPI } from '../api/collections'
 
 export default function Profile({ username }: { username: string }) {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('calendar')
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
   const [userPosts, setUserPosts] = useState<any[]>([])
+  const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -23,12 +25,23 @@ export default function Profile({ username }: { username: string }) {
   // 获取用户帖子
   useEffect(() => {
     loadUserPosts()
+    loadCollectedPosts()
   }, [username])
 
   const loadUserPosts = () => {
     postsAPI.getAll().then(posts => {
       const myPosts = posts.filter((p: any) => p.user?.username === username)
       setUserPosts(myPosts)
+    }).catch(() => {})
+  }
+
+  const loadCollectedPosts = () => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (!user.id) return
+    
+    collectionsAPI.getUserCollections(user.id).then(collections => {
+      const posts = collections.map((c: any) => c.post)
+      setCollectedPosts(posts)
     }).catch(() => {})
   }
 
@@ -244,7 +257,49 @@ export default function Profile({ username }: { username: string }) {
               </div>
             )}
 
-            {activeTab !== 'calendar' && activeTab !== 'posts' && (
+            {/* 我的收藏 */}
+            {activeTab === 'collections' && (
+              <div>
+                <h2 className="text-2xl font-black mb-6">我的收藏</h2>
+                {collectedPosts.length === 0 ? (
+                  <div className="text-center py-20 text-gray-400">
+                    <Bookmark size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-lg">还没有收藏任何内容</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-6">
+                    {collectedPosts.map((post, index) => (
+                      <div
+                        key={post.id}
+                        onClick={() => setSelectedPost(index)}
+                        className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+                      >
+                        <div className="relative aspect-square overflow-hidden">
+                          <img
+                            src={post.images?.[0] || ''}
+                            alt={post.location}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          />
+                        </div>
+                        <div className="p-4">
+                          <p className="text-sm text-gray-600 line-clamp-2">{post.content}</p>
+                          <div className="flex items-center gap-4 mt-3 text-gray-500 text-sm">
+                            <span className="flex items-center gap-1">
+                              <Heart size={14} /> {post.likes || 0}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MessageCircle size={14} /> {post.comments || 0}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab !== 'calendar' && activeTab !== 'posts' && activeTab !== 'collections' && (
               <div className="text-center py-20 text-gray-400">
                 <p className="text-lg">功能开发中...</p>
               </div>
