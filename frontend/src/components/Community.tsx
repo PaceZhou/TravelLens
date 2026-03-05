@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const COMMUNITY_POSTS = [
   {
@@ -55,6 +56,7 @@ const COMMUNITY_POSTS = [
 const keywords = ['全部', '克莱因蓝', '极简', '日系', '城市漫游', '自然']
 
 export default function Community() {
+  const { t } = useLanguage()
   const [feedSort, setFeedSort] = useState('latest')
   const [activeKeyword, setActiveKeyword] = useState('全部')
   const [searchQuery, setSearchQuery] = useState('')
