@@ -22,9 +22,20 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
   const [coverIndex, setCoverIndex] = useState(0)
   const [allTags, setAllTags] = useState<any[]>([])
 
+  const defaultTags = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
+
   // 加载所有标签
   useEffect(() => {
-    tagsAPI.getAll().then(tags => setAllTags(tags)).catch(() => {})
+    tagsAPI.getAll().then(tags => {
+      if (tags.length > 0) {
+        setAllTags(tags)
+      } else {
+        // 如果没有标签，使用默认标签
+        setAllTags(defaultTags.map(name => ({ id: name, name, count: 0 })))
+      }
+    }).catch(() => {
+      setAllTags(defaultTags.map(name => ({ id: name, name, count: 0 })))
+    })
   }, [])
 
   // 当editPost变化时，更新表单数据

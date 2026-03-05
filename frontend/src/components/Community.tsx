@@ -72,7 +72,17 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   // 加载标签
   useEffect(() => {
-    tagsAPI.getAll().then(tags => setAllTags(tags)).catch(() => {})
+    tagsAPI.getAll().then(tags => {
+      if (tags.length > 0) {
+        setAllTags(tags)
+      } else {
+        const defaultTags = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
+        setAllTags(defaultTags.map(name => ({ id: name, name, count: 0 })))
+      }
+    }).catch(() => {
+      const defaultTags = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
+      setAllTags(defaultTags.map(name => ({ id: name, name, count: 0 })))
+    })
   }, [])
 
   useEffect(() => {
