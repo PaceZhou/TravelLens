@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
-import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle } from 'lucide-react'
+import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle, Camera } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 import { collectionsAPI } from '../api/collections'
 import ConfirmDialog from './ConfirmDialog'
 import CoverSelector from './CoverSelector'
+import PostPublisher from './PostPublisher'
+import Toast from './Toast'
 
 export default function Profile({ username }: { username: string }) {
   const { t } = useLanguage()
@@ -17,6 +19,8 @@ export default function Profile({ username }: { username: string }) {
   const [deletePostId, setDeletePostId] = useState<string | null>(null)
   const [showCoverSelector, setShowCoverSelector] = useState(false)
   const [editingPost, setEditingPost] = useState<any>(null)
+  const [showPublisher, setShowPublisher] = useState(false)
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
@@ -56,6 +60,11 @@ export default function Profile({ username }: { username: string }) {
     setShowDeleteConfirm(true)
   }
 
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
+    setToast({ type, message })
+    setTimeout(() => setToast(null), 3000)
+  }
+
   const confirmDelete = async () => {
     if (!deletePostId) return
     try {
@@ -64,16 +73,17 @@ export default function Profile({ username }: { username: string }) {
       setShowDeleteConfirm(false)
       setDeletePostId(null)
       loadUserPosts()
+      showToast('删除成功', 'success')
     } catch (error) {
       console.error('删除失败', error)
+      showToast('删除失败', 'error')
     }
   }
 
   const handleEdit = (post: any) => {
     setEditingPost(post)
+    setShowPublisher(true)
     setOpenMenuId(null)
-    // TODO: 打开PostPublisher弹窗并预填充数据
-    alert('编辑功能：需要在Community组件中实现')
   }
 
   const handleChangeCover = (post: any) => {
@@ -425,7 +435,7 @@ export default function Profile({ username }: { username: string }) {
       />
 
       {/* 更改封面弹窗 */}
-      {editingPost && (
+      {editingPost && showCoverSelector && (
         <CoverSelector
           isOpen={showCoverSelector}
           images={editingPost.images || []}
@@ -437,6 +447,38 @@ export default function Profile({ username }: { username: string }) {
           }}
         />
       )}
+
+      {/* 发布/编辑弹窗 */}
+      <PostPublisher
+        isOpen={showPublisher}
+        onClose={() => {
+          setShowPublisher(false)
+          setEditingPost(null)
+        }}
+        onPublishSuccess={() => {
+          setShowPublisher(false)
+          setEditingPost(null)
+          loadUserPosts()
+          showToast('发布成功', 'success')
+        }}
+        showToast={showToast}
+        currentCity="全部"
+        editPost={editingPost}
+      />
+
+      {/* 右下角悬浮发布按钮 */}
+      <button
+        onClick={() => {
+          setEditingPost(null)
+          setShowPublisher(true)
+        }}
+        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center z-40"
+      >
+        <Camera size={28} />
+      </button>
+
+      {/* Toast通知 */}
+      {toast && <Toast type={toast.type} message={toast.message} />}
     </div>
   )
 }

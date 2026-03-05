@@ -8,14 +8,15 @@ interface PostPublisherProps {
   onPublishSuccess: () => void
   showToast: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void
   currentCity: string
+  editPost?: any
 }
 
 const PRESET_TAGS = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
 
-export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showToast, currentCity }: PostPublisherProps) {
-  const [uploadedImages, setUploadedImages] = useState<string[]>([])
-  const [postContent, setPostContent] = useState('')
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showToast, currentCity, editPost }: PostPublisherProps) {
+  const [uploadedImages, setUploadedImages] = useState<string[]>(editPost?.images || [])
+  const [postContent, setPostContent] = useState(editPost?.content || '')
+  const [selectedTags, setSelectedTags] = useState<string[]>(editPost?.tags || [])
   const [customTag, setCustomTag] = useState('')
 
   if (!isOpen) return null
