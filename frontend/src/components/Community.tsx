@@ -235,7 +235,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   // 全屏查看模式
   if (selectedPost !== null) {
-    const post = COMMUNITY_POSTS[selectedPost]
+    const post = posts[selectedPost]
+    const imageUrl = post.image || (post.images && post.images[0]) || ''
     return (
       <div className="fixed inset-0 bg-black z-50 flex flex-col">
         {/* 顶部关闭按钮 */}
@@ -248,7 +249,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
         {/* 内容区 */}
         <div className="flex-1 flex items-center justify-center relative">
-          <img src={post.image} alt="Post" className="max-h-full max-w-full object-contain" />
+          <img src={imageUrl} alt="Post" className="max-h-full max-w-full object-contain" />
           
           {/* 左侧信息 */}
           <div className="absolute bottom-20 left-6 right-6 text-white">
