@@ -229,8 +229,8 @@ export default function Community() {
         </div>
       </div>
 
-      {/* 瀑布流 */}
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+      {/* 瀑布流 - 2列布局，增加宽度 */}
+      <div className="columns-1 md:columns-2 gap-6 space-y-6">
         {COMMUNITY_POSTS.map((post, index) => (
           <div 
             key={post.id} 
@@ -273,19 +273,19 @@ export default function Community() {
         ))}
       </div>
       
-      {/* 悬浮发布按钮 - 底部中间 */}
+      {/* 悬浮发布按钮 - 右下角 */}
       <button 
         onClick={() => setShowUpload(true)}
-        className="fixed bottom-10 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-[#0055FF] rounded-full flex items-center justify-center shadow-xl shadow-blue-500/40 hover:scale-110 hover:-translate-y-2 transition-all z-40"
+        className="fixed bottom-10 right-10 w-16 h-16 bg-[#0055FF] rounded-full flex items-center justify-center shadow-xl shadow-blue-500/40 hover:scale-110 hover:-translate-y-2 transition-all z-40"
       >
         <Camera size={26} className="text-white" />
       </button>
 
-      {/* 上传浮窗 - 2/3高度 */}
+      {/* 上传浮窗 - 2/3高度，修复z-index */}
       {showUpload && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowUpload(false)}></div>
-          <div className="fixed bottom-0 left-0 right-0 h-[66vh] bg-white rounded-t-[2rem] z-50 animate-in slide-in-from-bottom duration-300 overflow-y-auto">
+          <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowUpload(false)}></div>
+          <div className="fixed bottom-0 left-0 right-0 h-[66vh] bg-white rounded-t-[2rem] z-[9999] animate-in slide-in-from-bottom duration-300 overflow-y-auto">
             <div className="p-6">
               {/* 顶部标题 */}
               <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4">
