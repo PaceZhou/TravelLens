@@ -281,42 +281,111 @@ export default function Community() {
         <Camera size={26} className="text-white" />
       </button>
 
-      {/* 上传浮窗 */}
+      {/* 上传浮窗 - 2/3高度 */}
       {showUpload && (
         <>
           <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowUpload(false)}></div>
-          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2rem] z-50 animate-in slide-in-from-bottom duration-300 max-w-2xl mx-auto">
+          <div className="fixed bottom-0 left-0 right-0 h-[66vh] bg-white rounded-t-[2rem] z-50 animate-in slide-in-from-bottom duration-300 overflow-y-auto">
             <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              {/* 顶部标题 */}
+              <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4">
                 <h2 className="text-2xl font-black">📸 发布内容</h2>
                 <button onClick={() => setShowUpload(false)} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
                   <X size={20} />
                 </button>
               </div>
 
-              {/* 上传选项 */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-2xl hover:scale-105 transition-transform">
-                  <Camera size={32} className="mx-auto mb-2" />
-                  <span className="font-bold">拍照</span>
-                </button>
-                <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-105 transition-transform">
-                  <span className="text-3xl mb-2 block">🖼️</span>
-                  <span className="font-bold">相册</span>
+              {/* 上传选项 - 只保留相册 */}
+              <div className="mb-6">
+                <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
+                  <span className="text-3xl">🖼️</span>
+                  <span className="font-bold text-lg">选择照片</span>
                 </button>
               </div>
 
+              {/* 文字内容输入 */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-bold text-gray-700">分享你的故事</label>
+                  <button className="text-xs font-bold text-[#0055FF] px-3 py-1 bg-blue-50 rounded-full">
+                    ✨ AI润色 (即将上线)
+                  </button>
+                </div>
+                <textarea 
+                  placeholder="记录这一刻的美好..."
+                  className="w-full h-32 p-4 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:border-[#0055FF] transition-colors"
+                ></textarea>
+              </div>
+
               {/* 快捷标签 */}
-              <div>
-                <h3 className="text-sm font-bold text-gray-600 mb-3">快捷标签</h3>
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold text-gray-700">添加标签</h3>
+                  <button className="text-xs font-bold text-purple-500 px-3 py-1 bg-purple-50 rounded-full">
+                    🤖 AI推荐 (即将上线)
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
-                  {['打卡', '美食', '风景', '建筑', '人像', '日落'].map(tag => (
+                  {['打卡', '美食', '风景', '建筑', '人像', '日落', '街拍', '旅行'].map(tag => (
                     <button key={tag} className="px-4 py-2 bg-gray-100 rounded-full text-sm font-bold hover:bg-[#0055FF] hover:text-white transition-colors">
                       #{tag}
                     </button>
                   ))}
                 </div>
               </div>
+
+              {/* 定位信息 */}
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-gray-700 mb-3">位置信息</h3>
+                <button className="w-full p-4 bg-gray-50 rounded-2xl flex items-center justify-between hover:bg-gray-100 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <MapPin size={20} className="text-[#0055FF]" />
+                    <span className="font-bold text-gray-600">添加位置</span>
+                  </div>
+                  <ChevronRight size={20} className="text-gray-400" />
+                </button>
+              </div>
+
+              {/* 照片信息读取 */}
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-gray-700 mb-3">照片信息</h3>
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-2xl space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">📍 拍摄地点</span>
+                    <span className="font-bold">自动读取中...</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">📷 相机型号</span>
+                    <span className="font-bold">自动读取中...</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">⚙️ 曝光参数</span>
+                    <span className="font-bold">自动读取中...</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">🕐 拍摄时间</span>
+                    <span className="font-bold">自动读取中...</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 图像美化 */}
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-gray-700 mb-3">图像美化</h3>
+                <div className="grid grid-cols-3 gap-3">
+                  {['自动增强', '滤镜', '裁剪'].map(option => (
+                    <button key={option} className="p-3 bg-gray-100 rounded-xl text-sm font-bold hover:bg-[#CCFF00] transition-colors">
+                      {option}
+                      <div className="text-xs text-gray-500 mt-1">即将上线</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 发布按钮 */}
+              <button className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black text-lg rounded-2xl hover:shadow-xl transition-all">
+                发布
+              </button>
             </div>
           </div>
         </>
