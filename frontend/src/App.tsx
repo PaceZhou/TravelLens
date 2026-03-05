@@ -152,20 +152,6 @@ function AppContent() {
           <Route path="/posts/:postId" element={<PostDetailPage />} />
         </Routes>
       </main>
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <h2 className="text-3xl font-black mb-4">🔒 需要登录</h2>
-              <p className="text-gray-600 mb-6">登录后查看个人空间</p>
-              <button 
-                onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
-                className="px-6 py-3 bg-[#0055FF] text-white font-bold rounded-xl hover:bg-[#0044DD]"
-              >
-                立即登录
-              </button>
-            </div>
-          </div>
-        ))}
-      </main>
 
       {/* 登录/注册弹窗 */}
       {showAuthModal && (
