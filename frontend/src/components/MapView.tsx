@@ -454,9 +454,9 @@ export default function MapView() {
         </div>
       )}
 
-      {/* 四级页面：美食详情（抽屉式，在三级之上） */}
+      {/* 四级页面：美食详情（浮窗式） */}
       {drawerType === 'food' && selectedSpotData && (
-        <div className="absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto animate-in slide-in-from-right duration-300">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">🍜 美食推荐</h2>
@@ -480,9 +480,9 @@ export default function MapView() {
         </div>
       )}
 
-      {/* 四级页面：拍照攻略（抽屉式，在三级之上） */}
+      {/* 四级页面：拍照攻略（浮窗式） */}
       {drawerType === 'photo' && selectedSpotData && (
-        <div className="absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto animate-in slide-in-from-right duration-300">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">📷 拍照攻略</h2>
@@ -504,6 +504,14 @@ export default function MapView() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* 浮窗背景遮罩 */}
+      {drawerType && (
+        <div 
+          className="fixed inset-0 bg-black/20 z-[2999]"
+          onClick={() => setDrawerType(null)}
+        ></div>
       )}
     </div>
   )
