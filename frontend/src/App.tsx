@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
 import Community from './components/Community'
@@ -23,6 +23,16 @@ function App() {
     { code: 'it', name: 'Italiano' },
     { code: 'ar', name: 'العربية' }
   ]
+
+  // 监听登录请求事件
+  useEffect(() => {
+    const handleOpenAuth = (e: any) => {
+      setAuthMode(e.detail || 'login')
+      setShowAuthModal(true)
+    }
+    window.addEventListener('openAuth', handleOpenAuth)
+    return () => window.removeEventListener('openAuth', handleOpenAuth)
+  }, [])
 
   return (
     <div className="app">

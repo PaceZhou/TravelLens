@@ -66,6 +66,7 @@ export default function Community() {
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [postContent, setPostContent] = useState('')
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
 
   // ESC键退出功能
   useEffect(() => {
@@ -118,7 +119,7 @@ export default function Community() {
   // 发布内容
   const handlePublish = () => {
     if (!isLoggedIn) {
-      alert('请先登录后再发布内容')
+      setShowLoginPrompt(true)
       return
     }
     if (!postContent.trim() && uploadedImages.length === 0) {
@@ -505,6 +506,27 @@ export default function Community() {
                 {t.community.publish}
               </button>
             </div>
+          </div>
+        </>
+      )}
+
+      {/* 登录提示弹窗 */}
+      {showLoginPrompt && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-[10000]" onClick={() => setShowLoginPrompt(false)}></div>
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white rounded-3xl z-[10001] p-8 shadow-2xl text-center">
+            <div className="text-6xl mb-4">🔒</div>
+            <h2 className="text-2xl font-black mb-4">需要登录</h2>
+            <p className="text-gray-600 mb-6">登录后即可发布内容</p>
+            <button 
+              onClick={() => {
+                setShowLoginPrompt(false)
+                window.dispatchEvent(new CustomEvent('openAuth', { detail: 'login' }))
+              }}
+              className="w-full py-3 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-xl hover:shadow-xl transition-all"
+            >
+              立即登录
+            </button>
           </div>
         </>
       )}
