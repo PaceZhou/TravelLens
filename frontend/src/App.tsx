@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
+import Community from './components/Community'
 import './App.css'
 
 function App() {
@@ -23,12 +24,19 @@ function App() {
           >
             地图
           </button>
+          <button 
+            onClick={() => setCurrentTab('world')}
+            className={currentTab === 'world' ? 'active' : ''}
+          >
+            世界
+          </button>
         </nav>
       </header>
 
       <main>
         {currentTab === 'gacha' && <BlindBox />}
         {currentTab === 'map' && <MapView />}
+        {currentTab === 'world' && <Community />}
       </main>
     </div>
   )
