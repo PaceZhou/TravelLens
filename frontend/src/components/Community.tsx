@@ -72,6 +72,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
+  const [posts, setPosts] = useState(COMMUNITY_POSTS)
 
   // ESC键退出功能
   useEffect(() => {
@@ -132,14 +133,23 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       return
     }
     
-    // TODO: 发送到后端API
+    // 创建新帖子
     const newPost = {
+      id: Date.now(),
+      author: '我',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+      location: '未知位置',
+      city: currentCity === '全部' ? '北京' : currentCity,
+      image: uploadedImages[0] || '',
       content: postContent,
-      images: uploadedImages,
       tags: selectedTags,
-      timestamp: new Date().toISOString()
+      likes: 0,
+      comments: 0,
+      time: '刚刚'
     }
-    console.log('发布内容:', newPost)
+    
+    // 添加到帖子列表顶部
+    setPosts([newPost, ...posts])
     
     setToast({ type: 'success', message: '发布成功！' })
     setShowUpload(false)
@@ -333,7 +343,14 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       {/* 瀑布流 - 4列布局，居中对齐 */}
       <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 max-w-[1400px] mx-auto">
-        {COMMUNITY_POSTS.map((post, index) => (
+        {posts
+          .filter(post => {
+            if (currentCity !== '全部' && post.city !== currentCity) return false
+            if (activeKeyword !== '全部' && !post.tags.includes(activeKeyword)) return false
+            if (searchQuery && !post.content.includes(searchQuery)) return false
+            return true
+          })
+          .map((post, index) => (
           <div 
             key={post.id} 
             onClick={() => setSelectedPost(index)}
