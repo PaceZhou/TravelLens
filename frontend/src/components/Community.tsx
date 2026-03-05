@@ -263,9 +263,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     const images = post.images || [post.image] || []
     
     return (
-      <>
-        <div className="fixed inset-0 bg-black/20 z-40" onClick={() => { setSelectedPost(null); setCurrentImageIndex(0); }}></div>
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
         <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1200px] h-[800px]">
         <div className="flex-1 flex items-center justify-center relative">
           <div 
@@ -368,8 +366,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           </div>
         </div>
         </div>
-        </div>
-      </>
+      </div>
     )
   }
 
