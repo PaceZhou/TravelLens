@@ -30,10 +30,17 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
+    
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleEsc)
+    
     return () => {
       document.body.style.overflow = 'unset'
+      window.removeEventListener('keydown', handleEsc)
     }
-  }, [])
+  }, [onClose])
 
   if (!post) return null
 

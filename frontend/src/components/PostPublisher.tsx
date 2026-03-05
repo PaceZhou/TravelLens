@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { X, Camera, Hash } from 'lucide-react'
+import { X, Camera, Hash, ImageIcon } from 'lucide-react'
+import CoverSelector from './CoverSelector'
 import { postsAPI } from '../api/posts'
 
 interface PostPublisherProps {
@@ -18,6 +19,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
   const [postContent, setPostContent] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
+  const [showCoverSelector, setShowCoverSelector] = useState(false)
 
   // 当editPost变化时，更新表单数据
   useEffect(() => {
@@ -115,7 +117,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[85vh] overflow-y-auto shadow-2xl">
         <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 p-6 flex items-center justify-between z-10">
-          <h3 className="text-2xl font-black">发布新帖</h3>
+          <h3 className="text-2xl font-black">{editPost ? '编辑帖子' : '发布新帖'}</h3>
           <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
             <X size={24} />
           </button>
@@ -190,6 +192,15 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
                 </label>
               )}
             </div>
+            {uploadedImages.length > 1 && (
+              <button
+                onClick={() => setShowCoverSelector(true)}
+                className="mt-3 w-full py-2 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 flex items-center justify-center gap-2"
+              >
+                <ImageIcon size={18} />
+                更改封面和顺序
+              </button>
+            )}
           </div>
         </div>
 
@@ -202,6 +213,19 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
           </button>
         </div>
       </div>
+
+      {/* 封面选择器 */}
+      <CoverSelector
+        isOpen={showCoverSelector}
+        images={uploadedImages}
+        currentCoverIndex={0}
+        onConfirm={(newCoverIndex, newOrder) => {
+          setUploadedImages(newOrder)
+          setShowCoverSelector(false)
+          showToast('封面已更新', 'success')
+        }}
+        onCancel={() => setShowCoverSelector(false)}
+      />
     </div>
   )
 }
