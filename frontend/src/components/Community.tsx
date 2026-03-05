@@ -263,7 +263,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     const images = post.images || [post.image] || []
     
     return (
-      <div className="fixed inset-0 bg-black/95 z-50 flex">
+      <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-8">
+        <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl max-w-[1600px] max-h-[90vh] w-full">
         <div className="flex-1 flex items-center justify-center relative">
           <div 
             className="relative w-full h-full flex items-center justify-center"
@@ -363,6 +364,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               <Bookmark size={24} />
             </button>
           </div>
+        </div>
         </div>
       </div>
     )
@@ -501,8 +503,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <img src={post.avatar} alt={post.author} className="w-8 h-8 rounded-full border border-gray-200" />
                   <span className="text-sm text-gray-900 font-bold">{post.author}</span>
                 </div>
-                <div className="flex items-center gap-4 text-sm font-bold text-gray-500">
-                  <span className="flex items-center"><Clock size={14} className="mr-1" /> {post.time}</span>
+                <div className="flex items-center gap-2 text-sm font-bold text-gray-500">
                   <button 
                     onClick={async (e) => {
                       e.stopPropagation()
