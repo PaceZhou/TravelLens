@@ -41,13 +41,25 @@ function App() {
           </button>
         </nav>
         
-        {/* 语言切换 */}
-        <button 
-          onClick={() => switchLanguage(lang === 'zh' ? 'en' : 'zh')}
-          className="lang-switch"
-        >
-          <Globe size={16} /> {lang === 'zh' ? 'EN' : '中文'}
-        </button>
+        {/* 语言切换下拉菜单 */}
+        <div className="relative">
+          <button 
+            onClick={() => {
+              const langs: Array<'zh' | 'en' | 'ru' | 'it' | 'ar'> = ['zh', 'en', 'ru', 'it', 'ar']
+              const currentIndex = langs.indexOf(lang)
+              const nextLang = langs[(currentIndex + 1) % langs.length]
+              switchLanguage(nextLang)
+            }}
+            className="lang-switch"
+          >
+            <Globe size={16} /> 
+            {lang === 'zh' && '中文'}
+            {lang === 'en' && 'English'}
+            {lang === 'ru' && 'Русский'}
+            {lang === 'it' && 'Italiano'}
+            {lang === 'ar' && 'العربية'}
+          </button>
+        </div>
       </header>
 
       <main>

@@ -1,0 +1,83 @@
+{
+  "ru": {
+    "app": {
+      "name": "MangoGo",
+      "slogan": "Манго момент, мир в поле зрения"
+    },
+    "nav": {
+      "blindbox": "Манго",
+      "map": "ManGO MAP",
+      "world": "ManGO Show",
+      "profile": "Профиль"
+    },
+    "auth": {
+      "login": "Войти",
+      "register": "Регистрация",
+      "logout": "Выйти",
+      "loginTitle": "Вход",
+      "loginDesc": "Войдите, чтобы использовать функцию слепой коробки, раз в 24 часа",
+      "loginButton": "Войти сейчас"
+    },
+    "blindbox": {
+      "title": "Куда поехать?",
+      "subtitle": "Выберите свою судьбу",
+      "draw": "ТЯНУТЬ",
+      "needLogin": "Требуется вход",
+      "cooldown": "Доступно через 24ч",
+      "nextDraw": "Следующая попытка",
+      "drawing": "Выбираем...",
+      "resultTitle": "Сегодняшний квест: Исследуйте",
+      "resultDesc": "Посетите эти 5 мест, чтобы разблокировать достижение города!",
+      "saveToCalendar": "Сохранить в календарь",
+      "scopes": {
+        "city": "Местная тайна",
+        "province": "Соседняя провинция",
+        "national": "Национальное путешествие",
+        "global": "Глобальное странствие"
+      }
+    },
+    "map": {
+      "filters": {
+        "random": "Случайно",
+        "nearby": "Рядом",
+        "country": "Страна",
+        "province": "Провинция",
+        "city": "Город"
+      },
+      "spotDetail": {
+        "description": "Описание",
+        "history": "История",
+        "gallery": "Галерея",
+        "foods": "Еда",
+        "photoGuide": "Фото гид",
+        "bestTime": "Лучшее время"
+      },
+      "stats": {
+        "likes": "Лайки",
+        "posts": "Посты",
+        "checkins": "Отметки"
+      }
+    },
+    "community": {
+      "upload": "Загрузить",
+      "selectPhoto": "Выбрать фото",
+      "shareStory": "Поделитесь своей историей",
+      "aiPolish": "AI полировка",
+      "aiRecommend": "AI рекомендации",
+      "addTags": "Добавить теги",
+      "addLocation": "Добавить место",
+      "photoInfo": "Информация о фото",
+      "location": "Место",
+      "camera": "Камера",
+      "exposure": "Экспозиция",
+      "time": "Время",
+      "autoReading": "Автоматическое чтение...",
+      "imageEnhance": "Улучшить",
+      "autoEnhance": "Авто",
+      "filter": "Фильтр",
+      "crop": "Обрезать",
+      "comingSoon": "Скоро",
+      "publish": "Опубликовать"
+    }
+  }
+}

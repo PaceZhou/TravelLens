@@ -1,0 +1,83 @@
+{
+  "it": {
+    "app": {
+      "name": "MangoGo",
+      "slogan": "Un momento mango, il mondo in vista"
+    },
+    "nav": {
+      "blindbox": "Mango",
+      "map": "ManGO MAP",
+      "world": "ManGO Show",
+      "profile": "Profilo"
+    },
+    "auth": {
+      "login": "Accedi",
+      "register": "Registrati",
+      "logout": "Esci",
+      "loginTitle": "Accedi",
+      "loginDesc": "Accedi per utilizzare la funzione blind box, una volta ogni 24 ore",
+      "loginButton": "Accedi ora"
+    },
+    "blindbox": {
+      "title": "Dove andare?",
+      "subtitle": "Scegli il tuo destino",
+      "draw": "ESTRAI",
+      "needLogin": "Accesso richiesto",
+      "cooldown": "Disponibile tra 24h",
+      "nextDraw": "Prossima estrazione",
+      "drawing": "Estraendo...",
+      "resultTitle": "Missione di oggi: Esplora",
+      "resultDesc": "Completa questi 5 luoghi per sbloccare il risultato della città!",
+      "saveToCalendar": "Salva nel calendario",
+      "scopes": {
+        "city": "Mistero locale",
+        "province": "Provincia vicina",
+        "national": "Viaggio nazionale",
+        "global": "Vagabondaggio globale"
+      }
+    },
+    "map": {
+      "filters": {
+        "random": "Casuale",
+        "nearby": "Vicino",
+        "country": "Paese",
+        "province": "Provincia",
+        "city": "Città"
+      },
+      "spotDetail": {
+        "description": "Descrizione",
+        "history": "Storia",
+        "gallery": "Galleria",
+        "foods": "Cibo",
+        "photoGuide": "Guida fotografica",
+        "bestTime": "Momento migliore"
+      },
+      "stats": {
+        "likes": "Mi piace",
+        "posts": "Post",
+        "checkins": "Check-in"
+      }
+    },
+    "community": {
+      "upload": "Carica",
+      "selectPhoto": "Seleziona foto",
+      "shareStory": "Condividi la tua storia",
+      "aiPolish": "Lucidatura AI",
+      "aiRecommend": "Raccomandazione AI",
+      "addTags": "Aggiungi tag",
+      "addLocation": "Aggiungi posizione",
+      "photoInfo": "Info foto",
+      "location": "Posizione",
+      "camera": "Fotocamera",
+      "exposure": "Esposizione",
+      "time": "Tempo",
+      "autoReading": "Lettura automatica...",
+      "imageEnhance": "Migliora",
+      "autoEnhance": "Auto",
+      "filter": "Filtro",
+      "crop": "Ritaglia",
+      "comingSoon": "Prossimamente",
+      "publish": "Pubblica"
+    }
+  }
+}

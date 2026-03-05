@@ -1,0 +1,83 @@
+{
+  "ar": {
+    "app": {
+      "name": "MangoGo",
+      "slogan": "لحظة مانجو، العالم في الأفق"
+    },
+    "nav": {
+      "blindbox": "مانجو",
+      "map": "خريطة ManGO",
+      "world": "عرض ManGO",
+      "profile": "الملف الشخصي"
+    },
+    "auth": {
+      "login": "تسجيل الدخول",
+      "register": "التسجيل",
+      "logout": "تسجيل الخروج",
+      "loginTitle": "تسجيل الدخول",
+      "loginDesc": "قم بتسجيل الدخول لاستخدام ميزة الصندوق الأعمى، مرة كل 24 ساعة",
+      "loginButton": "تسجيل الدخول الآن"
+    },
+    "blindbox": {
+      "title": "إلى أين تذهب؟",
+      "subtitle": "اختر مصيرك",
+      "draw": "سحب",
+      "needLogin": "تسجيل الدخول مطلوب",
+      "cooldown": "متاح خلال 24 ساعة",
+      "nextDraw": "وقت السحب التالي",
+      "drawing": "جاري السحب...",
+      "resultTitle": "مهمة اليوم: استكشف",
+      "resultDesc": "أكمل هذه الأماكن الخمسة لفتح إنجاز المدينة!",
+      "saveToCalendar": "حفظ في التقويم",
+      "scopes": {
+        "city": "غموض محلي",
+        "province": "مقاطعة قريبة",
+        "national": "تجوال وطني",
+        "global": "تجوال عالمي"
+      }
+    },
+    "map": {
+      "filters": {
+        "random": "عشوائي",
+        "nearby": "قريب",
+        "country": "البلد",
+        "province": "المقاطعة",
+        "city": "المدينة"
+      },
+      "spotDetail": {
+        "description": "الوصف",
+        "history": "التاريخ",
+        "gallery": "المعرض",
+        "foods": "الطعام",
+        "photoGuide": "دليل التصوير",
+        "bestTime": "أفضل وقت"
+      },
+      "stats": {
+        "likes": "الإعجابات",
+        "posts": "المنشورات",
+        "checkins": "تسجيلات الوصول"
+      }
+    },
+    "community": {
+      "upload": "تحميل",
+      "selectPhoto": "اختر صورة",
+      "shareStory": "شارك قصتك",
+      "aiPolish": "تلميع بالذكاء الاصطناعي",
+      "aiRecommend": "توصية بالذكاء الاصطناعي",
+      "addTags": "إضافة علامات",
+      "addLocation": "إضافة موقع",
+      "photoInfo": "معلومات الصورة",
+      "location": "الموقع",
+      "camera": "الكاميرا",
+      "exposure": "التعريض",
+      "time": "الوقت",
+      "autoReading": "قراءة تلقائية...",
+      "imageEnhance": "تحسين",
+      "autoEnhance": "تلقائي",
+      "filter": "فلتر",
+      "crop": "قص",
+      "comingSoon": "قريباً",
+      "publish": "نشر"
+    }
+  }
+}
