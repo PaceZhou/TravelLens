@@ -1,71 +1,109 @@
-# TravelLens 旅拍指南
+# 🥭 MangoShow - 芒一下
 
-[English](./README_EN.md) | 中文 | [Русский](./README_RU.md)
+> 芒一下，世界就在眼前
 
----
-
-## 📱 项目简介
-
-TravelLens 是一款**地图优先的旅行出片指南应用**，帮助用户发现最佳拍照机位和周边美食。
-
-**核心亮点**:
-- 🎁 **旅行盲盒** - 智能算法推荐意想不到的目的地
-- 📍 **地图探索** - 实时显示附近景点和距离
-- 📷 **机位指南** - 详细的拍照时间、构图建议
-- 🍜 **美食推荐** - 景点周边特色餐厅
+**MangoShow** 是一个命运驱动的旅行摄影社区。通过24小时盲盒抽签，让AI为你选择下一个旅行目的地，发现那些命中注定的美好瞬间。
 
 ---
 
-## 🏗️ 技术栈
+## ✨ 核心功能
 
-**前端**: React 18 + TypeScript + Vite + Capacitor  
-**后端**: NestJS + PostgreSQL + PostGIS  
-**平台**: Web + iOS + Android + 鸿蒙
+### 🎁 芒一下
+24小时盲盒抽签系统
+- 每天一次随机抽取
+- AI智能推荐城市 + 5个打卡点
+- 任务式探索体验
+
+### 🗺️ 芒GO MAP
+智能地图探索
+- 多维度筛选（国家/省份/城市/同城）
+- 景点详情（美食/拍照攻略/社区分享）
+- 实时定位与导航
+
+### 🌍 芒GO Show
+全球旅行者社区
+- 瀑布流内容展示
+- 智能标签与搜索
+- TikTok式沉浸浏览
 
 ---
 
-## 🚀 快速开始
+## 🎨 设计理念
+
+**像芒果一样甜蜜的随机旅行**
+
+- 🥭 IP形象：戴墨镜的芒果君
+- 🎨 主色调：芒果黄 #FFB800
+- ✨ 毛玻璃 + 渐变 + 动效
+
+---
+
+## 🚀 技术栈
 
 ### 前端
+- React 18 + TypeScript + Vite
+- Tailwind CSS
+- Leaflet (地图)
+- Framer Motion (动画)
+
+### 后端（规划中）
+- NestJS
+- PostgreSQL + PostGIS
+- Redis
+
+### 多平台
+- Web
+- iOS (Capacitor)
+- Android (Capacitor)
+- HarmonyOS
+
+---
+
+## 📱 多语言支持
+
+- 🇨🇳 中文
+- 🇺🇸 English
+- 🇷🇺 Русский
+- 🇮🇹 Italiano
+- 🇸🇦 العربية
+
+---
+
+## 🎯 项目状态
+
+**当前阶段**: 前端开发完成 ✅
+
+- [x] 芒一下（盲盒系统）
+- [x] 芒GO MAP（地图探索）
+- [x] 芒GO Show（社区瀑布流）
+- [ ] 后端API开发
+- [ ] 多语言系统
+- [ ] 移动端适配
+
+---
+
+## 🏃 快速开始
 
 ```bash
-cd frontend
+# 克隆项目
+git clone https://github.com/PaceZhou/TravelLens.git
+cd TravelLens/frontend
+
+# 安装依赖
 npm install
+
+# 启动开发服务器
 npm run dev
 ```
 
-### 后端
-
-```bash
-cd backend
-npm install
-npm run start:dev
-```
-
----
-
-## 📅 开发计划
-
-**时间**: 2周冲刺  
-**上线日期**: 2026-03-18  
-**目标**: 70+ 景点上线
-
----
-
-## 📚 文档
-
-- [项目结构](./docs/PROJECT_STRUCTURE.md)
-- [2周冲刺计划](./docs/2WEEK_SPRINT.md)
-- [盲盒算法](./docs/BLIND_BOX_ALGORITHM.md)
-
----
-
-## 👥 团队
-
-20人团队，包括前端、后端、内容、设计、测试
+访问 http://localhost:5173
 
 ---
 
 ## 📄 License
 
 MIT
+
+---
+
+**芒一下，让生活甜起来** 🥭✨
