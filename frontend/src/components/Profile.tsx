@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings } from 'lucide-react'
+import { postsAPI } from '../api/posts'
 
 export default function Profile({ username }: { username: string }) {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('calendar')
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
+  const [userPosts, setUserPosts] = useState<any[]>([])
 
   // 获取用户统计数据
   useEffect(() => {
@@ -13,6 +15,14 @@ export default function Profile({ username }: { username: string }) {
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(() => {})
+  }, [username])
+
+  // 获取用户帖子
+  useEffect(() => {
+    postsAPI.getAll().then(posts => {
+      const myPosts = posts.filter((p: any) => p.user?.username === username)
+      setUserPosts(myPosts)
+    }).catch(() => {})
   }, [username])
 
   // 用户数据
@@ -142,7 +152,30 @@ export default function Profile({ username }: { username: string }) {
             )}
 
             {/* 其他标签页内容 */}
-            {activeTab !== 'calendar' && (
+            {activeTab === 'posts' && (
+              <div>
+                <h2 className="text-2xl font-black mb-6">我的创作</h2>
+                {userPosts.length === 0 ? (
+                  <div className="text-center py-20 text-gray-400">
+                    <p className="text-lg">还没有发布任何内容</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-4">
+                    {userPosts.map((post: any) => (
+                      <div key={post.id} className="aspect-square rounded-xl overflow-hidden">
+                        <img 
+                          src={post.images?.[0] || ''} 
+                          alt={post.content}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab !== 'calendar' && activeTab !== 'posts' && (
               <div className="text-center py-20 text-gray-400">
                 <p className="text-lg">功能开发中...</p>
               </div>

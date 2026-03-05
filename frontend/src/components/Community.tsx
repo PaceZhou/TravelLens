@@ -325,9 +325,14 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           {/* 右侧互动 */}
           <div className="absolute bottom-20 right-6 flex flex-col gap-4">
             <button 
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation()
-                // TODO: 点赞功能
+                try {
+                  await postsAPI.like(post.id)
+                  loadPosts()
+                } catch (error) {
+                  console.error('点赞失败', error)
+                }
               }}
               className="flex flex-col items-center text-white"
             >
@@ -337,7 +342,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             <button 
               onClick={(e) => {
                 e.stopPropagation()
-                // TODO: 评论功能
+                showToast('评论功能开发中', 'info')
               }}
               className="flex flex-col items-center text-white"
             >
@@ -529,10 +534,27 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                 </div>
                 <div className="flex items-center gap-4 text-sm font-bold text-gray-500">
                   <span className="flex items-center"><Clock size={14} className="mr-1" /> {post.time}</span>
-                  <button className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg">
+                  <button 
+                    onClick={async (e) => {
+                      e.stopPropagation()
+                      try {
+                        await postsAPI.like(post.id)
+                        loadPosts()
+                      } catch (error) {
+                        console.error('点赞失败', error)
+                      }
+                    }}
+                    className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg"
+                  >
                     <Heart size={16} className="mr-1.5" /> {post.likes}
                   </button>
-                  <button className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      showToast('评论功能开发中', 'info')
+                    }}
+                    className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg"
+                  >
                     <MessageCircle size={16} className="mr-1.5" /> {post.comments}
                   </button>
                 </div>
