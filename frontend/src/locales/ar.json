@@ -21,7 +21,7 @@
     "blindbox": {
       "title": "إلى أين تذهب؟",
       "subtitle": "اختر مصيرك",
-      "draw": "سحب",
+      "draw": "ManGO",
       "needLogin": "تسجيل الدخول مطلوب",
       "cooldown": "متاح خلال 24 ساعة",
       "nextDraw": "وقت السحب التالي",

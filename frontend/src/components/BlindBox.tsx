@@ -124,7 +124,7 @@ export default function BlindBox() {
                 <div className="w-20 h-20 bg-[#CCFF00] rounded-full flex items-center justify-center mb-2 group-hover:bg-[#0055FF] transition-colors duration-300">
                   <Gift size={36} className="text-gray-900 group-hover:text-white" />
                 </div>
-                <span className="font-black text-2xl tracking-widest text-gray-900">芒一下</span>
+                <span className="font-black text-2xl tracking-widest text-gray-900">{t.blindbox.draw}</span>
               </>
             )}
           </div>

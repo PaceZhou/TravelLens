@@ -21,7 +21,7 @@
     "blindbox": {
       "title": "不知道去哪？",
       "subtitle": "一键抽取目的地",
-      "draw": "DRAW",
+      "draw": "芒一下",
       "needLogin": "需要登录",
       "cooldown": "24小时后可用",
       "nextDraw": "下次抽取时间",
@@ -110,7 +110,7 @@
     "blindbox": {
       "title": "Where to go?",
       "subtitle": "Draw your destiny",
-      "draw": "DRAW",
+      "draw": "ManGO",
       "needLogin": "Login Required",
       "cooldown": "Available in 24h",
       "nextDraw": "Next draw time",

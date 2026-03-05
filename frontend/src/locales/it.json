@@ -21,7 +21,7 @@
     "blindbox": {
       "title": "Dove andare?",
       "subtitle": "Scegli il tuo destino",
-      "draw": "ESTRAI",
+      "draw": "ManGO",
       "needLogin": "Accesso richiesto",
       "cooldown": "Disponibile tra 24h",
       "nextDraw": "Prossima estrazione",
