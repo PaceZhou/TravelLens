@@ -60,6 +60,7 @@ export default function Community() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentCity, setCurrentCity] = useState('全部')
+  const [showUpload, setShowUpload] = useState(false)
 
   const cities = ['全部', '同城', '北京', '重庆', '冰岛', '镰仓']
 
@@ -272,10 +273,54 @@ export default function Community() {
         ))}
       </div>
       
-      {/* 悬浮发布按钮 */}
-      <button className="fixed bottom-10 right-10 w-16 h-16 bg-[#0055FF] rounded-full flex items-center justify-center shadow-xl shadow-blue-500/40 hover:scale-110 hover:-translate-y-2 transition-all z-40">
+      {/* 悬浮发布按钮 - 底部中间 */}
+      <button 
+        onClick={() => setShowUpload(true)}
+        className="fixed bottom-10 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-[#0055FF] rounded-full flex items-center justify-center shadow-xl shadow-blue-500/40 hover:scale-110 hover:-translate-y-2 transition-all z-40"
+      >
         <Camera size={26} className="text-white" />
       </button>
+
+      {/* 上传浮窗 */}
+      {showUpload && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowUpload(false)}></div>
+          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2rem] z-50 animate-in slide-in-from-bottom duration-300 max-w-2xl mx-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-black">📸 发布内容</h2>
+                <button onClick={() => setShowUpload(false)} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* 上传选项 */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-2xl hover:scale-105 transition-transform">
+                  <Camera size={32} className="mx-auto mb-2" />
+                  <span className="font-bold">拍照</span>
+                </button>
+                <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-105 transition-transform">
+                  <span className="text-3xl mb-2 block">🖼️</span>
+                  <span className="font-bold">相册</span>
+                </button>
+              </div>
+
+              {/* 快捷标签 */}
+              <div>
+                <h3 className="text-sm font-bold text-gray-600 mb-3">快捷标签</h3>
+                <div className="flex flex-wrap gap-2">
+                  {['打卡', '美食', '风景', '建筑', '人像', '日落'].map(tag => (
+                    <button key={tag} className="px-4 py-2 bg-gray-100 rounded-full text-sm font-bold hover:bg-[#0055FF] hover:text-white transition-colors">
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
