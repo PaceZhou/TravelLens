@@ -225,6 +225,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       })()}
 
 
+
   // 处理图片上传
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
