@@ -86,6 +86,15 @@
       "crop": "裁剪",
       "comingSoon": "即将上线",
       "publish": "发布"
+    },
+    "profile": {
+      "myMango": "我的芒一下",
+      "calendar": "日历收藏",
+      "myPosts": "我的创作",
+      "following": "关注",
+      "followers": "粉丝",
+      "likes": "获赞",
+      "collections": "收藏"
     }
   },
   "en": {
@@ -175,6 +184,15 @@
       "crop": "Crop",
       "comingSoon": "Coming Soon",
       "publish": "Publish"
+    },
+    "profile": {
+      "myMango": "My ManGO",
+      "calendar": "Calendar",
+      "myPosts": "My Posts",
+      "following": "Following",
+      "followers": "Followers",
+      "likes": "Likes",
+      "collections": "Collections"
     }
   }
 }

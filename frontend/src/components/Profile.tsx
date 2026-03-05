@@ -1,0 +1,151 @@
+import { useState } from 'react'
+import { useLanguage } from '../contexts/LanguageContext'
+import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings } from 'lucide-react'
+
+export default function Profile() {
+  const { t } = useLanguage()
+  const [activeTab, setActiveTab] = useState('calendar')
+
+  // 模拟用户数据
+  const user = {
+    username: '芒果旅行者',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200',
+    bio: '热爱旅行和摄影的芒果',
+    stats: {
+      posts: 42,
+      following: 128,
+      followers: 356,
+      likes: 1234
+    }
+  }
+
+  // 模拟芒一下日历数据
+  const mangoCalendar = [
+    {
+      id: 1,
+      date: '2026-03-10',
+      city: '北京',
+      spots: ['故宫角楼', '天坛公园', '颐和园', '长城', '南锣鼓巷'],
+      status: 'planned'
+    },
+    {
+      id: 2,
+      date: '2026-03-15',
+      city: '上海',
+      spots: ['外滩', '东方明珠', '豫园', '田子坊', '新天地'],
+      status: 'planned'
+    }
+  ]
+
+  return (
+    <div className="min-h-screen bg-gray-50 pt-20 pb-10">
+      <div className="max-w-6xl mx-auto px-4">
+        {/* 用户信息卡片 */}
+        <div className="bg-white rounded-3xl p-8 mb-6 shadow-lg">
+          <div className="flex items-center gap-6">
+            <img src={user.avatar} alt={user.username} className="w-24 h-24 rounded-full" />
+            <div className="flex-1">
+              <h1 className="text-3xl font-black mb-2">{user.username}</h1>
+              <p className="text-gray-600 mb-4">{user.bio}</p>
+              <div className="flex gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-black">{user.stats.posts}</div>
+                  <div className="text-sm text-gray-600">{t.profile.myPosts}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-black">{user.stats.following}</div>
+                  <div className="text-sm text-gray-600">{t.profile.following}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-black">{user.stats.followers}</div>
+                  <div className="text-sm text-gray-600">{t.profile.followers}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-black">{user.stats.likes}</div>
+                  <div className="text-sm text-gray-600">{t.profile.likes}</div>
+                </div>
+              </div>
+            </div>
+            <button className="px-6 py-3 bg-gray-100 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+              <Settings size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* 标签页 */}
+        <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
+          <div className="flex border-b">
+            <button
+              onClick={() => setActiveTab('calendar')}
+              className={`flex-1 py-4 px-6 font-bold flex items-center justify-center gap-2 transition-colors ${
+                activeTab === 'calendar' ? 'bg-[#0055FF] text-white' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <Calendar size={20} /> {t.profile.myMango}
+            </button>
+            <button
+              onClick={() => setActiveTab('posts')}
+              className={`flex-1 py-4 px-6 font-bold flex items-center justify-center gap-2 transition-colors ${
+                activeTab === 'posts' ? 'bg-[#0055FF] text-white' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <Image size={20} /> {t.profile.myPosts}
+            </button>
+            <button
+              onClick={() => setActiveTab('following')}
+              className={`flex-1 py-4 px-6 font-bold flex items-center justify-center gap-2 transition-colors ${
+                activeTab === 'following' ? 'bg-[#0055FF] text-white' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <UserPlus size={20} /> {t.profile.following}
+            </button>
+            <button
+              onClick={() => setActiveTab('collections')}
+              className={`flex-1 py-4 px-6 font-bold flex items-center justify-center gap-2 transition-colors ${
+                activeTab === 'collections' ? 'bg-[#0055FF] text-white' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <Bookmark size={20} /> {t.profile.collections}
+            </button>
+          </div>
+
+          <div className="p-6">
+            {/* 芒一下日历 */}
+            {activeTab === 'calendar' && (
+              <div className="space-y-4">
+                <h2 className="text-2xl font-black mb-6">🥭 {t.profile.calendar}</h2>
+                {mangoCalendar.map(item => (
+                  <div key={item.id} className="bg-gradient-to-br from-[#FFB800]/10 to-[#00D4AA]/10 rounded-2xl p-6 border-2 border-[#FFB800]/30">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <div className="text-sm text-gray-600 mb-1">{item.date}</div>
+                        <h3 className="text-2xl font-black">{item.city}</h3>
+                      </div>
+                      <span className="px-4 py-2 bg-[#CCFF00] rounded-full text-sm font-black">
+                        {item.status === 'planned' ? '计划中' : '已完成'}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {item.spots.map((spot, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-white rounded-full text-sm font-bold">
+                          {idx + 1}. {spot}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 其他标签页内容 */}
+            {activeTab !== 'calendar' && (
+              <div className="text-center py-20 text-gray-400">
+                <p className="text-lg">功能开发中...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

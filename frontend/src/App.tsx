@@ -2,6 +2,7 @@ import { useState } from 'react'
 import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
 import Community from './components/Community'
+import Profile from './components/Profile'
 import { useLanguage } from './contexts/LanguageContext'
 import { User, Globe, ChevronDown } from 'lucide-react'
 import './App.css'
@@ -84,17 +85,7 @@ function App() {
         {currentTab === 'gacha' && <BlindBox />}
         {currentTab === 'map' && <MapView />}
         {currentTab === 'world' && <Community />}
-        {currentTab === 'profile' && (
-          <div className="profile-page">
-            <div className="profile-container">
-              <h2>{t.nav.profile}</h2>
-              <div className="auth-buttons">
-                <button className="btn-primary">{t.auth.login}</button>
-                <button className="btn-secondary">{t.auth.register}</button>
-              </div>
-            </div>
-          </div>
-        )}
+        {currentTab === 'profile' && <Profile />}
       </main>
     </div>
   )
