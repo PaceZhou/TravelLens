@@ -263,8 +263,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     const images = post.images || [post.image] || []
     
     return (
-      <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-8">
-        <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1000px] h-[700px]">
+      <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-8">
+        <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1400px] h-[1200px]">
         <div className="flex-1 flex items-center justify-center relative">
           <div 
             className="relative w-full h-full flex items-center justify-center"
@@ -556,7 +556,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* 上传浮窗 - 优化尺寸和样式 */}
       {showUpload && (
         <>
-          <div className="fixed inset-0 bg-black/40 z-[9998]" onClick={() => setShowUpload(false)}></div>
+          <div className="fixed inset-0 bg-black/30 z-[9998]" onClick={() => setShowUpload(false)}></div>
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1400px] max-w-[90vw] h-[85vh] bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-3xl rounded-[2rem] z-[9999] overflow-y-auto shadow-2xl border border-white/50">
             <div className="p-6">
               {/* 顶部标题 */}
@@ -597,7 +597,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                     {uploadedImages.map((img, index) => (
                       <div key={index} className="relative group aspect-square w-[120px] h-[120px]">
                         <img src={img} alt={`上传图片 ${index + 1}`} className="w-full h-full object-cover rounded-xl" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
                           {index > 0 && (
                             <button onClick={() => moveImage(index, index - 1)} className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                               ←
@@ -765,7 +765,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* 登录提示弹窗 */}
       {showLoginPrompt && (
         <>
-          <div className="fixed inset-0 bg-black/40 z-[10000]" onClick={() => setShowLoginPrompt(false)}></div>
+          <div className="fixed inset-0 bg-black/30 z-[10000]" onClick={() => setShowLoginPrompt(false)}></div>
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white rounded-3xl z-[10001] p-8 shadow-2xl text-center">
             <div className="text-6xl mb-4">🔒</div>
             <h2 className="text-2xl font-black mb-4">需要登录</h2>
