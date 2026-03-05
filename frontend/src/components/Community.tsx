@@ -229,8 +229,8 @@ export default function Community() {
         </div>
       </div>
 
-      {/* 瀑布流 - 2列布局，增加宽度 */}
-      <div className="columns-1 md:columns-2 gap-6 space-y-6">
+      {/* 瀑布流 - 4列布局，居中对齐 */}
+      <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 max-w-[1400px] mx-auto">
         {COMMUNITY_POSTS.map((post, index) => (
           <div 
             key={post.id} 
