@@ -47,7 +47,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
         location: p.location || '未知位置',
         city: p.city || '未知',
-        image: p.images?.[0] || '',
+        image: p.images?.[p.coverIndex || 0] || p.images?.[0] || '',
         images: p.images || [],
         content: p.content,
         tags: p.tags || [],

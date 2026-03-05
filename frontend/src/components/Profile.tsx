@@ -257,7 +257,7 @@ export default function Profile({ username: propUsername }: { username: string }
                         onClick={() => setSelectedPost(index)}
                       >
                         <img 
-                          src={post.images?.[0] || ''} 
+                          src={post.images?.[post.coverIndex || 0] || post.images?.[0] || ''} 
                           alt={post.content}
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
@@ -334,7 +334,7 @@ export default function Profile({ username: propUsername }: { username: string }
                       >
                         <div className="relative aspect-square overflow-hidden">
                           <img
-                            src={post.images?.[0] || ''}
+                            src={post.images?.[post.coverIndex || 0] || post.images?.[0] || ''}
                             alt={post.location}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                           />
