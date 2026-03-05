@@ -53,11 +53,11 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
             onClick={() => onPostClick(index)}
             className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group mb-6 break-inside-avoid"
           >
-            <div className="relative overflow-hidden" style={{ aspectRatio: `${Math.random() * 0.5 + 0.75}` }}>
+            <div className="relative overflow-hidden">
               <img
                 src={post.image}
                 alt={post.location}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-2">
                 <MapPin size={14} className="text-white" />
