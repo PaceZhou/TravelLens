@@ -353,7 +353,15 @@ export default function MapView() {
                 onClick={() => handleSpotClick(spot.id)}
                 className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
               >
-                <img src={spot.images[0]} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
+                <div className="relative">
+                  <img src={spot.images[0]} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
+                  {/* 统计数据覆盖在图片上 */}
+                  <div className="absolute bottom-2 right-2 flex gap-2 text-white text-xs">
+                    <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded">❤️ {spot.likes}</span>
+                    <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded">📝 {spot.posts}</span>
+                    <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded">📍 {spot.checkins}</span>
+                  </div>
+                </div>
                 <div className="p-4">
                   <h3 className="font-black text-lg mb-1">{spot.name}</h3>
                   <p className="text-sm text-gray-600 flex items-center">
@@ -397,47 +405,9 @@ export default function MapView() {
               className="w-full h-64 object-cover"
             />
             
-            {/* 查看图库按钮（带缩略图） */}
-            <button
-              onClick={() => setShowGallery(!showGallery)}
-              className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-xl overflow-hidden hover:bg-white transition-colors"
-            >
-              <div className="flex items-center gap-2 p-2">
-                <div className="flex gap-1">
-                  {selectedSpotData.images.slice(0, 3).map((img, idx) => (
-                    <img 
-                      key={idx}
-                      src={img} 
-                      alt="" 
-                      className="w-8 h-8 object-cover rounded"
-                    />
-                  ))}
-                </div>
-                <span className="font-bold text-sm pr-2">+{selectedSpotData.images.length}</span>
-              </div>
-            </button>
-            
-            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
-              <div className="text-white">
-                <h1 className="text-3xl font-black mb-2">{selectedSpotData.name}</h1>
-                <p className="flex items-center"><MapPin size={16} className="mr-1" /> {selectedSpotData.city}</p>
-              </div>
-              
-              {/* 统计数据（缩小） */}
-              <div className="flex gap-3 text-white">
-                <div className="text-center">
-                  <div className="text-xl font-black">{selectedSpotData.likes}</div>
-                  <div className="text-[10px] opacity-80">点赞</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-black">{selectedSpotData.posts}</div>
-                  <div className="text-[10px] opacity-80">博文</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-black">{selectedSpotData.checkins}</div>
-                  <div className="text-[10px] opacity-80">打卡</div>
-                </div>
-              </div>
+            <div className="absolute bottom-6 left-6 text-white">
+              <h1 className="text-3xl font-black mb-2">{selectedSpotData.name}</h1>
+              <p className="flex items-center"><MapPin size={16} className="mr-1" /> {selectedSpotData.city}</p>
             </div>
           </div>
 
@@ -447,7 +417,7 @@ export default function MapView() {
             <section className="mb-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-xl font-black">📍 景点介绍</h2>
-                {/* 小型统计数据 */}
+                {/* 统计数据 */}
                 <div className="flex gap-3 text-xs">
                   <span className="flex items-center gap-1 text-gray-600">
                     ❤️ {selectedSpotData.likes}
@@ -465,6 +435,25 @@ export default function MapView() {
                 <summary className="cursor-pointer font-bold">查看历史</summary>
                 <p className="mt-2 leading-relaxed">{selectedSpotData.history}</p>
               </details>
+            </section>
+
+            {/* 图库缩略图 */}
+            <section className="mb-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
+              <h2 className="text-xl font-black mb-4">📷 景点图库</h2>
+              <div className="grid grid-cols-3 gap-3">
+                {selectedSpotData.images.map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`${selectedSpotData.name} ${idx + 1}`}
+                    className="w-full h-32 object-cover rounded-xl cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => {
+                      setCurrentImageIndex(idx)
+                      setShowGallery(true)
+                    }}
+                  />
+                ))}
+              </div>
             </section>
 
             {/* 美食推荐（抽屉式） */}
