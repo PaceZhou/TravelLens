@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { MapPin, ChevronRight, Shuffle, Navigation, Globe, Map as MapIcon, ChevronDown, X, ChevronLeft } from 'lucide-react'
-import { useLanguage } from '../hooks/useLanguage'
+import { useLanguage } from '../contexts/LanguageContext'
 import 'leaflet/dist/leaflet.css'
 import { Icon } from 'leaflet'
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Gift, Crosshair, Sparkles, Zap, Lock, Calendar, MapPin, X } from 'lucide-react'
-import { useLanguage } from '../hooks/useLanguage'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const SCOPE_OPTIONS = [
   { id: 'city', icon: '📍' },

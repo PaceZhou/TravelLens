@@ -80,6 +80,46 @@ body {
   background: #f3f4f6;
 }
 
+.lang-dropdown {
+  position: absolute;
+  top: 3rem;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 150px;
+  z-index: 9999;
+}
+
+.lang-option {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.lang-option:hover {
+  background: #f3f4f6;
+}
+
+.lang-option.active {
+  background: #0055FF;
+  color: white;
+}
+
+.lang-option:first-child {
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.lang-option:last-child {
+  border-radius: 0 0 0.75rem 0.75rem;
+}
+
 .profile-page {
   display: flex;
   align-items: center;

@@ -2,13 +2,22 @@ import { useState } from 'react'
 import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
 import Community from './components/Community'
-import { useLanguage } from './hooks/useLanguage'
-import { User, Globe } from 'lucide-react'
+import { useLanguage } from './contexts/LanguageContext'
+import { User, Globe, ChevronDown } from 'lucide-react'
 import './App.css'
 
 function App() {
   const [currentTab, setCurrentTab] = useState('gacha')
+  const [showLangMenu, setShowLangMenu] = useState(false)
   const { lang, switchLanguage, t } = useLanguage()
+
+  const languages = [
+    { code: 'zh', name: '中文' },
+    { code: 'en', name: 'English' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'ar', name: 'العربية' }
+  ]
 
   return (
     <div className="app">
@@ -44,21 +53,30 @@ function App() {
         {/* 语言切换下拉菜单 */}
         <div className="relative">
           <button 
-            onClick={() => {
-              const langs: Array<'zh' | 'en' | 'ru' | 'it' | 'ar'> = ['zh', 'en', 'ru', 'it', 'ar']
-              const currentIndex = langs.indexOf(lang)
-              const nextLang = langs[(currentIndex + 1) % langs.length]
-              switchLanguage(nextLang)
-            }}
+            onClick={() => setShowLangMenu(!showLangMenu)}
             className="lang-switch"
           >
             <Globe size={16} /> 
-            {lang === 'zh' && '中文'}
-            {lang === 'en' && 'English'}
-            {lang === 'ru' && 'Русский'}
-            {lang === 'it' && 'Italiano'}
-            {lang === 'ar' && 'العربية'}
+            {languages.find(l => l.code === lang)?.name}
+            <ChevronDown size={14} />
           </button>
+          
+          {showLangMenu && (
+            <div className="lang-dropdown">
+              {languages.map(language => (
+                <button
+                  key={language.code}
+                  onClick={() => {
+                    switchLanguage(language.code as any)
+                    setShowLangMenu(false)
+                  }}
+                  className={`lang-option ${lang === language.code ? 'active' : ''}`}
+                >
+                  {language.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </header>
 
