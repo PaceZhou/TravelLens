@@ -165,7 +165,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         const post = posts[selectedPost]
         const images = post.images || [post.image] || []
         return (
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+          <>
+            {/* 透明遮罩层 */}
+            <div className="fixed inset-0 bg-black/20 z-40" onClick={() => { setSelectedPost(null); setCurrentImageIndex(0); }}></div>
+            {/* 浮窗主体 */}
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50" onClick={(e) => e.stopPropagation()}>
             <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1200px] h-[800px]">
               <div className="flex-1 flex items-center justify-center relative">
                 <div className="relative w-full h-full flex items-center justify-center" onWheel={(e) => { e.preventDefault(); if (e.deltaY > 0 && currentImageIndex < images.length - 1) { setCurrentImageIndex(currentImageIndex + 1) } else if (e.deltaY < 0 && currentImageIndex > 0) { setCurrentImageIndex(currentImageIndex - 1) }}}>
@@ -205,6 +209,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               </div>
             </div>
           </div>
+          </>
         )
       })()}
 
@@ -213,7 +218,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         const post = posts[selectedPost]
         const images = post.images || [post.image] || []
         return (
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+          <>
+            {/* 透明遮罩层 */}
+            <div className="fixed inset-0 bg-black/20 z-40" onClick={() => { setSelectedPost(null); setCurrentImageIndex(0); }}></div>
+            {/* 浮窗主体 */}
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50" onClick={(e) => e.stopPropagation()}>
             <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1200px] h-[800px]">
               <div className="flex-1 flex items-center justify-center relative">
                 <div className="relative w-full h-full flex items-center justify-center"
@@ -269,6 +278,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               </div>
             </div>
           </div>
+          </>
         )
       })()}
 
@@ -386,7 +396,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         const post = posts[selectedPost]
         const images = post.images || [post.image] || []
         return (
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+          <>
+            {/* 透明遮罩层 */}
+            <div className="fixed inset-0 bg-black/20 z-40" onClick={() => { setSelectedPost(null); setCurrentImageIndex(0); }}></div>
+            {/* 浮窗主体 */}
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50" onClick={(e) => e.stopPropagation()}>
             <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1200px] h-[800px]">
               <div className="flex-1 flex items-center justify-center relative">
                 <div className="relative w-full h-full flex items-center justify-center" onWheel={(e) => { e.preventDefault(); if (e.deltaY > 0 && currentImageIndex < images.length - 1) { setCurrentImageIndex(currentImageIndex + 1) } else if (e.deltaY < 0 && currentImageIndex > 0) { setCurrentImageIndex(currentImageIndex - 1) }}}>
@@ -426,6 +440,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               </div>
             </div>
           </div>
+          </>
         )
       })()}
 
