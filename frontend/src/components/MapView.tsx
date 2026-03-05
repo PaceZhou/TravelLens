@@ -153,6 +153,7 @@ export default function MapView() {
   const handleFilter = (type: FilterType) => {
     setFilterType(type)
     setShowDropdown(type !== 'random' && type !== 'nearby')
+    setShowSidebar(true) // 自动打开二级界面
     
     if (type === 'random') {
       setFilteredSpots(SPOTS)
@@ -172,18 +173,21 @@ export default function MapView() {
     setSelectedCountry(country)
     setFilteredSpots(SPOTS.filter(s => s.country === country))
     setShowDropdown(false)
+    setShowSidebar(true) // 自动打开二级界面
   }
 
   const handleProvinceSelect = (province: string) => {
     setSelectedProvince(province)
     setFilteredSpots(SPOTS.filter(s => s.province === province))
     setShowDropdown(false)
+    setShowSidebar(true) // 自动打开二级界面
   }
 
   const handleCitySelect = (city: string) => {
     setSelectedCity(city)
     setFilteredSpots(SPOTS.filter(s => s.city === city))
     setShowDropdown(false)
+    setShowSidebar(true) // 自动打开二级界面
   }
 
   const handleSpotClick = (spotId: number) => {
@@ -327,7 +331,7 @@ export default function MapView() {
 
       {/* 右侧景点列表（二级页面，1/3宽度） */}
       <div 
-        className={`absolute top-0 right-0 h-full w-full md:w-1/3 bg-white/80 backdrop-blur-xl shadow-2xl z-[1000] transition-transform duration-300 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`absolute top-0 right-0 h-full w-full md:w-1/3 bg-white/70 backdrop-blur-2xl shadow-2xl z-[1000] transition-transform duration-300 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="h-full overflow-y-auto p-6">
           <div className="flex items-center justify-between mb-6">
@@ -399,12 +403,15 @@ export default function MapView() {
       {/* 三级页面：景点详情（1/2宽度，右侧抽拉） */}
       {selectedSpot && selectedSpotData && (
         <div 
-          className={`absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/80 backdrop-blur-xl shadow-2xl z-[2000] overflow-y-auto transition-transform duration-300 ${selectedSpot ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/70 backdrop-blur-2xl shadow-2xl z-[2000] overflow-y-auto transition-transform duration-300 ${selectedSpot ? 'translate-x-0' : 'translate-x-full'}`}
         >
           {/* 返回按钮 */}
           <button 
-            onClick={() => setSelectedSpot(null)}
-            className="absolute top-6 left-6 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center z-10 hover:bg-white transition-colors"
+            onClick={() => {
+              setSelectedSpot(null)
+              setShowSidebar(true) // 返回时打开二级界面
+            }}
+            className="absolute top-6 left-6 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center z-10 hover:bg-white transition-colors shadow-lg"
           >
             <ChevronLeft size={20} />
           </button>
