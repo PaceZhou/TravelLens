@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings } from 'lucide-react'
 
-export default function Profile() {
+export default function Profile({ username }: { username: string }) {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('calendar')
 
-  // 模拟用户数据
+  // 用户数据
   const user = {
-    username: '芒果旅行者',
+    username: username,
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200',
     bio: '热爱旅行和摄影的芒果',
     stats: {
