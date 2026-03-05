@@ -82,10 +82,6 @@ function AppContent() {
             {t.nav.profile}
           </Link>
         </nav>
-          >
-            <User size={16} /> {t.nav.profile}
-          </button>
-        </nav>
         
         {/* 登录/注册按钮 */}
         {!isLoggedIn ? (
