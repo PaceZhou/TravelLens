@@ -264,7 +264,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     
     return (
       <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-8">
-        <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl max-w-[1600px] max-h-[90vh] w-full">
+        <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1200px] h-[800px]">
         <div className="flex-1 flex items-center justify-center relative">
           <div 
             className="relative w-full h-full flex items-center justify-center"
@@ -280,7 +280,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             <img 
               src={images[currentImageIndex]} 
               alt="Post" 
-              className="max-h-[90vh] max-w-[1400px] object-contain rounded-2xl shadow-2xl"
+              className="w-full h-full object-cover"
             />
             
             {images.length > 1 && (
