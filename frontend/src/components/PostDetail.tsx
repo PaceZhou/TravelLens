@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Heart, MessageCircle, Bookmark } from 'lucide-react'
 
 interface Post {
@@ -28,6 +28,13 @@ interface PostDetailProps {
 export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected, showToast }: PostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
+
   if (!post) return null
 
   const images = post.images || [post.image] || []
@@ -41,7 +48,6 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
             <div 
               className="relative w-full h-full flex items-center justify-center" 
               onWheel={(e) => {
-                e.preventDefault()
                 if (e.deltaY > 0 && currentImageIndex < images.length - 1) {
                   setCurrentImageIndex(currentImageIndex + 1)
                 } else if (e.deltaY < 0 && currentImageIndex > 0) {
