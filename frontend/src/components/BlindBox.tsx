@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Gift, Crosshair, Sparkles, Zap, Lock, Calendar, MapPin, X } from 'lucide-react'
+import { useLanguage } from '../hooks/useLanguage'
 
 const SCOPE_OPTIONS = [
-  { id: 'city', label: '同城探秘', icon: '📍' },
-  { id: 'province', label: '邻省周边', icon: '🚗' },
-  { id: 'national', label: '漫游全国', icon: '🚄' },
-  { id: 'global', label: '瞬息全宇宙', icon: '✈️' }
+  { id: 'city', icon: '📍' },
+  { id: 'province', icon: '🚗' },
+  { id: 'national', icon: '🚄' },
+  { id: 'global', icon: '✈️' }
 ]
 
 // 模拟盲盒结果
@@ -21,14 +22,15 @@ const MYSTERY_RESULT = {
 }
 
 export default function BlindBox() {
+  const { t } = useLanguage()
   const [selectedScope, setSelectedScope] = useState('national')
   const [isDrawing, setIsDrawing] = useState(false)
   const [drawText, setDrawText] = useState('')
   const [result, setResult] = useState(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // 登录状态
-  const [showLogin, setShowLogin] = useState(false) // 显示登录弹窗
-  const [canDraw, setCanDraw] = useState(true) // 是否可以抽取
-  const [nextDrawTime, setNextDrawTime] = useState<string | null>(null) // 下次抽取时间
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+  const [canDraw, setCanDraw] = useState(true)
+  const [nextDrawTime, setNextDrawTime] = useState<string | null>(null)
 
   // 检查是否可以抽取（24小时限制）
   useEffect(() => {
@@ -112,9 +114,9 @@ export default function BlindBox() {
         </div>
 
         <h1 className="text-7xl font-black text-center mb-12 leading-tight tracking-tighter text-gray-900">
-          不知道去哪？<br/>
+          {t.blindbox.title}<br/>
           <span className="relative inline-block">
-            一键抽取目的地
+            {t.blindbox.subtitle}
             <div className="absolute bottom-1 left-0 w-full h-4 bg-[#CCFF00] -z-10 transform -rotate-2"></div>
           </span>
         </h1>
@@ -132,7 +134,7 @@ export default function BlindBox() {
               }`}
             >
               <span className="text-2xl">{scope.icon}</span>
-              <span className="text-sm">{scope.label}</span>
+              <span className="text-sm">{t.blindbox.scopes[scope.id]}</span>
             </button>
           ))}
         </div>
@@ -157,21 +159,21 @@ export default function BlindBox() {
                 <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2">
                   <Lock size={36} className="text-gray-500" />
                 </div>
-                <span className="font-black text-xl tracking-widest text-gray-500">需要登录</span>
+                <span className="font-black text-xl tracking-widest text-gray-500">{t.blindbox.needLogin}</span>
               </>
             ) : !canDraw ? (
               <>
                 <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2">
                   <Calendar size={36} className="text-gray-500" />
                 </div>
-                <span className="font-black text-sm tracking-widest text-gray-500 text-center px-4">24小时后可用</span>
+                <span className="font-black text-sm tracking-widest text-gray-500 text-center px-4">{t.blindbox.cooldown}</span>
               </>
             ) : (
               <>
                 <div className="w-20 h-20 bg-[#CCFF00] rounded-full flex items-center justify-center mb-2 group-hover:bg-[#0055FF] transition-colors duration-300">
                   <Gift size={36} className="text-gray-900 group-hover:text-white" />
                 </div>
-                <span className="font-black text-2xl tracking-widest text-gray-900">DRAW</span>
+                <span className="font-black text-2xl tracking-widest text-gray-900">{t.blindbox.draw}</span>
               </>
             )}
           </div>
@@ -180,7 +182,7 @@ export default function BlindBox() {
         {/* 提示信息 */}
         {!canDraw && nextDrawTime && (
           <div className="mt-6 text-center text-sm text-gray-600">
-            下次抽取时间：{nextDrawTime}
+            {t.blindbox.nextDraw}：{nextDrawTime}
           </div>
         )}
       </div>
@@ -191,17 +193,17 @@ export default function BlindBox() {
           <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowLogin(false)}></div>
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white/90 backdrop-blur-2xl rounded-3xl z-[9999] p-8 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black">🔐 登录</h2>
+              <h2 className="text-2xl font-black">🔐 {t.auth.loginTitle}</h2>
               <button onClick={() => setShowLogin(false)} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                 <X size={20} />
               </button>
             </div>
-            <p className="text-gray-600 mb-6">登录后即可使用盲盒功能，每24小时可抽取一次</p>
+            <p className="text-gray-600 mb-6">{t.auth.loginDesc}</p>
             <button 
               onClick={handleLogin}
               className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
             >
-              立即登录
+              {t.auth.loginButton}
             </button>
           </div>
         </>
@@ -218,14 +220,14 @@ export default function BlindBox() {
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#CCFF00] text-gray-900 text-xs font-black uppercase tracking-widest mb-3 rounded-sm">
                     <Sparkles size={14} /> SSR HIT
                   </div>
-                  <h2 className="text-4xl font-black">🎯 今日任务：探索{result.city}</h2>
+                  <h2 className="text-4xl font-black">🎯 {t.blindbox.resultTitle}{result.city}</h2>
                 </div>
                 <button onClick={() => setResult(null)} className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
                   <X size={24} />
                 </button>
               </div>
 
-              <p className="text-gray-600 mb-8">完成以下5个打卡点，解锁城市探索成就！</p>
+              <p className="text-gray-600 mb-8">{t.blindbox.resultDesc}</p>
 
               <div className="space-y-4">
                 {result.spots.map((spot, index) => (
@@ -250,7 +252,7 @@ export default function BlindBox() {
               </div>
 
               <button className="w-full mt-8 py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all">
-                保存到我的日历
+                {t.blindbox.saveToCalendar}
               </button>
             </div>
           </div>
