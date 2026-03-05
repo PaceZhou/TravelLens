@@ -68,6 +68,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [postContent, setPostContent] = useState('')
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [customTag, setCustomTag] = useState('')
 
   // ESC键退出功能
   useEffect(() => {
@@ -127,10 +129,21 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       setToast({ type: 'warning', message: '请添加内容或图片' })
       return
     }
+    
+    // TODO: 发送到后端API
+    const newPost = {
+      content: postContent,
+      images: uploadedImages,
+      tags: selectedTags,
+      timestamp: new Date().toISOString()
+    }
+    console.log('发布内容:', newPost)
+    
     setToast({ type: 'success', message: '发布成功！' })
     setShowUpload(false)
     setUploadedImages([])
     setPostContent('')
+    setSelectedTags([])
   }
 
   const cities = ['全部', '同城', '北京', '重庆', '冰岛', '镰仓']
@@ -394,7 +407,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <h3 className="text-sm font-bold text-gray-700 mb-3">已选择的图片</h3>
                   <div className="grid grid-cols-3 gap-4">
                     {uploadedImages.map((img, index) => (
-                      <div key={index} className="relative group aspect-square">
+                      <div key={index} className="relative group aspect-square w-[120px] h-[120px]">
                         <img src={img} alt={`上传图片 ${index + 1}`} className="w-full h-full object-cover rounded-xl" />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
                           {index > 0 && (
@@ -442,13 +455,63 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                     🤖 AI推荐 (即将上线)
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {['打卡', '美食', '风景', '建筑', '人像', '日落', '街拍', '旅行'].map(tag => (
-                    <button key={tag} className="px-4 py-2 bg-gray-100 rounded-full text-sm font-bold hover:bg-[#0055FF] hover:text-white transition-colors">
+                    <button 
+                      key={tag} 
+                      onClick={() => {
+                        if (selectedTags.includes(tag)) {
+                          setSelectedTags(selectedTags.filter(t => t !== tag))
+                        } else {
+                          setSelectedTags([...selectedTags, tag])
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+                        selectedTags.includes(tag) 
+                          ? 'bg-[#0055FF] text-white' 
+                          : 'bg-gray-100 hover:bg-gray-200'
+                      }`}
+                    >
                       #{tag}
                     </button>
                   ))}
                 </div>
+                <div className="flex gap-2">
+                  <input 
+                    type="text"
+                    value={customTag}
+                    onChange={(e) => setCustomTag(e.target.value)}
+                    placeholder="自定义标签..."
+                    className="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-[#0055FF]"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && customTag.trim()) {
+                        setSelectedTags([...selectedTags, customTag.trim()])
+                        setCustomTag('')
+                      }
+                    }}
+                  />
+                  <button 
+                    onClick={() => {
+                      if (customTag.trim()) {
+                        setSelectedTags([...selectedTags, customTag.trim()])
+                        setCustomTag('')
+                      }
+                    }}
+                    className="px-6 py-2 bg-[#0055FF] text-white rounded-xl font-bold hover:bg-[#0044DD]"
+                  >
+                    添加
+                  </button>
+                </div>
+                {selectedTags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {selectedTags.map((tag, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-[#0055FF] text-white rounded-full text-sm font-bold flex items-center gap-2">
+                        #{tag}
+                        <button onClick={() => setSelectedTags(selectedTags.filter((_, i) => i !== idx))} className="hover:text-red-300">✕</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* 定位信息 */}
