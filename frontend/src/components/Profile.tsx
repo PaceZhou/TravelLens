@@ -317,46 +317,6 @@ export default function Profile({ username }: { username: string }) {
           </div>
         )
       })()}
-
-                  
-                  {/* 下箭头 */}
-                  {images.length > 1 && currentImageIndex < images.length - 1 && (
-                    <button
-                      onClick={() => {
-                        const container = document.querySelector('.flex.flex-col.overflow-y-auto') as HTMLElement
-                        if (container) {
-                          container.scrollTo({ top: (currentImageIndex + 1) * container.offsetHeight, behavior: 'smooth' })
-                        }
-                      }}
-                      className="absolute bottom-32 left-1/2 -translate-x-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors z-10"
-                    >
-                      <ChevronRight size={24} className="rotate-90" />
-                    </button>
-                  )}
-                  
-                  {/* 图片指示器 */}
-                  {images.length > 1 && (
-                    <div className="absolute top-6 left-6 flex flex-col gap-2">
-                      {images.map((_: any, idx: number) => (
-                        <div 
-                          key={idx}
-                          className={`w-2 h-2 rounded-full transition-all ${
-                            idx === currentImageIndex ? 'bg-white h-6' : 'bg-white/50'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  
-                  <div className="absolute bottom-20 left-6 right-6 text-white">
-                    <p className="text-lg mb-3">{post.content}</p>
-                    <div className="flex gap-2">
-                      {post.tags?.map((tag: string) => (
-                        <span key={tag} className="text-sm bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">#{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-              )
             })()}
           </div>
         </div>
