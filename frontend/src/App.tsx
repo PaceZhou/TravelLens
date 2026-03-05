@@ -4,6 +4,7 @@ import MapView from './components/MapView'
 import Community from './components/Community'
 import Profile from './components/Profile'
 import { useLanguage } from './contexts/LanguageContext'
+import { authAPI } from './api/auth'
 import { User, Globe, ChevronDown } from 'lucide-react'
 import './App.css'
 
@@ -32,6 +33,16 @@ function App() {
     }
     window.addEventListener('openAuth', handleOpenAuth)
     return () => window.removeEventListener('openAuth', handleOpenAuth)
+  }, [])
+
+  // 恢复登录状态
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      const user = JSON.parse(savedUser)
+      setIsLoggedIn(true)
+      setUsername(user.username)
+    }
   }, [])
 
   return (
@@ -85,7 +96,11 @@ function App() {
           <div className="flex items-center gap-3">
             <span className="text-sm font-bold text-gray-700">👋 {username}</span>
             <button 
-              onClick={() => { setIsLoggedIn(false); setUsername(''); }}
+              onClick={() => { 
+                setIsLoggedIn(false)
+                setUsername('')
+                localStorage.removeItem('user')
+              }}
               className="px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               {t.auth.logout}
@@ -149,18 +164,25 @@ function App() {
           <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowAuthModal(false)}></div>
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white rounded-3xl z-[9999] p-8 shadow-2xl">
             <h2 className="text-2xl font-black mb-6">{authMode === 'login' ? t.auth.login : t.auth.register}</h2>
-            <form onSubmit={(e) => {
+            <form onSubmit={async (e) => {
               e.preventDefault()
               const formData = new FormData(e.currentTarget)
               const user = formData.get('username') as string
               const pass = formData.get('password') as string
               
-              if (authMode === 'register') {
-                alert('注册成功！')
+              try {
+                if (authMode === 'register') {
+                  await authAPI.register(user, pass)
+                  alert('注册成功！')
+                }
+                const result = await authAPI.login(user, pass)
+                setIsLoggedIn(true)
+                setUsername(result.username)
+                localStorage.setItem('user', JSON.stringify(result))
+                setShowAuthModal(false)
+              } catch (err) {
+                alert('登录失败：' + (err as Error).message)
               }
-              setIsLoggedIn(true)
-              setUsername(user)
-              setShowAuthModal(false)
             }}>
               <input 
                 name="username"
