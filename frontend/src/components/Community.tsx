@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 
@@ -63,6 +63,21 @@ export default function Community() {
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentCity, setCurrentCity] = useState('全部')
   const [showUpload, setShowUpload] = useState(false)
+
+  // ESC键退出功能
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showUpload) {
+          setShowUpload(false)
+        } else if (selectedPost) {
+          setSelectedPost(null)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [showUpload, selectedPost])
 
   const cities = ['全部', '同城', '北京', '重庆', '冰岛', '镰仓']
 
@@ -283,11 +298,11 @@ export default function Community() {
         <Camera size={26} className="text-white" />
       </button>
 
-      {/* 上传浮窗 - 2/3高度，修复z-index */}
+      {/* 上传浮窗 - 优化尺寸和样式 */}
       {showUpload && (
         <>
           <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowUpload(false)}></div>
-          <div className="fixed bottom-0 left-0 right-0 h-[66vh] bg-white rounded-t-[2rem] z-[9999] animate-in slide-in-from-bottom duration-300 overflow-y-auto">
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1400px] max-w-[90vw] h-[85vh] bg-white/80 backdrop-blur-3xl rounded-[2rem] z-[9999] overflow-y-auto shadow-2xl border border-white/50">
             <div className="p-6">
               {/* 顶部标题 */}
               <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4">
@@ -297,12 +312,24 @@ export default function Community() {
                 </button>
               </div>
 
-              {/* 上传选项 - 只保留相册 */}
+              {/* 上传选项 - 文件上传 */}
               <div className="mb-6">
-                <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
-                  <span className="text-3xl">🖼️</span>
-                  <span className="font-bold text-lg">选择照片</span>
-                </button>
+                <input 
+                  type="file" 
+                  id="photo-upload" 
+                  accept="image/*" 
+                  multiple 
+                  className="hidden"
+                />
+                <label 
+                  htmlFor="photo-upload"
+                  className="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-[1.02] transition-transform cursor-pointer"
+                >
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="text-3xl">🖼️</span>
+                    <span className="font-bold text-lg">选择照片</span>
+                  </div>
+                </label>
               </div>
 
               {/* 文字内容输入 */}
