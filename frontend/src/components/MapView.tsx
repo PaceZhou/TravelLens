@@ -54,7 +54,10 @@ const SPOTS = [
     photoGuides: [
       { title: '角楼倒影', desc: '在护城河对岸拍摄，等待无风时刻捕捉完美倒影', tip: '使用偏振镜减少水面反光' },
       { title: '日落剪影', desc: '逆光拍摄角楼轮廓，营造神秘氛围', tip: '曝光补偿-1.5EV' }
-    ]
+    ],
+    likes: 8942,
+    posts: 1230,
+    checkins: 5678
   },
   { 
     id: 2, 
@@ -76,7 +79,10 @@ const SPOTS = [
     bestTime: '清晨6:00-8:00',
     photoGuides: [
       { title: '祈年殿对称', desc: '从南门进入拍摄对称构图', tip: '使用广角镜头' }
-    ]
+    ],
+    likes: 6543,
+    posts: 890,
+    checkins: 4321
   },
   { 
     id: 3, 
@@ -98,7 +104,10 @@ const SPOTS = [
     bestTime: '夜晚19:00-21:00',
     photoGuides: [
       { title: '对岸全景', desc: '千厮门大桥拍摄全景', tip: '三脚架长曝光' }
-    ]
+    ],
+    likes: 12340,
+    posts: 2100,
+    checkins: 8900
   }
 ]
 
@@ -405,9 +414,27 @@ export default function MapView() {
               </div>
             )}
             
-            <div className="absolute bottom-6 left-6 text-white">
-              <h1 className="text-3xl font-black mb-2">{selectedSpotData.name}</h1>
-              <p className="flex items-center"><MapPin size={16} className="mr-1" /> {selectedSpotData.city}</p>
+            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+              <div className="text-white">
+                <h1 className="text-3xl font-black mb-2">{selectedSpotData.name}</h1>
+                <p className="flex items-center"><MapPin size={16} className="mr-1" /> {selectedSpotData.city}</p>
+              </div>
+              
+              {/* 统计数据 */}
+              <div className="flex gap-4 text-white">
+                <div className="text-center">
+                  <div className="text-2xl font-black">{selectedSpotData.likes}</div>
+                  <div className="text-xs opacity-80">点赞</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-black">{selectedSpotData.posts}</div>
+                  <div className="text-xs opacity-80">博文</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-black">{selectedSpotData.checkins}</div>
+                  <div className="text-xs opacity-80">打卡</div>
+                </div>
+              </div>
             </div>
           </div>
 
