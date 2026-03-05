@@ -263,7 +263,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     const images = post.images || [post.image] || []
     
     return (
-      <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-8">
+      <div className="fixed inset-0 bg-transparent z-50 flex items-center justify-center p-8">
         <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl max-w-[1200px] h-[800px]" onClick={(e) => e.stopPropagation()}>
         <div className="flex-1 flex items-center justify-center relative">
           <div 
