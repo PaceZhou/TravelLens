@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { postsAPI } from '../api/posts'
 import Toast from './Toast'
 
 const COMMUNITY_POSTS = [
@@ -74,6 +75,48 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [customTag, setCustomTag] = useState('')
   const [posts, setPosts] = useState(COMMUNITY_POSTS)
 
+  // 从数据库加载帖子
+  useEffect(() => {
+    postsAPI.getAll().then(dbPosts => {
+      if (dbPosts.length > 0) {
+        const formattedPosts = dbPosts.map((p: any) => ({
+          id: p.id,
+          author: p.user?.username || '未知用户',
+          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+          location: p.location || '未知位置',
+          city: p.city || '北京',
+          image: p.images?.[0] || '',
+          content: p.content,
+          tags: p.tags || [],
+          likes: p.likes || 0,
+          comments: p.comments || 0,
+          time: new Date(p.createdAt).toLocaleString('zh-CN')
+        }))
+        setPosts([...formattedPosts, ...COMMUNITY_POSTS])
+      }
+    }).catch(() => {})
+  }, [])
+
+  // 从数据库加载帖子
+  useEffect(() => {
+    postsAPI.getAll().then(dbPosts => {
+      const formattedPosts = dbPosts.map((p: any) => ({
+        id: p.id,
+        author: p.user?.username || '未知用户',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+        location: p.location || '未知位置',
+        city: p.city || '未知',
+        image: p.images?.[0] || '',
+        content: p.content,
+        tags: p.tags || [],
+        likes: p.likes || 0,
+        comments: p.comments || 0,
+        time: new Date(p.createdAt).toLocaleString('zh-CN')
+      }))
+      setPosts([...formattedPosts, ...COMMUNITY_POSTS])
+    }).catch(() => {})
+  }, [])
+
   // ESC键退出功能
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -123,7 +166,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   // 发布内容
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!isLoggedIn) {
       setShowLoginPrompt(true)
       return
@@ -133,29 +176,44 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       return
     }
     
-    // 创建新帖子
-    const newPost = {
-      id: Date.now(),
-      author: '我',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
-      location: '未知位置',
-      city: currentCity === '全部' ? '北京' : currentCity,
-      image: uploadedImages[0] || '',
-      content: postContent,
-      tags: selectedTags,
-      likes: 0,
-      comments: 0,
-      time: '刚刚'
+    try {
+      // 获取当前用户ID
+      const savedUser = localStorage.getItem('user')
+      const userId = savedUser ? JSON.parse(savedUser).id : ''
+      
+      // 保存到数据库
+      const savedPost = await postsAPI.create(userId, {
+        content: postContent,
+        images: uploadedImages,
+        tags: selectedTags,
+        location: '未知位置',
+        city: currentCity === '全部' ? '北京' : currentCity,
+      })
+      
+      // 添加到本地列表
+      const newPost = {
+        id: savedPost.id,
+        author: '我',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+        location: savedPost.location,
+        city: savedPost.city,
+        image: uploadedImages[0] || '',
+        content: postContent,
+        tags: selectedTags,
+        likes: 0,
+        comments: 0,
+        time: '刚刚'
+      }
+      
+      setPosts([newPost, ...posts])
+      setToast({ type: 'success', message: '发布成功！' })
+      setShowUpload(false)
+      setUploadedImages([])
+      setPostContent('')
+      setSelectedTags([])
+    } catch (err) {
+      setToast({ type: 'error', message: '发布失败，请重试' })
     }
-    
-    // 添加到帖子列表顶部
-    setPosts([newPost, ...posts])
-    
-    setToast({ type: 'success', message: '发布成功！' })
-    setShowUpload(false)
-    setUploadedImages([])
-    setPostContent('')
-    setSelectedTags([])
   }
 
   const cities = ['全部', '同城', '北京', '重庆', '冰岛', '镰仓']
