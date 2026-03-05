@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Camera, Search, Shuffle } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
+import { tagsAPI } from '../api/tags'
 import { likesAPI } from '../api/likes'
 import { collectionsAPI } from '../api/collections'
 import Toast from './Toast'
@@ -10,13 +11,10 @@ import PostPublisher from './PostPublisher'
 import PostDetail from './PostDetail'
 import PostList from './PostList'
 
-const keywords = ['全部', '克莱因蓝', '极简', '日系', '城市漫游', '自然']
-
 export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { t } = useLanguage()
   const navigate = useNavigate()
   const [feedSort, setFeedSort] = useState('latest')
-  const [activeKeyword, setActiveKeyword] = useState('全部')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentCity, setCurrentCity] = useState('全部')
@@ -24,6 +22,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [posts, setPosts] = useState<any[]>([])
+  const [allTags, setAllTags] = useState<any[]>([])
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set())
   const [collectedPosts, setCollectedPosts] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
@@ -69,6 +69,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       setIsLoading(false)
     }
   }
+
+  // 加载标签
+  useEffect(() => {
+    tagsAPI.getAll().then(tags => setAllTags(tags)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     loadPosts(1)
@@ -187,17 +192,27 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
         {/* 筛选器 */}
         <div className="flex flex-wrap gap-3 mb-4">
-          {keywords.map(keyword => (
+          <button
+            onClick={() => setSelectedTag(null)}
+            className={`px-6 py-3 rounded-full font-bold transition-all ${
+              selectedTag === null
+                ? 'bg-gray-900 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            全部
+          </button>
+          {allTags.map(tag => (
             <button
-              key={keyword}
-              onClick={() => setActiveKeyword(keyword)}
+              key={tag.id}
+              onClick={() => setSelectedTag(tag.name)}
               className={`px-6 py-3 rounded-full font-bold transition-all ${
-                activeKeyword === keyword
+                selectedTag === tag.name
                   ? 'bg-gray-900 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               }`}
             >
-              {keyword}
+              #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
             </button>
           ))}
         </div>
@@ -223,7 +238,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       {/* 帖子列表 */}
       <PostList
-        posts={posts}
+        posts={selectedTag ? posts.filter(p => p.tags?.includes(selectedTag)) : posts}
         onPostClick={(index) => setSelectedPost(index)}
         onLoadMore={handleLoadMore}
         hasMore={hasMore}
