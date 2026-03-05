@@ -53,3 +53,19 @@ body {
   list-style: none;
   padding-left: 0;
 }
+
+.btn-primary {
+  background: linear-gradient(135deg, #14B8A6 0%, #0891B2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+}
