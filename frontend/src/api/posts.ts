@@ -21,4 +21,11 @@ export const postsAPI = {
     });
     return res.json();
   },
+
+  delete: async (postId: string) => {
+    const res = await fetch(`${API_URL}/posts/${postId}`, {
+      method: 'DELETE',
+    });
+    return res.json();
+  },
 };

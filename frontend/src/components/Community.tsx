@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle } from 'lucide-react'
+import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle, MoreVertical, Trash2 } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
 import Toast from './Toast'
@@ -70,6 +70,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [postContent, setPostContent] = useState('')
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
@@ -99,6 +100,10 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   // 从数据库加载帖子
   useEffect(() => {
+    loadPosts()
+  }, [])
+
+  const loadPosts = () => {
     postsAPI.getAll().then(dbPosts => {
       const formattedPosts = dbPosts.map((p: any) => ({
         id: p.id,
@@ -107,6 +112,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         location: p.location || '未知位置',
         city: p.city || '未知',
         image: p.images?.[0] || '',
+        images: p.images || [],
         content: p.content,
         tags: p.tags || [],
         likes: p.likes || 0,
@@ -115,7 +121,19 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       }))
       setPosts([...formattedPosts, ...COMMUNITY_POSTS])
     }).catch(() => {})
-  }, [])
+  }
+
+  const handleDelete = async (postId: string) => {
+    if (!confirm('确定删除这条帖子吗？')) return
+    try {
+      await postsAPI.delete(postId)
+      setOpenMenuId(null)
+      loadPosts()
+      showToast('删除成功', 'success')
+    } catch (error) {
+      showToast('删除失败', 'error')
+    }
+  }
 
   // ESC键退出功能
   useEffect(() => {
@@ -420,6 +438,33 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             className="break-inside-avoid bg-white border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] rounded-[2rem] overflow-hidden hover:shadow-[0_8px_30px_rgb(0,85,255,0.08)] transition-all duration-300 group cursor-pointer"
           >
             <div className="relative p-2 pb-0">
+              {/* 三点菜单 */}
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setOpenMenuId(openMenuId === post.id ? null : post.id)
+                }}
+                className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-md p-2 rounded-full hover:bg-white transition-colors"
+              >
+                <MoreVertical size={16} />
+              </button>
+              
+              {/* 下拉菜单 */}
+              {openMenuId === post.id && (
+                <div className="absolute top-14 right-4 z-20 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDelete(post.id)
+                    }}
+                    className="flex items-center gap-2 px-4 py-3 hover:bg-red-50 text-red-600 w-full text-left"
+                  >
+                    <Trash2 size={16} />
+                    <span className="text-sm font-medium">删除</span>
+                  </button>
+                </div>
+              )}
+              
               <div className="relative rounded-[1.5rem] overflow-hidden">
                 <img src={imageUrl} alt="Post" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center text-xs font-black text-gray-900 shadow-sm">

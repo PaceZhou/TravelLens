@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -18,5 +18,10 @@ export class PostsController {
   @Put(':id/like')
   async like(@Param('id') id: string) {
     return this.postsService.like(id);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return this.postsService.delete(id);
   }
 }

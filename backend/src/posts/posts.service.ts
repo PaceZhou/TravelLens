@@ -33,4 +33,9 @@ export class PostsService {
     await this.postsRepository.increment({ id: postId }, 'likes', 1);
     return this.postsRepository.findOne({ where: { id: postId } });
   }
+
+  async delete(postId: string) {
+    await this.postsRepository.delete(postId);
+    return { success: true };
+  }
 }
