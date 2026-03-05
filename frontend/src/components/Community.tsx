@@ -701,6 +701,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   </button>
                 </div>
                 <textarea 
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
                   placeholder="记录这一刻的美好..."
                   className="w-full h-32 p-4 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:border-[#0055FF] transition-colors"
                 ></textarea>
