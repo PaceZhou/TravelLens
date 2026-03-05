@@ -63,6 +63,29 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     setUploadedImages(prev => prev.filter((_, i) => i !== index))
   }
 
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/html', index.toString())
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const dragIndex = parseInt(e.dataTransfer.getData('text/html'))
+    const newImages = [...uploadedImages]
+    const [removed] = newImages.splice(dragIndex, 1)
+    newImages.splice(dropIndex, 0, removed)
+    setUploadedImages(newImages)
+    if (coverIndex === dragIndex) {
+      setCoverIndex(dropIndex)
+    }
+  }
+
   const toggleTag = (tag: string) => {
     setSelectedTags(prev => 
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
@@ -180,8 +203,25 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
             </div>
             <div className="grid grid-cols-3 gap-3">
               {uploadedImages.map((img, idx) => (
-                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden group">
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                <div 
+                  key={idx} 
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, idx)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, idx)}
+                  className="relative aspect-square rounded-2xl overflow-hidden group cursor-move"
+                >
+                  <img 
+                    src={img} 
+                    alt="" 
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                  {coverIndex === idx && (
+                    <div className="absolute top-2 left-2 bg-[#FFB800] text-white text-xs px-2 py-1 rounded-full font-bold">
+                      封面
+                    </div>
+                  )}
                   <button
                     onClick={() => removeImage(idx)}
                     className="absolute top-2 right-2 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
