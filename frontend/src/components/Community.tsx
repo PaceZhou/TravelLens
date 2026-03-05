@@ -3,6 +3,7 @@ import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, Chev
 import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
 import { commentsAPI } from '../api/comments'
+import { likesAPI } from '../api/likes'
 import Toast from './Toast'
 
 const COMMUNITY_POSTS = [
@@ -86,6 +87,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
   const [customTag, setCustomTag] = useState('')
   const [posts, setPosts] = useState(COMMUNITY_POSTS)
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set())
 
   // 从数据库加载帖子
   useEffect(() => {
@@ -132,6 +134,30 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       }))
       setPosts([...formattedPosts, ...COMMUNITY_POSTS])
     }).catch(() => {})
+  }
+
+  const handleLike = async (postId: string) => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (!user.id) {
+      showToast('请先登录', 'error')
+      return
+    }
+    
+    try {
+      const result = await likesAPI.toggle(user.id, postId)
+      if (result.liked) {
+        setLikedPosts(prev => new Set(prev).add(postId))
+      } else {
+        setLikedPosts(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(postId)
+          return newSet
+        })
+      }
+      loadPosts()
+    } catch (error) {
+      showToast('操作失败', 'error')
+    }
   }
 
   const handleDelete = async (postId: string) => {
