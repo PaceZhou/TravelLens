@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Camera, Hash } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 
@@ -14,10 +14,23 @@ interface PostPublisherProps {
 const PRESET_TAGS = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
 
 export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showToast, currentCity, editPost }: PostPublisherProps) {
-  const [uploadedImages, setUploadedImages] = useState<string[]>(editPost?.images || [])
-  const [postContent, setPostContent] = useState(editPost?.content || '')
-  const [selectedTags, setSelectedTags] = useState<string[]>(editPost?.tags || [])
+  const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [postContent, setPostContent] = useState('')
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
+
+  // 当editPost变化时，更新表单数据
+  useEffect(() => {
+    if (editPost) {
+      setUploadedImages(editPost.images || [])
+      setPostContent(editPost.content || '')
+      setSelectedTags(editPost.tags || [])
+    } else {
+      setUploadedImages([])
+      setPostContent('')
+      setSelectedTags([])
+    }
+  }, [editPost])
 
   if (!isOpen) return null
 
