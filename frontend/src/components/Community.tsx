@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown } from 'lucide-react'
+import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 
 const COMMUNITY_POSTS = [
