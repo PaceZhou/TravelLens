@@ -79,6 +79,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [replyTo, setReplyTo] = useState<{ userId: string; username: string } | null>(null)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+
+  const showToast = (message: string, type: "success" | "error" | "info" | "warning" = "info") => {
+    setToast({ type, message })
+    setTimeout(() => setToast(null), 3000)
+  }
   const [customTag, setCustomTag] = useState('')
   const [posts, setPosts] = useState(COMMUNITY_POSTS)
 
