@@ -100,13 +100,16 @@ export default function Profile({ username: propUsername }: { username: string }
   const confirmCoverChange = async (newCoverIndex: number, newOrder: string[]) => {
     if (!editingPost) return
     try {
-      // TODO: 调用后端API更新图片顺序
-      console.log('新封面索引:', newCoverIndex, '新顺序:', newOrder)
+      await postsAPI.update(editingPost.id, {
+        images: newOrder,
+      })
+      showToast('封面已更新', 'success')
       setShowCoverSelector(false)
       setEditingPost(null)
       loadUserPosts()
     } catch (error) {
       console.error('更新封面失败', error)
+      showToast('更新失败', 'error')
     }
   }
 
