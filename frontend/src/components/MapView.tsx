@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { MapPin, ChevronRight, Shuffle, Navigation, Globe, Map as MapIcon, ChevronDown, X, ChevronLeft } from 'lucide-react'
+import { useLanguage } from '../hooks/useLanguage'
 import 'leaflet/dist/leaflet.css'
 import { Icon } from 'leaflet'
 
@@ -120,6 +121,7 @@ type FilterType = 'random' | 'country' | 'province' | 'city' | 'area' | 'nearby'
 type DrawerType = 'food' | 'photo' | null
 
 export default function MapView() {
+  const { t } = useLanguage()
   const [showSidebar, setShowSidebar] = useState(true)
   const [selectedSpot, setSelectedSpot] = useState<number | null>(null)
   const [filterType, setFilterType] = useState<FilterType>('random')
@@ -241,13 +243,13 @@ export default function MapView() {
           onClick={() => handleFilter('random')}
           className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
         >
-          <Shuffle size={16} /> 随机
+          <Shuffle size={16} /> {t.map.filters.random}
         </button>
         <button 
           onClick={() => handleFilter('nearby')}
           className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'nearby' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
         >
-          <Navigation size={16} /> 同城
+          <Navigation size={16} /> {t.map.filters.nearby}
         </button>
         
         <div className="relative">
@@ -258,7 +260,7 @@ export default function MapView() {
             }}
             className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'country' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
           >
-            <Globe size={16} /> {selectedCountry || '国家'} <ChevronDown size={14} />
+            <Globe size={16} /> {selectedCountry || t.map.filters.country} <ChevronDown size={14} />
           </button>
           
           {showDropdown && filterType === 'country' && (
@@ -284,7 +286,7 @@ export default function MapView() {
             }}
             className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'province' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
           >
-            <MapIcon size={16} /> {selectedProvince || '省份'} <ChevronDown size={14} />
+            <MapIcon size={16} /> {selectedProvince || t.map.filters.province} <ChevronDown size={14} />
           </button>
           
           {showDropdown && filterType === 'province' && (
@@ -310,7 +312,7 @@ export default function MapView() {
             }}
             className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'city' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
           >
-            <MapPin size={16} /> {selectedCity || '城市'} <ChevronDown size={14} />
+            <MapPin size={16} /> {selectedCity || t.map.filters.city} <ChevronDown size={14} />
           </button>
           
           {showDropdown && filterType === 'city' && (
