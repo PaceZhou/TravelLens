@@ -247,8 +247,7 @@ export default function Profile({ username: propUsername }: { username: string }
                     {userPosts.map((post: any, index: number) => (
                       <div 
                         key={post.id} 
-                        className="aspect-square rounded-xl overflow-hidden relative group cursor-pointer"
-                        onClick={() => setSelectedPost(index)}
+                        className="aspect-square rounded-xl overflow-hidden relative group"
                       >
                         <img 
                           src={post.images?.[0] || ''} 
