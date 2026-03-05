@@ -258,71 +258,97 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     const images = post.images || [post.image] || []
     
     return (
-      <div className="fixed inset-0 bg-black/95 z-50 flex">
-        <div className="flex-1 flex items-center justify-center relative">
+      <div className="fixed inset-0 bg-black z-50 flex flex-col">
+        {/* 顶部关闭按钮 */}
+        <button 
+          onClick={() => {
+            setSelectedPost(null)
+            setCurrentImageIndex(0)
+          }}
+          className="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white z-10"
+        >
+          <X size={20} />
+        </button>
+
+        {/* 内容区 */}
+        <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+          {/* 垂直滚动图片容器（胶片式） */}
           <div 
-            className="relative w-full h-full flex items-center justify-center"
-            onWheel={(e) => {
-              e.preventDefault()
-              if (e.deltaY > 0 && currentImageIndex < images.length - 1) {
-                setCurrentImageIndex(currentImageIndex + 1)
-              } else if (e.deltaY < 0 && currentImageIndex > 0) {
-                setCurrentImageIndex(currentImageIndex - 1)
-              }
+            className="flex flex-col overflow-y-auto snap-y snap-mandatory scrollbar-hide w-full h-full"
+            onScroll={(e) => {
+              const scrollTop = e.currentTarget.scrollTop
+              const height = e.currentTarget.offsetHeight
+              const index = Math.round(scrollTop / height)
+              setCurrentImageIndex(index)
             }}
           >
-            <img 
-              src={images[currentImageIndex]} 
-              alt="Post" 
-              className="max-h-[90vh] max-w-full object-contain rounded-2xl shadow-2xl"
-            />
-            
-            {images.length > 1 && (
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-                {images.map((_: any, idx: number) => (
-                  <div 
-                    key={idx}
-                    className={`h-2 rounded-full transition-all ${
-                      idx === currentImageIndex ? 'bg-white w-8' : 'bg-white/50 w-2'
-                    }`}
-                  />
-                ))}
+            {images.map((img: string, idx: number) => (
+              <div key={idx} className="flex-shrink-0 w-full h-full flex items-center justify-center snap-center">
+                <img src={img} alt={`Image ${idx + 1}`} className="max-h-full max-w-full object-contain" />
               </div>
-            )}
+            ))}
           </div>
-        </div>
-
-        <div className="w-[400px] bg-white flex flex-col">
-          <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={post.avatar} alt={post.author} className="w-12 h-12 rounded-full" />
-              <div>
-                <div className="font-bold text-gray-900">{post.author}</div>
-                <div className="text-sm text-gray-500">{post.time}</div>
-              </div>
-            </div>
-            <button 
+          
+          {/* 上箭头 */}
+          {images.length > 1 && currentImageIndex > 0 && (
+            <button
               onClick={() => {
-                setSelectedPost(null)
-                setCurrentImageIndex(0)
+                const container = document.querySelector('.flex.flex-col.overflow-y-auto') as HTMLElement
+                if (container) {
+                  container.scrollTo({ top: (currentImageIndex - 1) * container.offsetHeight, behavior: 'smooth' })
+                }
               }}
-              className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center"
+              className="absolute top-20 left-1/2 -translate-x-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors z-10"
             >
-              <X size={20} />
+              <ChevronRight size={24} className="-rotate-90" />
             </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-6">
-            <p className="text-gray-900 mb-4">{post.content}</p>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {post.tags.map((tag: string) => (
-                <span key={tag} className="text-[#0055FF] text-sm">#{tag}</span>
+          )}
+          
+          {/* 下箭头 */}
+          {images.length > 1 && currentImageIndex < images.length - 1 && (
+            <button
+              onClick={() => {
+                const container = document.querySelector('.flex.flex-col.overflow-y-auto') as HTMLElement
+                if (container) {
+                  container.scrollTo({ top: (currentImageIndex + 1) * container.offsetHeight, behavior: 'smooth' })
+                }
+              }}
+              className="absolute bottom-32 left-1/2 -translate-x-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors z-10"
+            >
+              <ChevronRight size={24} className="rotate-90" />
+            </button>
+          )}
+          
+          {/* 图片指示器 */}
+          {images.length > 1 && (
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 flex flex-col gap-2">
+              {images.map((_: any, idx: number) => (
+                <div 
+                  key={idx}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    idx === currentImageIndex ? 'bg-white h-6' : 'bg-white/50'
+                  }`}
+                />
               ))}
             </div>
-            <div className="text-gray-500 text-sm">暂无评论</div>
+          )}
+          
+          {/* 左侧信息 */}
+          <div className="absolute bottom-20 left-6 right-6 text-white">
+            <div className="flex items-center gap-3 mb-3">
+              <img src={post.avatar} alt={post.author} className="w-10 h-10 rounded-full border-2 border-white" />
+              <span className="font-bold">{post.author}</span>
+            </div>
+            <p className="text-lg mb-3">{post.content}</p>
+            <div className="flex gap-2">
+              {post.tags.map(tag => (
+                <span key={tag} className="text-sm bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">#{tag}</span>
+              ))}
+            </div>
           </div>
 
-          <div className="p-6 border-t border-gray-200 flex items-center gap-6">
+          {/* 右侧互动 */}
+          <div className="absolute bottom-20 right-6 flex flex-col gap-4">
             <button 
               onClick={async (e) => {
                 e.stopPropagation()
@@ -333,27 +359,44 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   console.error('点赞失败', error)
                 }
               }}
-              className="flex items-center gap-2 text-gray-700 hover:text-red-500 transition-colors"
+              className="flex flex-col items-center text-white"
             >
-              <Heart size={24} />
-              <span className="font-medium">{post.likes}</span>
+              <Heart size={28} />
+              <span className="text-sm mt-1">{post.likes}</span>
             </button>
             <button 
               onClick={(e) => {
                 e.stopPropagation()
                 showToast('评论功能开发中', 'info')
               }}
-              className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF] transition-colors"
+              className="flex flex-col items-center text-white"
             >
-              <MessageCircle size={24} />
-              <span className="font-medium">{post.comments}</span>
+              <MessageCircle size={28} />
+              <span className="text-sm mt-1">{post.comments}</span>
             </button>
           </div>
+        </div>
+
+        {/* 滑动提示 */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-4">
+          <button 
+            onClick={() => handleSwipe('down')}
+            disabled={selectedPost === 0}
+            className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white disabled:opacity-30"
+          >
+            <ChevronDown size={24} />
+          </button>
+          <button 
+            onClick={() => handleSwipe('up')}
+            disabled={selectedPost === COMMUNITY_POSTS.length - 1}
+            className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white disabled:opacity-30"
+          >
+            <ChevronUp size={24} />
+          </button>
         </div>
       </div>
     )
   }
-
 
   return (
     <div className="flex-1 bg-[#F8F9FA] px-4 py-8 min-h-screen max-w-7xl mx-auto w-full">
