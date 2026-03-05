@@ -22,11 +22,21 @@ export class PostsService {
     return this.postsRepository.save(post);
   }
 
-  async findAll() {
-    return this.postsRepository.find({
+  async findAll(page: number = 1, limit: number = 50) {
+    const skip = (page - 1) * limit
+    const [posts, total] = await this.postsRepository.findAndCount({
       relations: ['user'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
     });
+    return {
+      posts,
+      total,
+      page,
+      limit,
+      hasMore: skip + posts.length < total,
+    };
   }
 
   async like(postId: string) {

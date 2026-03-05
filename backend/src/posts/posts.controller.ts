@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, Query } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -11,8 +11,10 @@ export class PostsController {
   }
 
   @Get()
-  async findAll() {
-    return this.postsService.findAll();
+  async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    const pageNum = parseInt(page || '1', 10)
+    const limitNum = parseInt(limit || '50', 10)
+    return this.postsService.findAll(pageNum, limitNum);
   }
 
   @Put(':id/like')

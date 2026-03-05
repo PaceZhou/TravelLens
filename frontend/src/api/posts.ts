@@ -10,8 +10,8 @@ export const postsAPI = {
     return res.json();
   },
 
-  getAll: async () => {
-    const res = await fetch(`${API_URL}/posts`);
+  getAll: async (page: number = 1, limit: number = 50) => {
+    const res = await fetch(`${API_URL}/posts?page=${page}&limit=${limit}`);
     return res.json();
   },
 
