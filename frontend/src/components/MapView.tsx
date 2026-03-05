@@ -329,9 +329,9 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* 右侧景点列表（二级页面，1/3宽度） */}
+      {/* 右侧景点列表（二级页面，1/3宽度，增强透明） */}
       <div 
-        className={`absolute top-0 right-0 h-full w-full md:w-1/3 bg-white/70 backdrop-blur-2xl shadow-2xl z-[1000] transition-transform duration-300 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`absolute top-0 right-0 h-full w-full md:w-1/3 bg-white/50 backdrop-blur-3xl shadow-2xl z-[1000] transition-transform duration-300 border-l border-white/30 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="h-full overflow-y-auto p-6">
           <div className="flex items-center justify-between mb-6">
@@ -400,10 +400,10 @@ export default function MapView() {
         </button>
       )}
 
-      {/* 三级页面：景点详情（1/2宽度，右侧抽拉） */}
+      {/* 三级页面：景点详情（1/2宽度，右侧抽拉，增强透明） */}
       {selectedSpot && selectedSpotData && (
         <div 
-          className={`absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/70 backdrop-blur-2xl shadow-2xl z-[2000] overflow-y-auto transition-transform duration-300 ${selectedSpot ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/50 backdrop-blur-3xl shadow-2xl z-[2000] overflow-y-auto transition-transform duration-300 border-l border-white/30 ${selectedSpot ? 'translate-x-0' : 'translate-x-full'}`}
         >
           {/* 返回按钮 */}
           <button 
@@ -522,9 +522,9 @@ export default function MapView() {
         </div>
       )}
 
-      {/* 四级页面：图库浮窗 */}
+      {/* 四级页面：图库浮窗（增强透明） */}
       {showGallery && selectedSpotData && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] max-h-[80vh] bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-2xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/50">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] max-h-[80vh] bg-white/40 backdrop-blur-3xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/40">
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 景点图库</h2>
@@ -563,9 +563,9 @@ export default function MapView() {
         </div>
       )}
 
-      {/* 四级页面：美食详情（浮窗式） */}
+      {/* 四级页面：美食详情（浮窗式，增强透明） */}
       {drawerType === 'food' && selectedSpotData && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-2xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/50">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/40 backdrop-blur-3xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/40">
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">🍜 美食推荐</h2>
@@ -592,9 +592,9 @@ export default function MapView() {
         </div>
       )}
 
-      {/* 四级页面：拍照攻略（浮窗式） */}
+      {/* 四级页面：拍照攻略（浮窗式，增强透明） */}
       {drawerType === 'photo' && selectedSpotData && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-2xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/50">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/40 backdrop-blur-3xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/40">
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">📷 拍照攻略</h2>
