@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle, Camera } from 'lucide-react'
 import { postsAPI } from '../api/posts'
@@ -8,7 +9,8 @@ import CoverSelector from './CoverSelector'
 import PostPublisher from './PostPublisher'
 import Toast from './Toast'
 
-export default function Profile({ username }: { username: string }) {
+export default function Profile({ username: propUsername }: { username: string }) {
+  const { userId } = useParams()
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('calendar')
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
@@ -23,6 +25,9 @@ export default function Profile({ username }: { username: string }) {
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  // 优先使用URL中的userId，否则使用props传入的username
+  const username = userId || propUsername
 
   // 获取用户统计数据
   useEffect(() => {

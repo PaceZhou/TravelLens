@@ -147,6 +147,7 @@ function AppContent() {
           <Route path="/map" element={<MapView />} />
           <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
           <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
+          <Route path="/users/:userId" element={<Profile username="" />} />
         </Routes>
       </main>
           <div className="flex items-center justify-center min-h-screen">
