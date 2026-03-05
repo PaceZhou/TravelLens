@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle, MoreVertical, Trash2 } from 'lucide-react'
+import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle, MoreVertical, Trash2, Bookmark } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
 import Toast from './Toast'
@@ -348,6 +348,15 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               <MessageCircle size={24} />
               <span className="font-medium">{post.comments}</span>
             </button>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                showToast('收藏功能开发中', 'info')
+              }}
+              className="flex items-center gap-2 text-gray-700 hover:text-[#FFB800] transition-colors"
+            >
+              <Bookmark size={24} />
+            </button>
           </div>
         </div>
       </div>
@@ -511,6 +520,15 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                     className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg"
                   >
                     <MessageCircle size={16} className="mr-1.5" /> {post.comments}
+                  </button>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      showToast('收藏功能开发中', 'info')
+                    }}
+                    className="flex items-center hover:text-[#FFB800] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg"
+                  >
+                    <Bookmark size={16} />
                   </button>
                 </div>
               </div>
