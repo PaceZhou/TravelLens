@@ -1,0 +1,50 @@
+{
+  "model": "nano-banana",
+  "grid": "3x2",
+  "output_format": "png",
+  "resolution": "1024x1024",
+  "prompts": [
+    {
+      "id": "mango_happy",
+      "prompt": "A cute cartoon mango character with sunglasses, big smile, wearing a tiny backpack with camera, vibrant yellow-orange gradient skin, glossy surface, chibi style, travel theme, white background, 3D render style, Pixar quality",
+      "negative_prompt": "realistic, photo, human, scary, dark, blurry"
+    },
+    {
+      "id": "mango_cool",
+      "prompt": "A cool cartoon mango character with aviator sunglasses, confident smirk, holding a passport, vibrant yellow-orange gradient skin, glossy surface, chibi style, adventure theme, white background, 3D render style, Pixar quality",
+      "negative_prompt": "realistic, photo, human, scary, dark, blurry"
+    },
+    {
+      "id": "mango_excited",
+      "prompt": "An excited cartoon mango character with round sunglasses, wide open mouth with joy, arms raised up, vibrant yellow-orange gradient skin, glossy surface, chibi style, celebration theme, white background, 3D render style, Pixar quality",
+      "negative_prompt": "realistic, photo, human, scary, dark, blurry"
+    },
+    {
+      "id": "mango_thinking",
+      "prompt": "A thoughtful cartoon mango character with reading glasses, hand on chin, looking at a map, vibrant yellow-orange gradient skin, glossy surface, chibi style, planning theme, white background, 3D render style, Pixar quality",
+      "negative_prompt": "realistic, photo, human, scary, dark, blurry"
+    },
+    {
+      "id": "mango_photographer",
+      "prompt": "A photographer cartoon mango character with vintage camera around neck, taking photos, wearing a press hat, vibrant yellow-orange gradient skin, glossy surface, chibi style, photography theme, white background, 3D render style, Pixar quality",
+      "negative_prompt": "realistic, photo, human, scary, dark, blurry"
+    },
+    {
+      "id": "mango_traveler",
+      "prompt": "A traveler cartoon mango character with suitcase, world map in hand, wearing explorer hat, vibrant yellow-orange gradient skin, glossy surface, chibi style, journey theme, white background, 3D render style, Pixar quality",
+      "negative_prompt": "realistic, photo, human, scary, dark, blurry"
+    }
+  ],
+  "style_settings": {
+    "art_style": "3D cartoon, Pixar style, chibi",
+    "color_palette": ["#FFB800", "#FF9500", "#FFCC00", "#00D4AA"],
+    "mood": "cheerful, adventurous, friendly",
+    "character_traits": "cute, round, glossy, expressive eyes"
+  },
+  "brand_guidelines": {
+    "name": "小芒果 (Little Mango)",
+    "personality": "Adventurous, spontaneous, sweet, photography-loving traveler",
+    "signature_items": ["sunglasses", "camera", "backpack", "passport"],
+    "color_scheme": "Mango yellow (#FFB800) + Tropical green (#00D4AA) + Sky blue (#0055FF)"
+  }
+}
