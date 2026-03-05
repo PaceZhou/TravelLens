@@ -3,6 +3,8 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 import { collectionsAPI } from '../api/collections'
+import ConfirmDialog from './ConfirmDialog'
+import CoverSelector from './CoverSelector'
 
 export default function Profile({ username }: { username: string }) {
   const { t } = useLanguage()
@@ -11,6 +13,10 @@ export default function Profile({ username }: { username: string }) {
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deletePostId, setDeletePostId] = useState<string | null>(null)
+  const [showCoverSelector, setShowCoverSelector] = useState(false)
+  const [editingPost, setEditingPost] = useState<any>(null)
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
@@ -46,13 +52,46 @@ export default function Profile({ username }: { username: string }) {
   }
 
   const handleDelete = async (postId: string) => {
-    if (!confirm('确定删除这条帖子吗？')) return
+    setDeletePostId(postId)
+    setShowDeleteConfirm(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!deletePostId) return
     try {
-      await postsAPI.delete(postId)
+      await postsAPI.delete(deletePostId)
       setOpenMenuId(null)
+      setShowDeleteConfirm(false)
+      setDeletePostId(null)
       loadUserPosts()
     } catch (error) {
       console.error('删除失败', error)
+    }
+  }
+
+  const handleEdit = (post: any) => {
+    setEditingPost(post)
+    setOpenMenuId(null)
+    // TODO: 打开PostPublisher弹窗并预填充数据
+    alert('编辑功能：需要在Community组件中实现')
+  }
+
+  const handleChangeCover = (post: any) => {
+    setEditingPost(post)
+    setShowCoverSelector(true)
+    setOpenMenuId(null)
+  }
+
+  const confirmCoverChange = async (newCoverIndex: number, newOrder: string[]) => {
+    if (!editingPost) return
+    try {
+      // TODO: 调用后端API更新图片顺序
+      console.log('新封面索引:', newCoverIndex, '新顺序:', newOrder)
+      setShowCoverSelector(false)
+      setEditingPost(null)
+      loadUserPosts()
+    } catch (error) {
+      console.error('更新封面失败', error)
     }
   }
 
@@ -231,7 +270,7 @@ export default function Profile({ username }: { username: string }) {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
-                                alert('编辑功能开发中')
+                                handleEdit(post)
                               }}
                               className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-700 w-full text-left"
                             >
@@ -241,7 +280,7 @@ export default function Profile({ username }: { username: string }) {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
-                                alert('更改封面功能开发中')
+                                handleChangeCover(post)
                               }}
                               className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-700 w-full text-left"
                             >
@@ -372,6 +411,32 @@ export default function Profile({ username }: { username: string }) {
           </div>
         )
       })()}
+
+      {/* 删除确认弹窗 */}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="删除帖子"
+        message="确定要删除这条帖子吗？删除后无法恢复。"
+        confirmText="删除"
+        cancelText="取消"
+        type="danger"
+        onConfirm={confirmDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
+
+      {/* 更改封面弹窗 */}
+      {editingPost && (
+        <CoverSelector
+          isOpen={showCoverSelector}
+          images={editingPost.images || []}
+          currentCoverIndex={0}
+          onConfirm={confirmCoverChange}
+          onCancel={() => {
+            setShowCoverSelector(false)
+            setEditingPost(null)
+          }}
+        />
+      )}
     </div>
   )
 }
