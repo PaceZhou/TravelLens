@@ -235,8 +235,8 @@ export default function MapView() {
         ))}
       </MapContainer>
 
-      {/* 顶部筛选菜单 */}
-      <div className="absolute top-6 left-6 z-[4000] flex gap-2">
+      {/* 顶部筛选菜单 - 居中 */}
+      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-[4000] flex gap-2">
         <button 
           onClick={() => handleFilter('random')}
           className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
