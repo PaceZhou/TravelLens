@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
 import { commentsAPI } from '../api/comments'
 import { likesAPI } from '../api/likes'
+import { collectionsAPI } from '../api/collections'
 import Toast from './Toast'
 
 const COMMUNITY_POSTS = [
@@ -88,6 +89,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [customTag, setCustomTag] = useState('')
   const [posts, setPosts] = useState(COMMUNITY_POSTS)
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set())
+  const [collectedPosts, setCollectedPosts] = useState<Set<string>>(new Set())
 
   // 从数据库加载帖子
   useEffect(() => {
@@ -136,7 +138,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     }).catch(() => {})
   }
 
-  const handleLike = async (postId: string) => {
+    const handleLike = async (postId: string) => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     if (!user.id) {
       showToast('请先登录', 'error')
@@ -155,6 +157,31 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         })
       }
       loadPosts()
+    } catch (error) {
+      showToast('操作失败', 'error')
+    }
+  }
+
+  const handleCollect = async (postId: string) => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (!user.id) {
+      showToast('请先登录', 'error')
+      return
+    }
+    
+    try {
+      const result = await collectionsAPI.toggle(user.id, postId)
+      if (result.collected) {
+        setCollectedPosts(prev => new Set(prev).add(postId))
+        showToast('收藏成功', 'success')
+      } else {
+        setCollectedPosts(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(postId)
+          return newSet
+        })
+        showToast('取消收藏', 'info')
+      }
     } catch (error) {
       showToast('操作失败', 'error')
     }
@@ -230,7 +257,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <div className="p-6 border-t flex items-center gap-6">
                   <button onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={`flex items-center gap-2 transition-colors ${likedPosts.has(post.id) ? 'text-red-500' : 'text-gray-700 hover:text-red-500'}`}><Heart size={24} fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} /><span className="font-medium">{post.likes}</span></button>
                   <button onClick={(e) => { e.stopPropagation(); showToast('评论功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"><MessageCircle size={24} /><span className="font-medium">{post.comments}</span></button>
-                  <button onClick={(e) => { e.stopPropagation(); showToast('收藏功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#FFB800]"><Bookmark size={24} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleCollect(post.id); }} className={`flex items-center gap-2 transition-colors ${collectedPosts.has(post.id) ? 'text-[#FFB800]' : 'text-gray-700 hover:text-[#FFB800]'}`}><Bookmark size={24} fill={collectedPosts.has(post.id) ? 'currentColor' : 'none'} /></button>
                 </div>
               </div>
             </div>
@@ -461,7 +488,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <div className="p-6 border-t flex items-center gap-6">
                   <button onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={`flex items-center gap-2 transition-colors ${likedPosts.has(post.id) ? 'text-red-500' : 'text-gray-700 hover:text-red-500'}`}><Heart size={24} fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} /><span className="font-medium">{post.likes}</span></button>
                   <button onClick={(e) => { e.stopPropagation(); showToast('评论功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"><MessageCircle size={24} /><span className="font-medium">{post.comments}</span></button>
-                  <button onClick={(e) => { e.stopPropagation(); showToast('收藏功能开发中', 'info'); }} className="flex items-center gap-2 text-gray-700 hover:text-[#FFB800]"><Bookmark size={24} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleCollect(post.id); }} className={`flex items-center gap-2 transition-colors ${collectedPosts.has(post.id) ? 'text-[#FFB800]' : 'text-gray-700 hover:text-[#FFB800]'}`}><Bookmark size={24} fill={collectedPosts.has(post.id) ? 'currentColor' : 'none'} /></button>
                 </div>
               </div>
             </div>
