@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Camera, Search, Shuffle } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
@@ -13,6 +14,7 @@ const keywords = ['全部', '克莱因蓝', '极简', '日系', '城市漫游', 
 
 export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [feedSort, setFeedSort] = useState('latest')
   const [activeKeyword, setActiveKeyword] = useState('全部')
   const [searchQuery, setSearchQuery] = useState('')
@@ -222,7 +224,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* 帖子列表 */}
       <PostList
         posts={posts}
-        onPostClick={(index) => setSelectedPost(index)}
+        onPostClick={(index) => navigate(`/posts/${posts[index].id}`)}
         onLoadMore={handleLoadMore}
         hasMore={hasMore}
         isLoading={isLoading}

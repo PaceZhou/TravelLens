@@ -4,6 +4,7 @@ import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
 import Community from './components/Community'
 import Profile from './components/Profile'
+import PostDetailPage from './components/PostDetailPage'
 import { useLanguage } from './contexts/LanguageContext'
 import { authAPI } from './api/auth'
 import { User, Globe, ChevronDown } from 'lucide-react'
@@ -148,6 +149,7 @@ function AppContent() {
           <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
           <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
           <Route path="/users/:userId" element={<Profile username="" />} />
+          <Route path="/posts/:postId" element={<PostDetailPage />} />
         </Routes>
       </main>
           <div className="flex items-center justify-center min-h-screen">
