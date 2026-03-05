@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
-import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon } from 'lucide-react'
+import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 
 export default function Profile({ username }: { username: string }) {
@@ -9,6 +9,8 @@ export default function Profile({ username }: { username: string }) {
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [selectedPost, setSelectedPost] = useState<number | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   // 获取用户统计数据
   useEffect(() => {
@@ -177,41 +179,57 @@ export default function Profile({ username }: { username: string }) {
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 gap-4">
-                    {userPosts.map((post: any) => (
-                      <div key={post.id} className="aspect-square rounded-xl overflow-hidden relative group">
+                    {userPosts.map((post: any, index: number) => (
+                      <div 
+                        key={post.id} 
+                        className="aspect-square rounded-xl overflow-hidden relative group cursor-pointer"
+                        onClick={() => setSelectedPost(index)}
+                      >
                         <img 
                           src={post.images?.[0] || ''} 
                           alt={post.content}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
                         
                         {/* 三点菜单按钮 */}
                         <button
-                          onClick={() => setOpenMenuId(openMenuId === post.id ? null : post.id)}
-                          className="absolute top-2 right-2 bg-white/90 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setOpenMenuId(openMenuId === post.id ? null : post.id)
+                          }}
+                          className="absolute top-2 right-2 bg-white/90 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
                         >
                           <MoreVertical size={16} />
                         </button>
                         
                         {/* 下拉菜单 */}
                         {openMenuId === post.id && (
-                          <div className="absolute top-12 right-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-10">
+                          <div className="absolute top-12 right-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-20">
                             <button
-                              onClick={() => handleDelete(post.id)}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDelete(post.id)
+                              }}
                               className="flex items-center gap-2 px-4 py-3 hover:bg-red-50 text-red-600 w-full text-left"
                             >
                               <Trash2 size={16} />
                               <span className="text-sm font-medium">删除</span>
                             </button>
                             <button
-                              onClick={() => alert('编辑功能开发中')}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                alert('编辑功能开发中')
+                              }}
                               className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-700 w-full text-left"
                             >
                               <Edit size={16} />
                               <span className="text-sm font-medium">编辑</span>
                             </button>
                             <button
-                              onClick={() => alert('更改封面功能开发中')}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                alert('更改封面功能开发中')
+                              }}
                               className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-700 w-full text-left"
                             >
                               <ImageIcon size={16} />
@@ -234,6 +252,68 @@ export default function Profile({ username }: { username: string }) {
           </div>
         </div>
       </div>
+
+      {/* 帖子详情查看器 */}
+      {selectedPost !== null && userPosts[selectedPost] && (
+        <div className="fixed inset-0 bg-black z-50 flex flex-col">
+          <button 
+            onClick={() => {
+              setSelectedPost(null)
+              setCurrentImageIndex(0)
+            }}
+            className="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white z-10"
+          >
+            <X size={20} />
+          </button>
+
+          <div className="flex-1 flex items-center justify-center relative">
+            {(() => {
+              const post = userPosts[selectedPost]
+              const images = post.images || []
+              const currentImage = images[currentImageIndex] || ''
+              
+              return (
+                <>
+                  <img src={currentImage} alt="Post" className="max-h-full max-w-full object-contain" />
+                  
+                  {images.length > 1 && currentImageIndex > 0 && (
+                    <button
+                      onClick={() => setCurrentImageIndex(currentImageIndex - 1)}
+                      className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white"
+                    >
+                      <ChevronRight size={24} className="rotate-180" />
+                    </button>
+                  )}
+                  
+                  {images.length > 1 && currentImageIndex < images.length - 1 && (
+                    <button
+                      onClick={() => setCurrentImageIndex(currentImageIndex + 1)}
+                      className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  )}
+                  
+                  {images.length > 1 && (
+                    <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm">
+                      {currentImageIndex + 1} / {images.length}
+                    </div>
+                  )}
+                  
+                  <div className="absolute bottom-20 left-6 right-6 text-white">
+                    <p className="text-lg mb-3">{post.content}</p>
+                    <div className="flex gap-2">
+                      {post.tags?.map((tag: string) => (
+                        <span key={tag} className="text-sm bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
