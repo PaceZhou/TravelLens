@@ -63,6 +63,9 @@ export default function Community() {
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentCity, setCurrentCity] = useState('全部')
   const [showUpload, setShowUpload] = useState(false)
+  const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [postContent, setPostContent] = useState('')
 
   // ESC键退出功能
   useEffect(() => {
@@ -78,6 +81,55 @@ export default function Community() {
     window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
   }, [showUpload, selectedPost])
+
+  // 处理图片上传
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+    
+    const newImages: string[] = []
+    Array.from(files).slice(0, 9 - uploadedImages.length).forEach(file => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          newImages.push(e.target.result as string)
+          if (newImages.length === Math.min(files.length, 9 - uploadedImages.length)) {
+            setUploadedImages([...uploadedImages, ...newImages])
+          }
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // 删除图片
+  const removeImage = (index: number) => {
+    setUploadedImages(uploadedImages.filter((_, i) => i !== index))
+  }
+
+  // 移动图片位置
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    const newImages = [...uploadedImages]
+    const [moved] = newImages.splice(fromIndex, 1)
+    newImages.splice(toIndex, 0, moved)
+    setUploadedImages(newImages)
+  }
+
+  // 发布内容
+  const handlePublish = () => {
+    if (!isLoggedIn) {
+      alert('请先登录后再发布内容')
+      return
+    }
+    if (!postContent.trim() && uploadedImages.length === 0) {
+      alert('请添加内容或图片')
+      return
+    }
+    alert('发布成功！')
+    setShowUpload(false)
+    setUploadedImages([])
+    setPostContent('')
+  }
 
   const cities = ['全部', '同城', '北京', '重庆', '冰岛', '镰仓']
 
@@ -302,7 +354,7 @@ export default function Community() {
       {showUpload && (
         <>
           <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowUpload(false)}></div>
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1400px] max-w-[90vw] h-[85vh] bg-white/80 backdrop-blur-3xl rounded-[2rem] z-[9999] overflow-y-auto shadow-2xl border border-white/50">
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1400px] max-w-[90vw] h-[85vh] bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-3xl rounded-[2rem] z-[9999] overflow-y-auto shadow-2xl border border-white/50">
             <div className="p-6">
               {/* 顶部标题 */}
               <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4">
@@ -320,17 +372,51 @@ export default function Community() {
                   accept="image/*" 
                   multiple 
                   className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={uploadedImages.length >= 9}
                 />
                 <label 
                   htmlFor="photo-upload"
-                  className="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-[1.02] transition-transform cursor-pointer"
+                  className={`block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-6 rounded-2xl hover:scale-[1.02] transition-transform ${uploadedImages.length >= 9 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <div className="flex items-center justify-center gap-3">
                     <span className="text-3xl">🖼️</span>
-                    <span className="font-bold text-lg">选择照片</span>
+                    <span className="font-bold text-lg">{t.community.selectPhoto} ({uploadedImages.length}/9)</span>
                   </div>
                 </label>
               </div>
+
+              {/* 图片预览网格 */}
+              {uploadedImages.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-bold text-gray-700 mb-3">已选择的图片</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    {uploadedImages.map((img, index) => (
+                      <div key={index} className="relative group aspect-square">
+                        <img src={img} alt={`上传图片 ${index + 1}`} className="w-full h-full object-cover rounded-xl" />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
+                          {index > 0 && (
+                            <button onClick={() => moveImage(index, index - 1)} className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                              ←
+                            </button>
+                          )}
+                          <button onClick={() => removeImage(index)} className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center">
+                            ✕
+                          </button>
+                          {index < uploadedImages.length - 1 && (
+                            <button onClick={() => moveImage(index, index + 1)} className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                              →
+                            </button>
+                          )}
+                        </div>
+                        <div className="absolute top-2 left-2 w-6 h-6 bg-[#0055FF] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {index + 1}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* 文字内容输入 */}
               <div className="mb-6">
@@ -412,8 +498,11 @@ export default function Community() {
               </div>
 
               {/* 发布按钮 */}
-              <button className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black text-lg rounded-2xl hover:shadow-xl transition-all">
-                发布
+              <button 
+                onClick={handlePublish}
+                className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black text-lg rounded-2xl hover:shadow-xl transition-all"
+              >
+                {t.community.publish}
               </button>
             </div>
           </div>
