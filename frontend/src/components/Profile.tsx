@@ -1,22 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings } from 'lucide-react'
 
 export default function Profile({ username }: { username: string }) {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('calendar')
+  const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
+
+  // 获取用户统计数据
+  useEffect(() => {
+    fetch(`http://192.168.2.33:3001/auth/stats/${username}`)
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(() => {})
+  }, [username])
 
   // 用户数据
   const user = {
     username: username,
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200',
     bio: '热爱旅行和摄影的芒果',
-    stats: {
-      posts: 42,
-      following: 128,
-      followers: 356,
-      likes: 1234
-    }
+    stats: stats
   }
 
   // 模拟芒一下日历数据

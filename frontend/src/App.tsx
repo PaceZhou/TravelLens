@@ -141,7 +141,7 @@ function App() {
       <main>
         {currentTab === 'gacha' && <BlindBox />}
         {currentTab === 'map' && <MapView />}
-        {currentTab === 'world' && <Community />}
+        {currentTab === 'world' && <Community isLoggedIn={isLoggedIn} />}
         {currentTab === 'profile' && (isLoggedIn ? <Profile username={username} /> : (
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">

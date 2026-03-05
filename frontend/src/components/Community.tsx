@@ -55,7 +55,7 @@ const COMMUNITY_POSTS = [
 
 const keywords = ['全部', '克莱因蓝', '极简', '日系', '城市漫游', '自然']
 
-export default function Community() {
+export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { t } = useLanguage()
   const [feedSort, setFeedSort] = useState('latest')
   const [activeKeyword, setActiveKeyword] = useState('全部')
@@ -64,7 +64,6 @@ export default function Community() {
   const [currentCity, setCurrentCity] = useState('全部')
   const [showUpload, setShowUpload] = useState(false)
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [postContent, setPostContent] = useState('')
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
 
