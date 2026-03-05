@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import Toast from './Toast'
 
 const COMMUNITY_POSTS = [
   {
@@ -66,6 +67,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [postContent, setPostContent] = useState('')
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
 
   // ESC键退出功能
   useEffect(() => {
@@ -122,10 +124,10 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       return
     }
     if (!postContent.trim() && uploadedImages.length === 0) {
-      alert('请添加内容或图片')
+      setToast({ type: 'warning', message: '请添加内容或图片' })
       return
     }
-    alert('发布成功！')
+    setToast({ type: 'success', message: '发布成功！' })
     setShowUpload(false)
     setUploadedImages([])
     setPostContent('')
@@ -528,6 +530,15 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             </button>
           </div>
         </>
+      )}
+
+      {/* Toast提示 */}
+      {toast && (
+        <Toast 
+          type={toast.type} 
+          message={toast.message} 
+          onClose={() => setToast(null)} 
+        />
       )}
     </div>
   )
