@@ -46,14 +46,14 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6">
         {posts.map((post, index) => (
           <div
             key={post.id}
             onClick={() => onPostClick(index)}
-            className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+            className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group mb-6 break-inside-avoid"
           >
-            <div className="relative aspect-[4/3] overflow-hidden">
+            <div className="relative overflow-hidden" style={{ aspectRatio: `${Math.random() * 0.5 + 0.75}` }}>
               <img
                 src={post.image}
                 alt={post.location}

@@ -137,7 +137,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   return (
-    <div className="flex-1 bg-[#F8F9FA] px-4 py-8 min-h-screen max-w-7xl mx-auto w-full">
+    <div className="flex-1 bg-[#F8F9FA] px-4 py-8 min-h-screen max-w-[1600px] mx-auto w-full">
       {/* 频道头部 */}
       <div className="mb-8 sticky top-20 z-30 bg-[#F8F9FA]/90 backdrop-blur-xl pt-6 pb-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
@@ -147,13 +147,6 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             </h2>
             <p className="text-gray-500 text-base mt-2 font-medium">全球玩家正在这些坐标出没，交流前沿出片情报。</p>
           </div>
-          <button
-            onClick={handlePublishClick}
-            className="px-8 py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-2xl font-black text-lg hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap"
-          >
-            <Camera size={24} />
-            发布新帖
-          </button>
         </div>
 
         {/* 筛选器 */}
@@ -241,6 +234,14 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           </div>
         </div>
       )}
+
+      {/* 右下角悬浮发布按钮 */}
+      <button
+        onClick={handlePublishClick}
+        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center z-40"
+      >
+        <Camera size={28} />
+      </button>
 
       {/* Toast通知 */}
       {toast && <Toast type={toast.type} message={toast.message} />}
