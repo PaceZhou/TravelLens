@@ -102,6 +102,7 @@ export default function Profile({ username: propUsername }: { username: string }
     try {
       await postsAPI.update(editingPost.id, {
         images: newOrder,
+        coverIndex: newCoverIndex,
       })
       showToast('封面已更新', 'success')
       setShowCoverSelector(false)
@@ -382,7 +383,7 @@ export default function Profile({ username: propUsername }: { username: string }
         <CoverSelector
           isOpen={showCoverSelector}
           images={editingPost.images || []}
-          currentCoverIndex={0}
+          currentCoverIndex={editingPost.coverIndex || 0}
           onConfirm={confirmCoverChange}
           onCancel={() => {
             setShowCoverSelector(false)

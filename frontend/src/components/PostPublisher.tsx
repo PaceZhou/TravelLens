@@ -20,6 +20,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
   const [showCoverSelector, setShowCoverSelector] = useState(false)
+  const [coverIndex, setCoverIndex] = useState(0)
 
   // 当editPost变化时，更新表单数据
   useEffect(() => {
@@ -27,10 +28,12 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
       setUploadedImages(editPost.images || [])
       setPostContent(editPost.content || '')
       setSelectedTags(editPost.tags || [])
+      setCoverIndex(editPost.coverIndex || 0)
     } else {
       setUploadedImages([])
       setPostContent('')
       setSelectedTags([])
+      setCoverIndex(0)
     }
   }, [editPost])
 
@@ -88,6 +91,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
         await postsAPI.update(editPost.id, {
           content: postContent,
           images: uploadedImages,
+          coverIndex: coverIndex,
           tags: selectedTags,
         })
         showToast('更新成功！', 'success')
@@ -96,6 +100,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
         await postsAPI.create(userId, {
           content: postContent,
           images: uploadedImages,
+          coverIndex: coverIndex,
           tags: selectedTags,
           location: '未知位置',
           city: currentCity === '全部' ? '北京' : currentCity,
@@ -218,9 +223,10 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
       <CoverSelector
         isOpen={showCoverSelector}
         images={uploadedImages}
-        currentCoverIndex={0}
+        currentCoverIndex={coverIndex}
         onConfirm={(newCoverIndex, newOrder) => {
           setUploadedImages(newOrder)
+          setCoverIndex(newCoverIndex)
           setShowCoverSelector(false)
           showToast('封面已更新', 'success')
         }}

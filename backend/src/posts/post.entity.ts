@@ -19,6 +19,9 @@ export class Post {
   @Column('simple-json', { nullable: true })
   images: string[];
 
+  @Column({ default: 0 })
+  coverIndex: number;
+
   @Column('simple-json', { nullable: true })
   tags: string[];
 

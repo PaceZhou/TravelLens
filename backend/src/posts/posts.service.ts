@@ -15,6 +15,7 @@ export class PostsService {
       userId,
       content: data.content,
       images: data.images || [],
+      coverIndex: data.coverIndex || 0,
       tags: data.tags || [],
       location: data.location || '',
       city: data.city || '',
@@ -68,6 +69,7 @@ export class PostsService {
     await this.postsRepository.update(postId, {
       content: data.content,
       images: data.images,
+      coverIndex: data.coverIndex !== undefined ? data.coverIndex : 0,
       tags: data.tags,
     });
     return this.postsRepository.findOne({ where: { id: postId } });

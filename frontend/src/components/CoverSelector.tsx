@@ -64,11 +64,16 @@ export default function CoverSelector({ isOpen, images, currentCoverIndex, onCon
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
                 {selectedIndex === idx && (
-                  <div className="absolute inset-0 bg-[#0055FF]/20 flex items-center justify-center">
-                    <div className="w-12 h-12 bg-[#0055FF] rounded-full flex items-center justify-center">
-                      <Check size={24} className="text-white" />
+                  <>
+                    <div className="absolute inset-0 bg-[#0055FF]/20 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[#0055FF] rounded-full flex items-center justify-center">
+                        <Check size={24} className="text-white" />
+                      </div>
                     </div>
-                  </div>
+                    <div className="absolute top-2 right-2 bg-[#FFB800] text-white text-xs px-3 py-1 rounded-full font-bold">
+                      封面
+                    </div>
+                  </>
                 )}
                 <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
                   {idx + 1}
