@@ -29,39 +29,11 @@ export default function BlindBox() {
   const [result, setResult] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
-  const [canDraw, setCanDraw] = useState(true)
-  const [nextDrawTime, setNextDrawTime] = useState<string | null>(null)
 
-  // 检查是否可以抽取（24小时限制）
-  useEffect(() => {
-    const lastDrawTime = localStorage.getItem('lastDrawTime')
-    if (lastDrawTime) {
-      const lastTime = new Date(lastDrawTime)
-      const now = new Date()
-      const diff = now.getTime() - lastTime.getTime()
-      const hours = diff / (1000 * 60 * 60)
-      
-      if (hours < 24) {
-        setCanDraw(false)
-        const nextTime = new Date(lastTime.getTime() + 24 * 60 * 60 * 1000)
-        setNextDrawTime(nextTime.toLocaleString('zh-CN'))
-      }
-    }
-  }, [])
+  // 移除24小时限制相关代码
 
   const handleDraw = () => {
-    // 检查登录状态
-    if (!isLoggedIn) {
-      setShowLogin(true)
-      return
-    }
-
-    // 检查24小时限制
-    if (!canDraw) {
-      alert(`每24小时只能抽取一次！\n下次抽取时间：${nextDrawTime}`)
-      return
-    }
-
+    // 移除登录检查和时间限制，任何人都可以抽取
     setIsDrawing(true)
     setResult(null)
     
@@ -83,13 +55,6 @@ export default function BlindBox() {
       clearInterval(interval)
       setIsDrawing(false)
       setResult(MYSTERY_RESULT)
-      
-      // 记录抽取时间
-      const now = new Date()
-      localStorage.setItem('lastDrawTime', now.toISOString())
-      setCanDraw(false)
-      const nextTime = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-      setNextDrawTime(nextTime.toLocaleString('zh-CN'))
     }, 2500)
   }
 
@@ -154,20 +119,6 @@ export default function BlindBox() {
                   {drawText}
                 </div>
               </>
-            ) : !isLoggedIn ? (
-              <>
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2">
-                  <Lock size={36} className="text-gray-500" />
-                </div>
-                <span className="font-black text-xl tracking-widest text-gray-500">{t.blindbox.needLogin}</span>
-              </>
-            ) : !canDraw ? (
-              <>
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-2">
-                  <Calendar size={36} className="text-gray-500" />
-                </div>
-                <span className="font-black text-sm tracking-widest text-gray-500 text-center px-4">{t.blindbox.cooldown}</span>
-              </>
             ) : (
               <>
                 <div className="w-20 h-20 bg-[#CCFF00] rounded-full flex items-center justify-center mb-2 group-hover:bg-[#0055FF] transition-colors duration-300">
@@ -178,16 +129,9 @@ export default function BlindBox() {
             )}
           </div>
         </button>
-
-        {/* 提示信息 */}
-        {!canDraw && nextDrawTime && (
-          <div className="mt-6 text-center text-sm text-gray-600">
-            {t.blindbox.nextDraw}：{nextDrawTime}
-          </div>
-        )}
       </div>
 
-      {/* 登录弹窗 */}
+      {/* 登录弹窗 - 只在保存时显示 */}
       {showLogin && (
         <>
           <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowLogin(false)}></div>
@@ -198,7 +142,7 @@ export default function BlindBox() {
                 <X size={20} />
               </button>
             </div>
-            <p className="text-gray-600 mb-6">{t.auth.loginDesc}</p>
+            <p className="text-gray-600 mb-6">登录后即可保存抽取结果到日历</p>
             <button 
               onClick={handleLogin}
               className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
@@ -251,7 +195,18 @@ export default function BlindBox() {
                 ))}
               </div>
 
-              <button className="w-full mt-8 py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all">
+              <button 
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    setShowLogin(true)
+                  } else {
+                    // 保存到日历逻辑
+                    alert('已保存到日历！')
+                    setResult(null)
+                  }
+                }}
+                className="w-full mt-8 py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
+              >
                 {t.blindbox.saveToCalendar}
               </button>
             </div>
