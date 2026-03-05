@@ -27,6 +27,7 @@ export default function CoverSelector({ isOpen, images, currentCoverIndex, onCon
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault()
+    e.stopPropagation()
     const dragIndex = parseInt(e.dataTransfer.getData('text/html'))
     const newImages = [...orderedImages]
     const [removed] = newImages.splice(dragIndex, 1)
@@ -35,6 +36,10 @@ export default function CoverSelector({ isOpen, images, currentCoverIndex, onCon
     if (selectedIndex === dragIndex) {
       setSelectedIndex(dropIndex)
     }
+  }
+
+  const handleImageDragStart = (e: React.DragEvent) => {
+    e.preventDefault()
   }
 
   return (
@@ -62,7 +67,13 @@ export default function CoverSelector({ isOpen, images, currentCoverIndex, onCon
                   selectedIndex === idx ? 'border-[#0055FF] shadow-lg' : 'border-transparent hover:border-gray-300'
                 }`}
               >
-                <img src={img} alt="" className="w-full h-full object-cover" />
+                <img 
+                  src={img} 
+                  alt="" 
+                  className="w-full h-full object-cover"
+                  draggable={false}
+                  onDragStart={handleImageDragStart}
+                />
                 {selectedIndex === idx && (
                   <>
                     <div className="absolute inset-0 bg-[#0055FF]/20 flex items-center justify-center">
