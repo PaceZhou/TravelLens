@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { MapPin, ChevronRight, Shuffle, Navigation, Globe, Map as MapIcon, ChevronDown } from 'lucide-react'
+import { MapPin, ChevronRight, Shuffle, Navigation, Globe, Map as MapIcon, ChevronDown, X, ChevronLeft } from 'lucide-react'
 import 'leaflet/dist/leaflet.css'
 import { Icon } from 'leaflet'
 
-// 国家数据（中国第一，其他按字母排序）
+// 国家数据
 const COUNTRIES = [
   '中国',
   'Australia', 'Brazil', 'Canada', 'Denmark', 'Egypt', 'France', 'Germany', 
@@ -12,7 +12,7 @@ const COUNTRIES = [
   'Spain', 'Thailand', 'UK', 'USA'
 ]
 
-// 中国省份数据
+// 省份数据
 const PROVINCES = [
   '北京', '上海', '天津', '重庆',
   '安徽', '福建', '甘肃', '广东', '广西', '贵州', '海南', '河北', '河南', 
@@ -21,7 +21,7 @@ const PROVINCES = [
   '云南', '浙江'
 ]
 
-// 城市数据（示例）
+// 城市数据
 const CITIES = {
   '北京': ['东城区', '西城区', '朝阳区', '海淀区', '丰台区'],
   '上海': ['黄浦区', '徐汇区', '长宁区', '静安区', '浦东新区'],
@@ -39,11 +39,22 @@ const SPOTS = [
     province: '北京',
     country: '中国',
     area: '东城区',
-    image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&q=80&w=400',
+    images: [
+      'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1583037189850-1921ae7c6c22?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?auto=format&fit=crop&q=80&w=800'
+    ],
     description: '西北角楼是故宫最佳拍摄机位，日落时分金色余晖洒在红墙黄瓦上。',
-    food: '全聚德烤鸭、护国寺小吃',
+    history: '故宫角楼建于明永乐十八年（1420年），是紫禁城四个角楼之一。角楼结构精巧，造型独特，是中国古代建筑的杰作。',
+    foods: [
+      { name: '全聚德烤鸭', desc: '北京最著名的烤鸭店，皮酥肉嫩', image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&q=80&w=400' },
+      { name: '护国寺小吃', desc: '老北京传统小吃集合', image: 'https://images.unsplash.com/photo-1526318896980-cf78c088247c?auto=format&fit=crop&q=80&w=400' }
+    ],
     bestTime: '日落前1小时（17:00-18:30）',
-    photoTips: '使用长焦镜头压缩空间，等待游客较少的时刻。'
+    photoGuides: [
+      { title: '角楼倒影', desc: '在护城河对岸拍摄，等待无风时刻捕捉完美倒影', tip: '使用偏振镜减少水面反光' },
+      { title: '日落剪影', desc: '逆光拍摄角楼轮廓，营造神秘氛围', tip: '曝光补偿-1.5EV' }
+    ]
   },
   { 
     id: 2, 
@@ -54,11 +65,18 @@ const SPOTS = [
     province: '北京',
     country: '中国',
     area: '东城区',
-    image: 'https://images.unsplash.com/photo-1583037189850-1921ae7c6c22?auto=format&fit=crop&q=80&w=400',
+    images: [
+      'https://images.unsplash.com/photo-1583037189850-1921ae7c6c22?auto=format&fit=crop&q=80&w=800'
+    ],
     description: '明清两代皇帝祭天的场所，建筑对称美学的典范。',
-    food: '老北京炸酱面、豆汁焦圈',
+    history: '天坛始建于明永乐十八年（1420年），是明清两代皇帝祭天祈谷的场所。',
+    foods: [
+      { name: '老北京炸酱面', desc: '地道北京味道', image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&q=80&w=400' }
+    ],
     bestTime: '清晨6:00-8:00',
-    photoTips: '从南门进入，拍摄祈年殿的对称构图。'
+    photoGuides: [
+      { title: '祈年殿对称', desc: '从南门进入拍摄对称构图', tip: '使用广角镜头' }
+    ]
   },
   { 
     id: 3, 
@@ -69,11 +87,18 @@ const SPOTS = [
     province: '重庆',
     country: '中国',
     area: '渝中区',
-    image: 'https://images.unsplash.com/photo-1558281050-8cbbeafc6007?auto=format&fit=crop&q=80&w=400',
+    images: [
+      'https://images.unsplash.com/photo-1558281050-8cbbeafc6007?auto=format&fit=crop&q=80&w=800'
+    ],
     description: '重庆版赛博朋克，夜景绝美的吊脚楼建筑群。',
-    food: '洞子老火锅、重庆小面',
+    history: '洪崖洞原为重庆古城门之一，现已改造为特色商业街区。',
+    foods: [
+      { name: '洞子老火锅', desc: '正宗重庆火锅', image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=400' }
+    ],
     bestTime: '夜晚19:00-21:00',
-    photoTips: '对岸千厮门大桥拍摄全景，雨后倒影效果更佳。'
+    photoGuides: [
+      { title: '对岸全景', desc: '千厮门大桥拍摄全景', tip: '三脚架长曝光' }
+    ]
   }
 ]
 
@@ -83,6 +108,7 @@ const customIcon = new Icon({
 })
 
 type FilterType = 'random' | 'country' | 'province' | 'city' | 'area' | 'nearby'
+type DrawerType = 'food' | 'photo' | null
 
 export default function MapView() {
   const [showSidebar, setShowSidebar] = useState(true)
@@ -94,8 +120,10 @@ export default function MapView() {
   const [selectedProvince, setSelectedProvince] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [showGallery, setShowGallery] = useState(false)
+  const [drawerType, setDrawerType] = useState<DrawerType>(null)
 
-  // 获取用户位置
   useEffect(() => {
     if (filterType === 'nearby') {
       navigator.geolocation.getCurrentPosition(
@@ -120,13 +148,12 @@ export default function MapView() {
     if (type === 'random') {
       setFilteredSpots(SPOTS)
     } else if (type === 'nearby' && userLocation) {
-      // 简单距离计算（实际应该用 Haversine 公式）
       const nearby = SPOTS.filter(spot => {
         const distance = Math.sqrt(
           Math.pow(spot.lat - userLocation.lat, 2) + 
           Math.pow(spot.lng - userLocation.lng, 2)
         )
-        return distance < 1 // 约100km内
+        return distance < 1
       })
       setFilteredSpots(nearby)
     }
@@ -152,13 +179,16 @@ export default function MapView() {
 
   const handleSpotClick = (spotId: number) => {
     setSelectedSpot(spotId)
+    setCurrentImageIndex(0)
+    setShowGallery(false)
+    setDrawerType(null)
   }
 
   const selectedSpotData = SPOTS.find(s => s.id === selectedSpot)
 
   return (
     <div className="relative h-screen w-full">
-      {/* 地图主界面 */}
+      {/* 地图主界面 - 始终显示 */}
       <MapContainer 
         center={[39.916, 116.397]} 
         zoom={5} 
@@ -207,7 +237,6 @@ export default function MapView() {
           <Navigation size={16} /> 同城
         </button>
         
-        {/* 国家下拉 */}
         <div className="relative">
           <button 
             onClick={() => {
@@ -234,7 +263,6 @@ export default function MapView() {
           )}
         </div>
 
-        {/* 省份下拉 */}
         <div className="relative">
           <button 
             onClick={() => {
@@ -261,7 +289,6 @@ export default function MapView() {
           )}
         </div>
 
-        {/* 城市下拉 */}
         <div className="relative">
           <button 
             onClick={() => {
@@ -289,7 +316,7 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* 右侧景点列表（二级页面，80%透明） */}
+      {/* 右侧景点列表（二级页面，1/3宽度） */}
       <div 
         className={`absolute top-0 right-0 h-full w-full md:w-1/3 bg-white/80 backdrop-blur-xl shadow-2xl z-[1000] transition-transform duration-300 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
       >
@@ -317,7 +344,7 @@ export default function MapView() {
                 onClick={() => handleSpotClick(spot.id)}
                 className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
               >
-                <img src={spot.image} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
+                <img src={spot.images[0]} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
                 <div className="p-4">
                   <h3 className="font-black text-lg mb-1">{spot.name}</h3>
                   <p className="text-sm text-gray-600 flex items-center">
@@ -331,7 +358,7 @@ export default function MapView() {
       </div>
 
       {/* 展开侧边栏按钮 */}
-      {!showSidebar && (
+      {!showSidebar && !selectedSpot && (
         <button 
           onClick={() => setShowSidebar(true)}
           className="absolute top-1/2 right-6 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-xl flex items-center justify-center z-[1000] hover:scale-110 transition-transform"
@@ -340,51 +367,141 @@ export default function MapView() {
         </button>
       )}
 
-      {/* 三级页面：景点详情（80%透明） */}
+      {/* 三级页面：景点详情（1/2宽度，右侧抽拉） */}
       {selectedSpot && selectedSpotData && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-xl z-[2000] overflow-y-auto">
-          {/* 顶部图片 */}
-          <div className="relative h-[40vh]">
-            <img src={selectedSpotData.image} alt={selectedSpotData.name} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            <button 
-              onClick={() => setSelectedSpot(null)}
-              className="absolute top-6 left-6 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center"
-            >
-              ←
-            </button>
+        <div 
+          className={`absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/80 backdrop-blur-xl shadow-2xl z-[2000] overflow-y-auto transition-transform duration-300 ${selectedSpot ? 'translate-x-0' : 'translate-x-full'}`}
+        >
+          {/* 返回按钮 */}
+          <button 
+            onClick={() => setSelectedSpot(null)}
+            className="absolute top-6 left-6 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center z-10 hover:bg-white transition-colors"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* 图库（开合式） */}
+          <div className="relative">
+            <img 
+              src={selectedSpotData.images[currentImageIndex]} 
+              alt={selectedSpotData.name} 
+              className="w-full h-64 object-cover cursor-pointer"
+              onClick={() => setShowGallery(!showGallery)}
+            />
+            
+            {showGallery && (
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md p-4">
+                <div className="flex gap-2 overflow-x-auto">
+                  {selectedSpotData.images.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt={`${selectedSpotData.name} ${idx + 1}`}
+                      className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${idx === currentImageIndex ? 'ring-2 ring-[#CCFF00]' : ''}`}
+                      onClick={() => setCurrentImageIndex(idx)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <div className="absolute bottom-6 left-6 text-white">
-              <h1 className="text-4xl font-black mb-2">{selectedSpotData.name}</h1>
+              <h1 className="text-3xl font-black mb-2">{selectedSpotData.name}</h1>
               <p className="flex items-center"><MapPin size={16} className="mr-1" /> {selectedSpotData.city}</p>
             </div>
           </div>
 
           {/* 内容区 */}
-          <div className="p-6 max-w-4xl mx-auto">
-            <section className="mb-8 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-2xl font-black mb-4">📍 景点介绍</h2>
-              <p className="text-gray-700 leading-relaxed">{selectedSpotData.description}</p>
+          <div className="p-6">
+            {/* 景点介绍（展开式） */}
+            <section className="mb-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
+              <h2 className="text-xl font-black mb-3">📍 景点介绍</h2>
+              <p className="text-gray-700 leading-relaxed mb-3">{selectedSpotData.description}</p>
+              <details className="text-gray-600 text-sm">
+                <summary className="cursor-pointer font-bold">查看历史</summary>
+                <p className="mt-2 leading-relaxed">{selectedSpotData.history}</p>
+              </details>
             </section>
 
-            <section className="mb-8 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-2xl font-black mb-4">🍜 美食推荐</h2>
-              <p className="text-gray-700">{selectedSpotData.food}</p>
+            {/* 美食推荐（抽屉式） */}
+            <section className="mb-4">
+              <button
+                onClick={() => setDrawerType(drawerType === 'food' ? null : 'food')}
+                className="w-full bg-white/60 backdrop-blur-md p-4 rounded-2xl flex items-center justify-between hover:bg-white/80 transition-colors"
+              >
+                <h2 className="text-xl font-black">🍜 美食推荐</h2>
+                <ChevronRight className={`transition-transform ${drawerType === 'food' ? 'rotate-90' : ''}`} />
+              </button>
             </section>
 
-            <section className="mb-8 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-2xl font-black mb-4">⏰ 最佳打卡时间</h2>
-              <p className="text-gray-700">{selectedSpotData.bestTime}</p>
+            {/* 拍照攻略（抽屉式） */}
+            <section className="mb-4">
+              <button
+                onClick={() => setDrawerType(drawerType === 'photo' ? null : 'photo')}
+                className="w-full bg-white/60 backdrop-blur-md p-4 rounded-2xl flex items-center justify-between hover:bg-white/80 transition-colors"
+              >
+                <h2 className="text-xl font-black">📷 拍照攻略</h2>
+                <ChevronRight className={`transition-transform ${drawerType === 'photo' ? 'rotate-90' : ''}`} />
+              </button>
             </section>
 
-            <section className="mb-8 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-2xl font-black mb-4">📷 拍照攻略</h2>
-              <p className="text-gray-700">{selectedSpotData.photoTips}</p>
-            </section>
-
+            {/* 社区分享（列表式加载） */}
             <section className="bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-2xl font-black mb-4">🌍 社区分享</h2>
-              <p className="text-gray-500 text-sm">该区域的用户分享即将上线...</p>
+              <h2 className="text-xl font-black mb-4">🌍 社区分享</h2>
+              <p className="text-gray-500 text-sm">该区域的用户分享加载中...</p>
             </section>
+          </div>
+        </div>
+      )}
+
+      {/* 四级页面：美食详情（抽屉式，在三级之上） */}
+      {drawerType === 'food' && selectedSpotData && (
+        <div className="absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto animate-in slide-in-from-right duration-300">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black">🍜 美食推荐</h2>
+              <button onClick={() => setDrawerType(null)} className="text-gray-500 hover:text-gray-900">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {selectedSpotData.foods.map((food, idx) => (
+                <div key={idx} className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden">
+                  <img src={food.image} alt={food.name} className="w-full h-48 object-cover" />
+                  <div className="p-4">
+                    <h3 className="font-black text-lg mb-2">{food.name}</h3>
+                    <p className="text-gray-600">{food.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 四级页面：拍照攻略（抽屉式，在三级之上） */}
+      {drawerType === 'photo' && selectedSpotData && (
+        <div className="absolute top-0 right-0 h-full w-full md:w-1/2 bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto animate-in slide-in-from-right duration-300">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black">📷 拍照攻略</h2>
+              <button onClick={() => setDrawerType(null)} className="text-gray-500 hover:text-gray-900">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {selectedSpotData.photoGuides.map((guide, idx) => (
+                <div key={idx} className="bg-white/60 backdrop-blur-md rounded-2xl p-6">
+                  <h3 className="font-black text-lg mb-3">{guide.title}</h3>
+                  <p className="text-gray-700 mb-3">{guide.desc}</p>
+                  <div className="bg-[#CCFF00]/20 p-3 rounded-xl">
+                    <p className="text-sm font-bold">💡 {guide.tip}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
