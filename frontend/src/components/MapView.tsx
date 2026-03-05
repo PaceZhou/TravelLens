@@ -437,7 +437,7 @@ export default function MapView() {
             {/* 景点介绍 */}
             <section className="mb-4 bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-xl p-6 rounded-3xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📍 景点介绍</h2>
+                <h2 className="text-2xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📍 {t.map.spotDetail.intro}</h2>
                 {/* 统计数据 - 潮流胶囊 */}
                 <div className="flex gap-2">
                   <div className="flex items-center gap-1 bg-gradient-to-r from-[#FF6B9D]/20 to-[#FF6B9D]/10 px-3 py-1.5 rounded-full border border-[#FF6B9D]/30">
@@ -463,7 +463,7 @@ export default function MapView() {
 
             {/* 图库缩略图 */}
             <section className="mb-4 bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-xl p-6 rounded-3xl border border-white/50 shadow-lg">
-              <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 景点图库</h2>
+              <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 {t.map.spotDetail.gallery}</h2>
               <div className="grid grid-cols-3 gap-3">
                 {selectedSpotData.images.map((img, idx) => (
                   <div
@@ -495,7 +495,7 @@ export default function MapView() {
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">🍜</span>
-                  <h2 className="text-xl font-black text-gray-900">美食推荐</h2>
+                  <h2 className="text-xl font-black text-gray-900">{t.map.spotDetail.foods}</h2>
                 </div>
                 <ChevronRight className={`transition-transform duration-300 text-orange-500 ${drawerType === 'food' ? 'rotate-90' : ''}`} size={24} />
               </button>
@@ -509,7 +509,7 @@ export default function MapView() {
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">📷</span>
-                  <h2 className="text-xl font-black text-gray-900">拍照攻略</h2>
+                  <h2 className="text-xl font-black text-gray-900">{t.map.spotDetail.photoGuide}</h2>
                 </div>
                 <ChevronRight className={`transition-transform duration-300 text-purple-500 ${drawerType === 'photo' ? 'rotate-90' : ''}`} size={24} />
               </button>
@@ -529,7 +529,7 @@ export default function MapView() {
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] max-h-[80vh] bg-white/40 backdrop-blur-3xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/40">
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 景点图库</h2>
+              <h2 className="text-3xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 {t.map.spotDetail.gallery}</h2>
               <button onClick={() => setShowGallery(false)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
                 <X size={20} />
               </button>
@@ -570,7 +570,7 @@ export default function MapView() {
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/40 backdrop-blur-3xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/40">
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">🍜 美食推荐</h2>
+              <h2 className="text-3xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">🍜 {t.map.spotDetail.foods}</h2>
               <button onClick={() => setDrawerType(null)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
                 <X size={20} />
               </button>
@@ -599,7 +599,7 @@ export default function MapView() {
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/40 backdrop-blur-3xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/40">
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">📷 拍照攻略</h2>
+              <h2 className="text-3xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">📷 {t.map.spotDetail.photoGuide}</h2>
               <button onClick={() => setDrawerType(null)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
                 <X size={20} />
               </button>

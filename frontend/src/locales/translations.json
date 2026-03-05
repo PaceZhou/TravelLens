@@ -44,7 +44,15 @@
         "province": "省份",
         "city": "城市"
       },
+      "listTitles": {
+        "random": "随机推荐",
+        "nearby": "同城景点",
+        "selectCountry": "选择国家",
+        "selectProvince": "选择省份",
+        "selectCity": "选择城市"
+      },
       "spotDetail": {
+        "intro": "景点介绍",
         "description": "景点介绍",
         "history": "历史文化",
         "gallery": "景点图库",
@@ -125,7 +133,15 @@
         "province": "Province",
         "city": "City"
       },
+      "listTitles": {
+        "random": "Random Picks",
+        "nearby": "Nearby Spots",
+        "selectCountry": "Select Country",
+        "selectProvince": "Select Province",
+        "selectCity": "Select City"
+      },
       "spotDetail": {
+        "intro": "Introduction",
         "description": "Description",
         "history": "History",
         "gallery": "Gallery",
