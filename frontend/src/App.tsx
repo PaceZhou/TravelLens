@@ -9,7 +9,9 @@ import { User, Globe, ChevronDown } from 'lucide-react'
 import './App.css'
 
 function App() {
-  const [currentTab, setCurrentTab] = useState('gacha')
+  const [currentTab, setCurrentTab] = useState(() => {
+    return localStorage.getItem('currentTab') || 'gacha'
+  })
   const [showLangMenu, setShowLangMenu] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
@@ -24,6 +26,11 @@ function App() {
     { code: 'it', name: 'Italiano' },
     { code: 'ar', name: 'العربية' }
   ]
+
+  // 保存当前页面
+  useEffect(() => {
+    localStorage.setItem('currentTab', currentTab)
+  }, [currentTab])
 
   // 监听登录请求事件
   useEffect(() => {
