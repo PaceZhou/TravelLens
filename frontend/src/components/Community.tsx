@@ -482,33 +482,6 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             className="break-inside-avoid bg-white border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] rounded-[2rem] overflow-hidden hover:shadow-[0_8px_30px_rgb(0,85,255,0.08)] transition-all duration-300 group cursor-pointer"
           >
             <div className="relative p-2 pb-0">
-              {/* 三点菜单 */}
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setOpenMenuId(openMenuId === post.id ? null : post.id)
-                }}
-                className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-md p-2 rounded-full hover:bg-white transition-colors"
-              >
-                <MoreVertical size={16} />
-              </button>
-              
-              {/* 下拉菜单 */}
-              {openMenuId === post.id && (
-                <div className="absolute top-14 right-4 z-20 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleDelete(post.id)
-                    }}
-                    className="flex items-center gap-2 px-4 py-3 hover:bg-red-50 text-red-600 w-full text-left"
-                  >
-                    <Trash2 size={16} />
-                    <span className="text-sm font-medium">删除</span>
-                  </button>
-                </div>
-              )}
-              
               <div className="relative rounded-[1.5rem] overflow-hidden">
                 <img src={imageUrl} alt="Post" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center text-xs font-black text-gray-900 shadow-sm">

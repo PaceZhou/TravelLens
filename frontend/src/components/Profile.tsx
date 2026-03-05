@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
-import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings } from 'lucide-react'
+import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 
 export default function Profile({ username }: { username: string }) {
@@ -8,6 +8,7 @@ export default function Profile({ username }: { username: string }) {
   const [activeTab, setActiveTab] = useState('calendar')
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
   const [userPosts, setUserPosts] = useState<any[]>([])
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
 
   // 获取用户统计数据
   useEffect(() => {
@@ -19,11 +20,26 @@ export default function Profile({ username }: { username: string }) {
 
   // 获取用户帖子
   useEffect(() => {
+    loadUserPosts()
+  }, [username])
+
+  const loadUserPosts = () => {
     postsAPI.getAll().then(posts => {
       const myPosts = posts.filter((p: any) => p.user?.username === username)
       setUserPosts(myPosts)
     }).catch(() => {})
-  }, [username])
+  }
+
+  const handleDelete = async (postId: string) => {
+    if (!confirm('确定删除这条帖子吗？')) return
+    try {
+      await postsAPI.delete(postId)
+      setOpenMenuId(null)
+      loadUserPosts()
+    } catch (error) {
+      console.error('删除失败', error)
+    }
+  }
 
   // 用户数据
   const user = {
@@ -162,12 +178,47 @@ export default function Profile({ username }: { username: string }) {
                 ) : (
                   <div className="grid grid-cols-3 gap-4">
                     {userPosts.map((post: any) => (
-                      <div key={post.id} className="aspect-square rounded-xl overflow-hidden">
+                      <div key={post.id} className="aspect-square rounded-xl overflow-hidden relative group">
                         <img 
                           src={post.images?.[0] || ''} 
                           alt={post.content}
                           className="w-full h-full object-cover"
                         />
+                        
+                        {/* 三点菜单按钮 */}
+                        <button
+                          onClick={() => setOpenMenuId(openMenuId === post.id ? null : post.id)}
+                          className="absolute top-2 right-2 bg-white/90 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <MoreVertical size={16} />
+                        </button>
+                        
+                        {/* 下拉菜单 */}
+                        {openMenuId === post.id && (
+                          <div className="absolute top-12 right-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-10">
+                            <button
+                              onClick={() => handleDelete(post.id)}
+                              className="flex items-center gap-2 px-4 py-3 hover:bg-red-50 text-red-600 w-full text-left"
+                            >
+                              <Trash2 size={16} />
+                              <span className="text-sm font-medium">删除</span>
+                            </button>
+                            <button
+                              onClick={() => alert('编辑功能开发中')}
+                              className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-700 w-full text-left"
+                            >
+                              <Edit size={16} />
+                              <span className="text-sm font-medium">编辑</span>
+                            </button>
+                            <button
+                              onClick={() => alert('更改封面功能开发中')}
+                              className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-700 w-full text-left"
+                            >
+                              <ImageIcon size={16} />
+                              <span className="text-sm font-medium">更改封面</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
