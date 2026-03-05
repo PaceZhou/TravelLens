@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle, MoreVertical, Trash2, Bookmark } from 'lucide-react'
+import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle, MoreVertical, Trash2, Bookmark, Smile, Send } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { postsAPI } from '../api/posts'
+import { commentsAPI } from '../api/comments'
 import Toast from './Toast'
 
 const COMMUNITY_POSTS = [
@@ -72,6 +73,10 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [commentText, setCommentText] = useState('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [comments, setComments] = useState<any[]>([])
+  const [replyTo, setReplyTo] = useState<{ userId: string; username: string } | null>(null)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [customTag, setCustomTag] = useState('')
@@ -274,7 +279,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             <img 
               src={images[currentImageIndex]} 
               alt="Post" 
-              className="max-h-[90vh] max-w-full object-contain rounded-2xl shadow-2xl"
+              className="max-h-[90vh] max-w-[1400px] object-contain rounded-2xl shadow-2xl"
             />
             
             {images.length > 1 && (
