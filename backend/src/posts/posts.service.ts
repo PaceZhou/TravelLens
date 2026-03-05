@@ -30,8 +30,23 @@ export class PostsService {
       skip,
       take: limit,
     });
+    
+    // 统计每个帖子的真实点赞数
+    const postsWithLikes = await Promise.all(
+      posts.map(async (post) => {
+        const likeCount = await this.postsRepository.query(
+          'SELECT COUNT(*) as count FROM likes WHERE postId = ?',
+          [post.id]
+        );
+        return {
+          ...post,
+          likes: parseInt(likeCount[0].count) || 0,
+        };
+      })
+    );
+    
     return {
-      posts,
+      posts: postsWithLikes,
       total,
       page,
       limit,

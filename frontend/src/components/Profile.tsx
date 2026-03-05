@@ -29,8 +29,8 @@ export default function Profile({ username }: { username: string }) {
   }, [username])
 
   const loadUserPosts = () => {
-    postsAPI.getAll().then(posts => {
-      const myPosts = posts.filter((p: any) => p.user?.username === username)
+    postsAPI.getAll().then(result => {
+      const myPosts = result.posts.filter((p: any) => p.user?.username === username)
       setUserPosts(myPosts)
     }).catch(() => {})
   }
