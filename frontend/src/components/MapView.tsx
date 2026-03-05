@@ -351,21 +351,33 @@ export default function MapView() {
               <div 
                 key={spot.id}
                 onClick={() => handleSpotClick(spot.id)}
-                className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
+                className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 group"
               >
-                <div className="relative">
-                  <img src={spot.images[0]} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
-                  {/* 统计数据覆盖在图片上 */}
-                  <div className="absolute bottom-2 right-2 flex gap-2 text-white text-xs">
-                    <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded">❤️ {spot.likes}</span>
-                    <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded">📝 {spot.posts}</span>
-                    <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded">📍 {spot.checkins}</span>
+                <div className="relative overflow-hidden">
+                  <img src={spot.images[0]} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-500" />
+                  {/* 渐变遮罩 */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  
+                  {/* 统计数据 - 潮流设计 */}
+                  <div className="absolute bottom-3 right-3 flex gap-2">
+                    <div className="flex items-center gap-1 bg-white/20 backdrop-blur-xl border border-white/30 px-3 py-1.5 rounded-full">
+                      <span className="text-[#FF6B9D] text-sm">❤</span>
+                      <span className="text-white text-xs font-bold">{spot.likes}</span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-white/20 backdrop-blur-xl border border-white/30 px-3 py-1.5 rounded-full">
+                      <span className="text-[#CCFF00] text-sm">✦</span>
+                      <span className="text-white text-xs font-bold">{spot.posts}</span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-white/20 backdrop-blur-xl border border-white/30 px-3 py-1.5 rounded-full">
+                      <span className="text-[#00D4FF] text-sm">📍</span>
+                      <span className="text-white text-xs font-bold">{spot.checkins}</span>
+                    </div>
                   </div>
                 </div>
                 <div className="p-4">
-                  <h3 className="font-black text-lg mb-1">{spot.name}</h3>
+                  <h3 className="font-black text-lg mb-1 group-hover:text-[#0055FF] transition-colors">{spot.name}</h3>
                   <p className="text-sm text-gray-600 flex items-center">
-                    <MapPin size={14} className="mr-1" /> {spot.city}
+                    <MapPin size={14} className="mr-1 text-[#0055FF]" /> {spot.city}
                   </p>
                 </div>
               </div>
@@ -413,45 +425,55 @@ export default function MapView() {
 
           {/* 内容区 */}
           <div className="p-6">
-            {/* 景点介绍（展开式） */}
-            <section className="mb-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xl font-black">📍 景点介绍</h2>
-                {/* 统计数据 */}
-                <div className="flex gap-3 text-xs">
-                  <span className="flex items-center gap-1 text-gray-600">
-                    ❤️ {selectedSpotData.likes}
-                  </span>
-                  <span className="flex items-center gap-1 text-gray-600">
-                    📝 {selectedSpotData.posts}
-                  </span>
-                  <span className="flex items-center gap-1 text-gray-600">
-                    📍 {selectedSpotData.checkins}
-                  </span>
+            {/* 景点介绍 */}
+            <section className="mb-4 bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-xl p-6 rounded-3xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📍 景点介绍</h2>
+                {/* 统计数据 - 潮流胶囊 */}
+                <div className="flex gap-2">
+                  <div className="flex items-center gap-1 bg-gradient-to-r from-[#FF6B9D]/20 to-[#FF6B9D]/10 px-3 py-1.5 rounded-full border border-[#FF6B9D]/30">
+                    <span className="text-[#FF6B9D]">❤</span>
+                    <span className="text-sm font-black text-gray-900">{selectedSpotData.likes}</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-gradient-to-r from-[#CCFF00]/20 to-[#CCFF00]/10 px-3 py-1.5 rounded-full border border-[#CCFF00]/50">
+                    <span className="text-gray-900">✦</span>
+                    <span className="text-sm font-black text-gray-900">{selectedSpotData.posts}</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-gradient-to-r from-[#00D4FF]/20 to-[#00D4FF]/10 px-3 py-1.5 rounded-full border border-[#00D4FF]/30">
+                    <span className="text-[#00D4FF]">📍</span>
+                    <span className="text-sm font-black text-gray-900">{selectedSpotData.checkins}</span>
+                  </div>
                 </div>
               </div>
-              <p className="text-gray-700 leading-relaxed mb-3">{selectedSpotData.description}</p>
-              <details className="text-gray-600 text-sm">
-                <summary className="cursor-pointer font-bold">查看历史</summary>
-                <p className="mt-2 leading-relaxed">{selectedSpotData.history}</p>
+              <p className="text-gray-700 leading-relaxed mb-4 text-base">{selectedSpotData.description}</p>
+              <details className="text-gray-600 text-sm group">
+                <summary className="cursor-pointer font-bold hover:text-[#0055FF] transition-colors">查看历史 →</summary>
+                <p className="mt-3 leading-relaxed bg-gray-50/50 p-4 rounded-2xl">{selectedSpotData.history}</p>
               </details>
             </section>
 
             {/* 图库缩略图 */}
-            <section className="mb-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-xl font-black mb-4">📷 景点图库</h2>
+            <section className="mb-4 bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-xl p-6 rounded-3xl border border-white/50 shadow-lg">
+              <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 景点图库</h2>
               <div className="grid grid-cols-3 gap-3">
                 {selectedSpotData.images.map((img, idx) => (
-                  <img
+                  <div
                     key={idx}
-                    src={img}
-                    alt={`${selectedSpotData.name} ${idx + 1}`}
-                    className="w-full h-32 object-cover rounded-xl cursor-pointer hover:opacity-80 transition-opacity"
+                    className="relative group cursor-pointer overflow-hidden rounded-2xl"
                     onClick={() => {
                       setCurrentImageIndex(idx)
                       setShowGallery(true)
                     }}
-                  />
+                  >
+                    <img
+                      src={img}
+                      alt={`${selectedSpotData.name} ${idx + 1}`}
+                      className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="text-white text-2xl">🔍</span>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
@@ -460,10 +482,13 @@ export default function MapView() {
             <section className="mb-4">
               <button
                 onClick={() => setDrawerType(drawerType === 'food' ? null : 'food')}
-                className="w-full bg-white/60 backdrop-blur-md p-4 rounded-2xl flex items-center justify-between hover:bg-white/80 transition-colors"
+                className="w-full bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-xl p-5 rounded-3xl flex items-center justify-between hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-orange-500/30 group"
               >
-                <h2 className="text-xl font-black">🍜 美食推荐</h2>
-                <ChevronRight className={`transition-transform ${drawerType === 'food' ? 'rotate-90' : ''}`} />
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">🍜</span>
+                  <h2 className="text-xl font-black text-gray-900">美食推荐</h2>
+                </div>
+                <ChevronRight className={`transition-transform duration-300 text-orange-500 ${drawerType === 'food' ? 'rotate-90' : ''}`} size={24} />
               </button>
             </section>
 
@@ -471,16 +496,19 @@ export default function MapView() {
             <section className="mb-4">
               <button
                 onClick={() => setDrawerType(drawerType === 'photo' ? null : 'photo')}
-                className="w-full bg-white/60 backdrop-blur-md p-4 rounded-2xl flex items-center justify-between hover:bg-white/80 transition-colors"
+                className="w-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl p-5 rounded-3xl flex items-center justify-between hover:shadow-lg hover:scale-[1.02] transition-all duration-300 border border-purple-500/30 group"
               >
-                <h2 className="text-xl font-black">📷 拍照攻略</h2>
-                <ChevronRight className={`transition-transform ${drawerType === 'photo' ? 'rotate-90' : ''}`} />
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">📷</span>
+                  <h2 className="text-xl font-black text-gray-900">拍照攻略</h2>
+                </div>
+                <ChevronRight className={`transition-transform duration-300 text-purple-500 ${drawerType === 'photo' ? 'rotate-90' : ''}`} size={24} />
               </button>
             </section>
 
             {/* 社区分享（列表式加载） */}
-            <section className="bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-xl font-black mb-4">🌍 社区分享</h2>
+            <section className="bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-xl p-6 rounded-3xl border border-white/50 shadow-lg">
+              <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">🌍 社区分享</h2>
               <p className="text-gray-500 text-sm">该区域的用户分享加载中...</p>
             </section>
           </div>
@@ -489,34 +517,39 @@ export default function MapView() {
 
       {/* 四级页面：图库浮窗 */}
       {showGallery && selectedSpotData && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] max-h-[80vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
-          <div className="p-6">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] max-h-[80vh] bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-2xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/50">
+          <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black">📷 景点图库</h2>
-              <button onClick={() => setShowGallery(false)} className="text-gray-500 hover:text-gray-900">
-                <X size={24} />
+              <h2 className="text-3xl font-black bg-gradient-to-r from-[#0055FF] to-[#00D4FF] bg-clip-text text-transparent">📷 景点图库</h2>
+              <button onClick={() => setShowGallery(false)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
+                <X size={20} />
               </button>
             </div>
 
             {/* 大图预览 */}
-            <div className="mb-4">
+            <div className="mb-6 relative group">
               <img 
                 src={selectedSpotData.images[currentImageIndex]} 
                 alt={selectedSpotData.name}
-                className="w-full h-96 object-cover rounded-2xl"
+                className="w-full h-96 object-cover rounded-2xl shadow-lg"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
 
             {/* 缩略图列表 */}
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-4">
               {selectedSpotData.images.map((img, idx) => (
-                <img
+                <div
                   key={idx}
-                  src={img}
-                  alt={`${selectedSpotData.name} ${idx + 1}`}
-                  className={`w-full h-32 object-cover rounded-xl cursor-pointer transition-all ${idx === currentImageIndex ? 'ring-4 ring-[#0055FF]' : 'opacity-60 hover:opacity-100'}`}
+                  className={`relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 ${idx === currentImageIndex ? 'ring-4 ring-[#0055FF] scale-105' : 'opacity-60 hover:opacity-100 hover:scale-105'}`}
                   onClick={() => setCurrentImageIndex(idx)}
-                />
+                >
+                  <img
+                    src={img}
+                    alt={`${selectedSpotData.name} ${idx + 1}`}
+                    className="w-full h-32 object-cover"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -525,22 +558,25 @@ export default function MapView() {
 
       {/* 四级页面：美食详情（浮窗式） */}
       {drawerType === 'food' && selectedSpotData && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
-          <div className="p-6">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-2xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/50">
+          <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black">🍜 美食推荐</h2>
-              <button onClick={() => setDrawerType(null)} className="text-gray-500 hover:text-gray-900">
-                <X size={24} />
+              <h2 className="text-3xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">🍜 美食推荐</h2>
+              <button onClick={() => setDrawerType(null)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {selectedSpotData.foods.map((food, idx) => (
-                <div key={idx} className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden">
-                  <img src={food.image} alt={food.name} className="w-full h-48 object-cover" />
-                  <div className="p-4">
-                    <h3 className="font-black text-lg mb-2">{food.name}</h3>
-                    <p className="text-gray-600">{food.desc}</p>
+                <div key={idx} className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                  <div className="relative overflow-hidden">
+                    <img src={food.image} alt={food.name} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-black text-xl mb-3 text-gray-900">{food.name}</h3>
+                    <p className="text-gray-600 leading-relaxed">{food.desc}</p>
                   </div>
                 </div>
               ))}
@@ -551,22 +587,22 @@ export default function MapView() {
 
       {/* 四级页面：拍照攻略（浮窗式） */}
       {drawerType === 'photo' && selectedSpotData && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-white/90 backdrop-blur-xl shadow-2xl z-[3000] overflow-y-auto rounded-3xl animate-in zoom-in-95 duration-300">
-          <div className="p-6">
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] max-h-[70vh] bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-2xl shadow-2xl z-[3000] overflow-y-auto rounded-[2rem] animate-in zoom-in-95 duration-300 border border-white/50">
+          <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black">📷 拍照攻略</h2>
-              <button onClick={() => setDrawerType(null)} className="text-gray-500 hover:text-gray-900">
-                <X size={24} />
+              <h2 className="text-3xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">📷 拍照攻略</h2>
+              <button onClick={() => setDrawerType(null)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {selectedSpotData.photoGuides.map((guide, idx) => (
-                <div key={idx} className="bg-white/60 backdrop-blur-md rounded-2xl p-6">
-                  <h3 className="font-black text-lg mb-3">{guide.title}</h3>
-                  <p className="text-gray-700 mb-3">{guide.desc}</p>
-                  <div className="bg-[#CCFF00]/20 p-3 rounded-xl">
-                    <p className="text-sm font-bold">💡 {guide.tip}</p>
+                <div key={idx} className="bg-white/60 backdrop-blur-md rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
+                  <h3 className="font-black text-xl mb-4 text-gray-900">{guide.title}</h3>
+                  <p className="text-gray-700 mb-4 leading-relaxed">{guide.desc}</p>
+                  <div className="bg-gradient-to-r from-[#CCFF00]/30 to-[#CCFF00]/10 p-4 rounded-xl border border-[#CCFF00]/50">
+                    <p className="text-sm font-bold text-gray-900">💡 {guide.tip}</p>
                   </div>
                 </div>
               ))}
