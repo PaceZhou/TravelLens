@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight } from 'lucide-react'
+import { Heart, Clock, MapPin, Hash, Camera, Search, Shuffle, X, ChevronUp, ChevronDown, ChevronRight, MessageCircle } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import Toast from './Toast'
 
@@ -14,6 +14,7 @@ const COMMUNITY_POSTS = [
     content: '大雨过后的洪崖洞简直是重庆版赛博朋克！给大家分享一个完全没人的倒影机位！☔️',
     tags: ['赛博朋克', '夜景', '废土风'],
     likes: 8942,
+    comments: 234,
     time: '10分钟前'
   },
   {
@@ -26,6 +27,7 @@ const COMMUNITY_POSTS = [
     content: '抽到了全球盲盒！连夜飞冰岛。外星地貌的黑沙滩，配上今天阴冷的天气，出片率极高。',
     tags: ['暗黑风', '世界尽头', '极简'],
     likes: 3210,
+    comments: 89,
     time: '2小时前'
   },
   {
@@ -196,9 +198,25 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
           {/* 右侧互动 */}
           <div className="absolute bottom-20 right-6 flex flex-col gap-4">
-            <button className="flex flex-col items-center text-white">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                // TODO: 点赞功能
+              }}
+              className="flex flex-col items-center text-white"
+            >
               <Heart size={28} />
               <span className="text-sm mt-1">{post.likes}</span>
+            </button>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                // TODO: 评论功能
+              }}
+              className="flex flex-col items-center text-white"
+            >
+              <MessageCircle size={28} />
+              <span className="text-sm mt-1">{post.comments}</span>
             </button>
           </div>
         </div>
@@ -350,6 +368,9 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <button className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg">
                     <Heart size={16} className="mr-1.5" /> {post.likes}
                   </button>
+                  <button className="flex items-center hover:text-[#0055FF] transition-colors bg-gray-50 px-3 py-1.5 rounded-lg">
+                    <MessageCircle size={16} className="mr-1.5" /> {post.comments}
+                  </button>
                 </div>
               </div>
             </div>
@@ -384,7 +405,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <input 
                   type="file" 
                   id="photo-upload" 
-                  accept="image/*" 
+                  accept="image/*,video/*" 
                   multiple 
                   className="hidden"
                   onChange={handleImageUpload}
