@@ -89,15 +89,19 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       const result = await likesAPI.toggle(user.id, postId)
       if (result.liked) {
         setLikedPosts(prev => new Set(prev).add(postId))
+        setPosts(prev => prev.map(p => 
+          p.id === postId ? { ...p, likes: p.likes + 1 } : p
+        ))
       } else {
         setLikedPosts(prev => {
           const newSet = new Set(prev)
           newSet.delete(postId)
           return newSet
         })
+        setPosts(prev => prev.map(p => 
+          p.id === postId ? { ...p, likes: p.likes - 1 } : p
+        ))
       }
-      loadPosts(1)
-      setPage(1)
     } catch (error) {
       showToast('操作失败', 'error')
     }
