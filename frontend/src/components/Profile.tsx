@@ -273,13 +273,13 @@ export default function Profile({ username }: { username: string }) {
               
               return (
                 <>
-                  {/* 横向滚动图片容器 */}
+                  {/* 垂直滚动图片容器（胶片式） */}
                   <div 
-                    className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full h-full"
+                    className="flex flex-col overflow-y-auto snap-y snap-mandatory scrollbar-hide w-full h-full"
                     onScroll={(e) => {
-                      const scrollLeft = e.currentTarget.scrollLeft
-                      const width = e.currentTarget.offsetWidth
-                      const index = Math.round(scrollLeft / width)
+                      const scrollTop = e.currentTarget.scrollTop
+                      const height = e.currentTarget.offsetHeight
+                      const index = Math.round(scrollTop / height)
                       setCurrentImageIndex(index)
                     }}
                   >
@@ -290,14 +290,44 @@ export default function Profile({ username }: { username: string }) {
                     ))}
                   </div>
                   
+                  {/* 上箭头 */}
+                  {images.length > 1 && currentImageIndex > 0 && (
+                    <button
+                      onClick={() => {
+                        const container = document.querySelector('.flex.flex-col.overflow-y-auto') as HTMLElement
+                        if (container) {
+                          container.scrollTo({ top: (currentImageIndex - 1) * container.offsetHeight, behavior: 'smooth' })
+                        }
+                      }}
+                      className="absolute top-20 left-1/2 -translate-x-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors z-10"
+                    >
+                      <ChevronRight size={24} className="-rotate-90" />
+                    </button>
+                  )}
+                  
+                  {/* 下箭头 */}
+                  {images.length > 1 && currentImageIndex < images.length - 1 && (
+                    <button
+                      onClick={() => {
+                        const container = document.querySelector('.flex.flex-col.overflow-y-auto') as HTMLElement
+                        if (container) {
+                          container.scrollTo({ top: (currentImageIndex + 1) * container.offsetHeight, behavior: 'smooth' })
+                        }
+                      }}
+                      className="absolute bottom-32 left-1/2 -translate-x-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors z-10"
+                    >
+                      <ChevronRight size={24} className="rotate-90" />
+                    </button>
+                  )}
+                  
                   {/* 图片指示器 */}
                   {images.length > 1 && (
-                    <div className="absolute top-6 left-1/2 -translate-x-1/2 flex gap-2">
+                    <div className="absolute top-6 left-6 flex flex-col gap-2">
                       {images.map((_: any, idx: number) => (
                         <div 
                           key={idx}
                           className={`w-2 h-2 rounded-full transition-all ${
-                            idx === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'
+                            idx === currentImageIndex ? 'bg-white h-6' : 'bg-white/50'
                           }`}
                         />
                       ))}
