@@ -55,6 +55,32 @@ function AppContent() {
     }
   }, [])
 
+  const handleLogin = async (username: string, password: string) => {
+    try {
+      const result = await authAPI.login(username, password)
+      setIsLoggedIn(true)
+      setUsername(result.username)
+      localStorage.setItem('user', JSON.stringify(result))
+      setShowAuthModal(false)
+      return true
+    } catch (error) {
+      alert('登录失败')
+      return false
+    }
+  }
+
+  const handleRegister = async (username: string, password: string) => {
+    try {
+      await authAPI.register(username, password)
+      alert('注册成功！请登录')
+      setAuthMode('login')
+      return true
+    } catch (error) {
+      alert('注册失败')
+      return false
+    }
+  }
+
   const handleLogout = () => {
     setIsLoggedIn(false)
     setUsername('')
@@ -82,45 +108,27 @@ function AppContent() {
             {t.nav.profile}
           </Link>
         </nav>
-          >
-            <User size={16} /> {t.nav.profile}
-          </button>
-        </nav>
-        
-        {/* 登录/注册按钮 */}
+
         {!isLoggedIn ? (
-          <div className="flex gap-2">
-            <button 
-              onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
-              className="px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            >
+          <div className="flex items-center gap-3">
+            <button onClick={() => { setAuthMode('login'); setShowAuthModal(true); }} className="px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               {t.auth.login}
             </button>
-            <button 
-              onClick={() => { setAuthMode('register'); setShowAuthModal(true); }}
-              className="px-4 py-2 text-sm font-bold bg-[#0055FF] text-white rounded-lg hover:bg-[#0044DD] transition-colors"
-            >
+            <button onClick={() => { setAuthMode('register'); setShowAuthModal(true); }} className="px-4 py-2 text-sm font-bold bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-lg hover:shadow-lg transition-all">
               {t.auth.register}
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <span className="text-sm font-bold text-gray-700">👋 {username}</span>
-            <button 
-              onClick={handleLogout}
-              className="px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            >
+            <button onClick={handleLogout} className="px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               {t.auth.logout}
             </button>
           </div>
         )}
         
-        {/* 语言切换下拉菜单 */}
         <div className="relative">
-          <button 
-            onClick={() => setShowLangMenu(!showLangMenu)}
-            className="lang-switch"
-          >
+          <button onClick={() => setShowLangMenu(!showLangMenu)} className="lang-switch">
             <Globe size={16} /> 
             {languages.find(l => l.code === lang)?.name}
             <ChevronDown size={14} />
@@ -129,14 +137,7 @@ function AppContent() {
           {showLangMenu && (
             <div className="lang-dropdown">
               {languages.map(language => (
-                <button
-                  key={language.code}
-                  onClick={() => {
-                    switchLanguage(language.code as any)
-                    setShowLangMenu(false)
-                  }}
-                  className={`lang-option ${lang === language.code ? 'active' : ''}`}
-                >
+                <button key={language.code} onClick={() => { switchLanguage(language.code as any); setShowLangMenu(false); }} className={`lang-option ${lang === language.code ? 'active' : ''}`}>
                   {language.name}
                 </button>
               ))}
@@ -153,8 +154,6 @@ function AppContent() {
           <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
         </Routes>
       </main>
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-center">
               <h2 className="text-3xl font-black mb-4">🔒 需要登录</h2>
               <p className="text-gray-600 mb-6">登录后查看个人空间</p>
               <button 
@@ -226,6 +225,11 @@ function AppContent() {
           </div>
         </>
       )}
+    </div>
+  )
+}
+
+export default App
     </div>
   )
 }

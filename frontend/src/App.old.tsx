@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'
 import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
 import Community from './components/Community'
@@ -9,9 +8,10 @@ import { authAPI } from './api/auth'
 import { User, Globe, ChevronDown } from 'lucide-react'
 import './App.css'
 
-function AppContent() {
-  const navigate = useNavigate()
-  const location = useLocation()
+function App() {
+  const [currentTab, setCurrentTab] = useState(() => {
+    return localStorage.getItem('currentTab') || 'gacha'
+  })
   const [showLangMenu, setShowLangMenu] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
@@ -27,13 +27,10 @@ function AppContent() {
     { code: 'ar', name: 'العربية' }
   ]
 
-  const getCurrentTab = () => {
-    if (location.pathname === '/') return 'gacha'
-    if (location.pathname === '/map') return 'map'
-    if (location.pathname === '/world') return 'world'
-    if (location.pathname.startsWith('/profile')) return 'profile'
-    return 'gacha'
-  }
+  // 保存当前页面
+  useEffect(() => {
+    localStorage.setItem('currentTab', currentTab)
+  }, [currentTab])
 
   // 监听登录请求事件
   useEffect(() => {
@@ -55,33 +52,32 @@ function AppContent() {
     }
   }, [])
 
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setUsername('')
-    localStorage.removeItem('user')
-    navigate('/')
-  }
-
-  const currentTab = getCurrentTab()
-
   return (
     <div className="app">
       <header className="header">
         <h1>🥭 {t.app.name}</h1>
         <nav className="nav">
-          <Link to="/" className={currentTab === 'gacha' ? 'active' : ''}>
+          <button 
+            onClick={() => setCurrentTab('gacha')}
+            className={currentTab === 'gacha' ? 'active' : ''}
+          >
             {t.nav.blindbox}
-          </Link>
-          <Link to="/map" className={currentTab === 'map' ? 'active' : ''}>
+          </button>
+          <button 
+            onClick={() => setCurrentTab('map')}
+            className={currentTab === 'map' ? 'active' : ''}
+          >
             {t.nav.map}
-          </Link>
-          <Link to="/world" className={currentTab === 'world' ? 'active' : ''}>
+          </button>
+          <button 
+            onClick={() => setCurrentTab('world')}
+            className={currentTab === 'world' ? 'active' : ''}
+          >
             {t.nav.world}
-          </Link>
-          <Link to="/profile" className={currentTab === 'profile' ? 'active' : ''}>
-            {t.nav.profile}
-          </Link>
-        </nav>
+          </button>
+          <button 
+            onClick={() => setCurrentTab('profile')}
+            className={currentTab === 'profile' ? 'active' : ''}
           >
             <User size={16} /> {t.nav.profile}
           </button>
@@ -107,7 +103,11 @@ function AppContent() {
           <div className="flex items-center gap-3">
             <span className="text-sm font-bold text-gray-700">👋 {username}</span>
             <button 
-              onClick={handleLogout}
+              onClick={() => { 
+                setIsLoggedIn(false)
+                setUsername('')
+                localStorage.removeItem('user')
+              }}
               className="px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               {t.auth.logout}
@@ -146,13 +146,10 @@ function AppContent() {
       </header>
 
       <main>
-        <Routes>
-          <Route path="/" element={<BlindBox />} />
-          <Route path="/map" element={<MapView />} />
-          <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
-          <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
-        </Routes>
-      </main>
+        {currentTab === 'gacha' && <BlindBox />}
+        {currentTab === 'map' && <MapView />}
+        {currentTab === 'world' && <Community isLoggedIn={isLoggedIn} />}
+        {currentTab === 'profile' && (isLoggedIn ? <Profile username={username} /> : (
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
               <h2 className="text-3xl font-black mb-4">🔒 需要登录</h2>
@@ -227,14 +224,6 @@ function AppContent() {
         </>
       )}
     </div>
-  )
-}
-
-function App() {
-  return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
   )
 }
 
