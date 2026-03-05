@@ -68,15 +68,26 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
       const savedUser = localStorage.getItem('user')
       const userId = savedUser ? JSON.parse(savedUser).id : ''
       
-      await postsAPI.create(userId, {
-        content: postContent,
-        images: uploadedImages,
-        tags: selectedTags,
-        location: '未知位置',
-        city: currentCity === '全部' ? '北京' : currentCity,
-      })
+      if (editPost) {
+        // 编辑模式：更新帖子
+        await postsAPI.update(editPost.id, {
+          content: postContent,
+          images: uploadedImages,
+          tags: selectedTags,
+        })
+        showToast('更新成功！', 'success')
+      } else {
+        // 新建模式：创建帖子
+        await postsAPI.create(userId, {
+          content: postContent,
+          images: uploadedImages,
+          tags: selectedTags,
+          location: '未知位置',
+          city: currentCity === '全部' ? '北京' : currentCity,
+        })
+        showToast('发布成功！', 'success')
+      }
       
-      showToast('发布成功！', 'success')
       setUploadedImages([])
       setPostContent('')
       setSelectedTags([])

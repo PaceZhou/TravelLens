@@ -26,4 +26,9 @@ export class PostsController {
   async delete(@Param('id') id: string) {
     return this.postsService.delete(id);
   }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() body: any) {
+    return this.postsService.update(id, body);
+  }
 }

@@ -224,7 +224,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* 帖子列表 */}
       <PostList
         posts={posts}
-        onPostClick={(index) => navigate(`/posts/${posts[index].id}`)}
+        onPostClick={(index) => setSelectedPost(index)}
         onLoadMore={handleLoadMore}
         hasMore={hasMore}
         isLoading={isLoading}

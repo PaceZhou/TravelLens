@@ -28,4 +28,13 @@ export const postsAPI = {
     });
     return res.json();
   },
+
+  update: async (postId: string, data: any) => {
+    const res = await fetch(`${API_URL}/posts/${postId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
 };

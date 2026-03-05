@@ -43,7 +43,8 @@ body {
   max-width: 600px;
 }
 
-.nav button {
+.nav button,
+.nav a {
   padding: 0.5rem 1.5rem;
   border: none;
   background: transparent;
@@ -55,9 +56,12 @@ body {
   align-items: center;
   gap: 0.5rem;
   white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
 }
 
-.nav button.active {
+.nav button.active,
+.nav a.active {
   background: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }

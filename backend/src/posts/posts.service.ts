@@ -63,4 +63,13 @@ export class PostsService {
     await this.postsRepository.delete(postId);
     return { success: true };
   }
+
+  async update(postId: string, data: any) {
+    await this.postsRepository.update(postId, {
+      content: data.content,
+      images: data.images,
+      tags: data.tags,
+    });
+    return this.postsRepository.findOne({ where: { id: postId } });
+  }
 }
