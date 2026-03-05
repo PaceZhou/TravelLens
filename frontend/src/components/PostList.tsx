@@ -107,7 +107,6 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
                     <Bookmark size={16} fill={collectedPosts.has(post.id) ? 'currentColor' : 'none'} />
                   </button>
                 </div>
-                </div>
               </div>
             </div>
           </div>
