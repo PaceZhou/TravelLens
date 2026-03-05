@@ -256,7 +256,6 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   if (selectedPost !== null) {
     const post = posts[selectedPost]
     const images = post.images || [post.image] || []
-    const currentImage = images[currentImageIndex] || ''
     
     return (
       <div className="fixed inset-0 bg-black z-50 flex flex-col">
@@ -272,39 +271,35 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         </button>
 
         {/* 内容区 */}
-        <div className="flex-1 flex items-center justify-center relative">
-          <img src={currentImage} alt="Post" className="max-h-full max-w-full object-contain" />
+        <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+          {/* 横向滚动图片容器 */}
+          <div 
+            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full h-full"
+            onScroll={(e) => {
+              const scrollLeft = e.currentTarget.scrollLeft
+              const width = e.currentTarget.offsetWidth
+              const index = Math.round(scrollLeft / width)
+              setCurrentImageIndex(index)
+            }}
+          >
+            {images.map((img: string, idx: number) => (
+              <div key={idx} className="flex-shrink-0 w-full h-full flex items-center justify-center snap-center">
+                <img src={img} alt={`Image ${idx + 1}`} className="max-h-full max-w-full object-contain" />
+              </div>
+            ))}
+          </div>
           
-          {/* 左箭头 */}
-          {images.length > 1 && currentImageIndex > 0 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                setCurrentImageIndex(currentImageIndex - 1)
-              }}
-              className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
-            >
-              <ChevronRight size={24} className="rotate-180" />
-            </button>
-          )}
-          
-          {/* 右箭头 */}
-          {images.length > 1 && currentImageIndex < images.length - 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                setCurrentImageIndex(currentImageIndex + 1)
-              }}
-              className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
-            >
-              <ChevronRight size={24} />
-            </button>
-          )}
-          
-          {/* 图片计数 */}
+          {/* 图片指示器 */}
           {images.length > 1 && (
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm">
-              {currentImageIndex + 1} / {images.length}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 flex gap-2">
+              {images.map((_: any, idx: number) => (
+                <div 
+                  key={idx}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    idx === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'
+                  }`}
+                />
+              ))}
             </div>
           )}
           
