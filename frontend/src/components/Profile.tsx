@@ -7,6 +7,7 @@ import { collectionsAPI } from '../api/collections'
 import ConfirmDialog from './ConfirmDialog'
 import CoverSelector from './CoverSelector'
 import PostPublisher from './PostPublisher'
+import PostDetail from './PostDetail'
 import Toast from './Toast'
 
 export default function Profile({ username: propUsername }: { username: string }) {
@@ -23,6 +24,7 @@ export default function Profile({ username: propUsername }: { username: string }
   const [editingPost, setEditingPost] = useState<any>(null)
   const [showPublisher, setShowPublisher] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
+  const [selectedPost, setSelectedPost] = useState<number | null>(null)
 
   // 优先使用URL中的userId，否则使用props传入的username
   const username = userId || propUsername
@@ -247,7 +249,8 @@ export default function Profile({ username: propUsername }: { username: string }
                     {userPosts.map((post: any, index: number) => (
                       <div 
                         key={post.id} 
-                        className="aspect-square rounded-xl overflow-hidden relative group"
+                        className="aspect-square rounded-xl overflow-hidden relative group cursor-pointer"
+                        onClick={() => setSelectedPost(index)}
                       >
                         <img 
                           src={post.images?.[0] || ''} 
@@ -416,6 +419,15 @@ export default function Profile({ username: propUsername }: { username: string }
 
       {/* Toast通知 */}
       {toast && <Toast type={toast.type} message={toast.message} />}
+
+      {/* 帖子详情浮窗 */}
+      {selectedPost !== null && (
+        <PostDetail
+          post={userPosts[selectedPost]}
+          onClose={() => setSelectedPost(null)}
+          showToast={showToast}
+        />
+      )}
     </div>
   )
 }
