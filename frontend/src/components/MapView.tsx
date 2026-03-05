@@ -397,12 +397,24 @@ export default function MapView() {
               className="w-full h-64 object-cover"
             />
             
-            {/* 查看图库按钮 */}
+            {/* 查看图库按钮（带缩略图） */}
             <button
               onClick={() => setShowGallery(!showGallery)}
-              className="absolute bottom-4 right-4 px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl font-bold text-sm hover:bg-white transition-colors"
+              className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-xl overflow-hidden hover:bg-white transition-colors"
             >
-              📷 查看图库 ({selectedSpotData.images.length})
+              <div className="flex items-center gap-2 p-2">
+                <div className="flex gap-1">
+                  {selectedSpotData.images.slice(0, 3).map((img, idx) => (
+                    <img 
+                      key={idx}
+                      src={img} 
+                      alt="" 
+                      className="w-8 h-8 object-cover rounded"
+                    />
+                  ))}
+                </div>
+                <span className="font-bold text-sm pr-2">+{selectedSpotData.images.length}</span>
+              </div>
             </button>
             
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
@@ -411,19 +423,19 @@ export default function MapView() {
                 <p className="flex items-center"><MapPin size={16} className="mr-1" /> {selectedSpotData.city}</p>
               </div>
               
-              {/* 统计数据 */}
-              <div className="flex gap-4 text-white">
+              {/* 统计数据（缩小） */}
+              <div className="flex gap-3 text-white">
                 <div className="text-center">
-                  <div className="text-2xl font-black">{selectedSpotData.likes}</div>
-                  <div className="text-xs opacity-80">点赞</div>
+                  <div className="text-xl font-black">{selectedSpotData.likes}</div>
+                  <div className="text-[10px] opacity-80">点赞</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-black">{selectedSpotData.posts}</div>
-                  <div className="text-xs opacity-80">博文</div>
+                  <div className="text-xl font-black">{selectedSpotData.posts}</div>
+                  <div className="text-[10px] opacity-80">博文</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-black">{selectedSpotData.checkins}</div>
-                  <div className="text-xs opacity-80">打卡</div>
+                  <div className="text-xl font-black">{selectedSpotData.checkins}</div>
+                  <div className="text-[10px] opacity-80">打卡</div>
                 </div>
               </div>
             </div>
@@ -433,7 +445,21 @@ export default function MapView() {
           <div className="p-6">
             {/* 景点介绍（展开式） */}
             <section className="mb-4 bg-white/60 backdrop-blur-md p-6 rounded-2xl">
-              <h2 className="text-xl font-black mb-3">📍 景点介绍</h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xl font-black">📍 景点介绍</h2>
+                {/* 小型统计数据 */}
+                <div className="flex gap-3 text-xs">
+                  <span className="flex items-center gap-1 text-gray-600">
+                    ❤️ {selectedSpotData.likes}
+                  </span>
+                  <span className="flex items-center gap-1 text-gray-600">
+                    📝 {selectedSpotData.posts}
+                  </span>
+                  <span className="flex items-center gap-1 text-gray-600">
+                    📍 {selectedSpotData.checkins}
+                  </span>
+                </div>
+              </div>
               <p className="text-gray-700 leading-relaxed mb-3">{selectedSpotData.description}</p>
               <details className="text-gray-600 text-sm">
                 <summary className="cursor-pointer font-bold">查看历史</summary>
