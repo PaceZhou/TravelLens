@@ -57,6 +57,17 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     }
   }, [editPost])
 
+  // ESC键关闭弹窗
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
