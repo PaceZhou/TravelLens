@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MessageCircle, Send, ArrowBigUp, ArrowBigDown } from 'lucide-react'
+import { API_URL } from '../api/config'
 
 /**
  * 评论区组件 - Reddit风格
@@ -36,7 +37,7 @@ export default function CommentSection({ postId, onCommentAdded, showInputAtBott
    * 加载评论列表
    */
   const loadComments = () => {
-    fetch(`http://192.168.2.33:3001/comments/post/${postId}`)
+    fetch(`${API_URL}/comments/post/${postId}`)
       .then(res => res.json())
       .then(data => setComments(data))
       .catch(() => {})
@@ -64,7 +65,7 @@ export default function CommentSection({ postId, onCommentAdded, showInputAtBott
 
     setIsSubmitting(true)
     try {
-      await fetch('http://192.168.2.33:3001/comments', {
+      await fetch('${API_URL}/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

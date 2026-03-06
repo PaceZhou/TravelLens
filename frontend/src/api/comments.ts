@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.2.33:3001';
+import { API_URL } from './config';
 
 export const commentsAPI = {
   create: async (data: { postId: string; userId: string; content: string; replyToUserId?: string; replyToUsername?: string }) => {

@@ -41,16 +41,21 @@ export class PostsService {
       take: limit,
     });
     
-    // 统计每个帖子的真实点赞数
+    // 统计每个帖子的真实点赞数和评论数
     const postsWithLikes = await Promise.all(
       posts.map(async (post) => {
         const likeCount = await this.postsRepository.query(
           'SELECT COUNT(*) as count FROM likes WHERE postId = ?',
           [post.id]
         );
+        const commentCount = await this.postsRepository.query(
+          'SELECT COUNT(*) as count FROM comments WHERE postId = ?',
+          [post.id]
+        );
         return {
           ...post,
           likes: parseInt(likeCount[0].count) || 0,
+          comments: parseInt(commentCount[0].count) || 0,
         };
       })
     );

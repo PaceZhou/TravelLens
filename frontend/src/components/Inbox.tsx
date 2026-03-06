@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, Heart, MessageCircle, Mail } from 'lucide-react'
+import { API_URL } from '../api/config'
 
 interface InboxProps {
   isOpen: boolean
@@ -15,7 +16,7 @@ export default function Inbox({ isOpen, onClose }: InboxProps) {
       const savedUser = localStorage.getItem('user')
       const userId = savedUser ? JSON.parse(savedUser).id : ''
       
-      fetch(`http://192.168.2.33:3001/notifications/likes/${userId}`)
+      fetch(`${API_URL}/notifications/likes/${userId}`)
         .then(res => res.json())
         .then(data => setLikeNotifications(data))
         .catch(() => {})

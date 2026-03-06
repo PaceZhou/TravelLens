@@ -238,18 +238,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <div className="flex-1 bg-[#F8F9FA] px-4 py-8 min-h-screen max-w-[1600px] mx-auto w-full">
-      {/* 频道头部 */}
+      {/* 筛选器 */}
       <div className="mb-8 sticky top-20 z-30 bg-[#F8F9FA]/90 backdrop-blur-xl pt-6 pb-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
-          <div>
-            <h2 className="text-4xl font-black tracking-tighter flex items-center gap-3 text-gray-900">
-              世界频道 <span className="bg-[#CCFF00] text-gray-900 text-sm px-2 py-1 rounded-sm font-bold shadow-sm">LIVE</span>
-            </h2>
-            <p className="text-gray-500 text-base mt-2 font-medium">全球玩家正在这些坐标出没，交流前沿出片情报。</p>
-          </div>
-        </div>
-
-        {/* 筛选器 */}
         <div className="mb-4 relative">
           <div className="flex items-center gap-3 flex-wrap">
             <button

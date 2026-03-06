@@ -1,7 +1,4 @@
-// 动态API地址：支持本地和cloudflared域名
-const API_URL = window.location.hostname === 'mangogo.babascart.cc.cd' 
-  ? 'https://mangogo.babascart.cc.cd' 
-  : 'http://192.168.2.33:3001';
+import { API_URL } from './config';
 
 export const authAPI = {
   register: async (username: string, password: string) => {

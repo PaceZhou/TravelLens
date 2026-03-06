@@ -8,6 +8,7 @@ import PostDetailPage from './components/PostDetailPage'
 import Inbox from './components/Inbox'
 import { useLanguage } from './contexts/LanguageContext'
 import { authAPI } from './api/auth'
+import { API_URL } from './api/config'
 import { User, Globe, ChevronDown, Inbox as InboxIcon } from 'lucide-react'
 import './App.css'
 
@@ -65,7 +66,7 @@ function AppContent() {
       const userId = savedUser ? JSON.parse(savedUser).id : ''
       
       const fetchUnreadCount = () => {
-        fetch(`http://192.168.2.33:3001/notifications/unread/${userId}`)
+        fetch(`${API_URL}/notifications/unread/${userId}`)
           .then(res => res.json())
           .then(count => setUnreadCount(count))
           .catch(() => {})

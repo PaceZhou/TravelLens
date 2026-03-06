@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Gift, Crosshair, Sparkles, Zap, Lock, Calendar, MapPin, X } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { API_URL } from '../api/config'
 import Toast from './Toast'
 
 const SCOPE_OPTIONS = [
@@ -190,7 +191,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                       
                       console.log('保存芒一下:', { userId, destination, description })
                       
-                      const response = await fetch('http://192.168.2.33:3001/mango-moments', {
+                      const response = await fetch('${API_URL}/mango-moments', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

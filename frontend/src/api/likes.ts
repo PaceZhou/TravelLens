@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.2.33:3001'
+import { API_URL } from './config';
 
 export const likesAPI = {
   toggle: async (userId: string, postId: string) => {

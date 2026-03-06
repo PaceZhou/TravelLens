@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Heart } from 'lucide-react'
+import { API_URL } from '../api/config'
 
 /**
  * Instagram风格评论组件
@@ -29,7 +30,7 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
 
   // 加载评论
   useEffect(() => {
-    fetch(`http://192.168.2.33:3001/comments/post/${postId}`)
+    fetch(`${API_URL}/comments/post/${postId}`)
       .then(res => res.json())
       .then(data => setComments(data))
       .catch(() => {})
@@ -62,7 +63,7 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
         commentData.replyToUsername = replyTo.username
       }
 
-      await fetch('http://192.168.2.33:3001/comments', {
+      await fetch(`${API_URL}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(commentData)
@@ -71,7 +72,7 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
       setNewComment('')
       setReplyTo(null)
       // 重新加载评论
-      const res = await fetch(`http://192.168.2.33:3001/comments/post/${postId}`)
+      const res = await fetch(`${API_URL}/comments/post/${postId}`)
       const data = await res.json()
       setComments(data)
     } catch (error) {
@@ -114,7 +115,7 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {comments.map(comment => (
+            {comments.filter(c => !c.replyToUsername).map(comment => (
               <div key={comment.id}>
                 {/* 主评论 */}
                 <div className="flex gap-3">

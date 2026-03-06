@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle, Camera } from 'lucide-react'
 import { postsAPI } from '../api/posts'
+import { API_URL } from '../api/config'
 import { collectionsAPI } from '../api/collections'
 import ConfirmDialog from './ConfirmDialog'
 import CoverSelector from './CoverSelector'
@@ -35,7 +36,7 @@ export default function Profile({ username: propUsername }: { username: string }
 
   // 获取用户统计数据
   useEffect(() => {
-    fetch(`http://192.168.2.33:3001/auth/stats/${username}`)
+    fetch(`${API_URL}/auth/stats/${username}`)
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(() => {})
@@ -43,7 +44,7 @@ export default function Profile({ username: propUsername }: { username: string }
 
   // 获取用户头像
   useEffect(() => {
-    fetch(`http://192.168.2.33:3001/auth/user/${username}`)
+    fetch(`${API_URL}/auth/user/${username}`)
       .then(res => res.json())
       .then(data => setAvatar(data.avatar || '👤'))
       .catch(() => {})
@@ -52,7 +53,7 @@ export default function Profile({ username: propUsername }: { username: string }
   // 更新头像
   const handleAvatarUpdate = async (newAvatar: string) => {
     try {
-      await fetch('http://192.168.2.33:3001/auth/avatar', {
+      await fetch('${API_URL}/auth/avatar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, avatar: newAvatar })
@@ -74,7 +75,7 @@ export default function Profile({ username: propUsername }: { username: string }
   const loadMangoMoments = () => {
     const savedUser = localStorage.getItem('user')
     const userId = savedUser ? JSON.parse(savedUser).id : ''
-    fetch(`http://192.168.2.33:3001/mango-moments/user/${userId}`)
+    fetch(`${API_URL}/mango-moments/user/${userId}`)
       .then(res => res.json())
       .then(data => setMangoMoments(data))
       .catch(() => {})
