@@ -8,10 +8,12 @@ import { MessageCircle, Send, ArrowBigUp, ArrowBigDown } from 'lucide-react'
  * Props:
  * - postId: 帖子ID
  * - onCommentAdded: 评论添加后的回调函数
+ * - showInputAtBottom: 是否在底部显示输入框（默认true，PostDetail中设为false）
  */
 interface CommentSectionProps {
   postId: string
   onCommentAdded?: () => void
+  showInputAtBottom?: boolean
 }
 
 interface Comment {
@@ -24,7 +26,7 @@ interface Comment {
   }
 }
 
-export default function CommentSection({ postId, onCommentAdded }: CommentSectionProps) {
+export default function CommentSection({ postId, onCommentAdded, showInputAtBottom = true }: CommentSectionProps) {
   // 状态管理
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState('')
@@ -102,26 +104,28 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
 
   return (
     <div className="space-y-4">
-      {/* Reddit风格评论输入框 */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
-        <textarea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="你怎么看？"
-          className="w-full p-3 text-sm resize-none focus:outline-none"
-          rows={3}
-          disabled={isSubmitting}
-        />
-        <div className="flex justify-end p-2 bg-gray-50 border-t">
-          <button
-            onClick={handleSubmit}
-            disabled={!newComment.trim() || isSubmitting}
-            className="px-6 py-1.5 bg-[#0055FF] text-white text-sm font-bold rounded-full hover:bg-[#0044DD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            评论
-          </button>
+      {/* Reddit风格评论输入框 - 仅在showInputAtBottom为true时显示 */}
+      {showInputAtBottom && (
+        <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="你怎么看？"
+            className="w-full p-3 text-sm resize-none focus:outline-none"
+            rows={3}
+            disabled={isSubmitting}
+          />
+          <div className="flex justify-end p-2 bg-gray-50 border-t">
+            <button
+              onClick={handleSubmit}
+              disabled={!newComment.trim() || isSubmitting}
+              className="px-6 py-1.5 bg-[#0055FF] text-white text-sm font-bold rounded-full hover:bg-[#0044DD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              评论
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Reddit风格评论列表 */}
       <div className="space-y-2">

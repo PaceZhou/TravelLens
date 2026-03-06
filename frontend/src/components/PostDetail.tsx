@@ -106,11 +106,25 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
                 ))}
               </div>
               
-              {/* 评论区 - 直接在浮窗内显示 */}
-              <CommentSection postId={post.id} />
+              {/* 评论列表 */}
+              <CommentSection postId={post.id} showInputAtBottom={true} />
             </div>
             
-            <div className="p-6 border-t flex items-center gap-6">
+            {/* 评论输入框 - 在操作栏上方 */}
+            <div className="px-6 py-3 border-t">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="写下你的评论..."
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#0055FF]"
+                />
+                <button className="px-4 py-2 bg-[#0055FF] text-white text-sm font-bold rounded-lg hover:bg-[#0044DD] transition-colors">
+                  评论
+                </button>
+              </div>
+            </div>
+            
+            <div className="px-6 py-4 border-t flex items-center gap-6">
               <button 
                 onClick={(e) => { e.stopPropagation(); onLike(post.id); }} 
                 className={`flex items-center gap-2 transition-colors ${
