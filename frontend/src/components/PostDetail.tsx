@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { X, Heart, MessageCircle, Bookmark } from 'lucide-react'
-import CommentSection from './CommentSection'
+import { X, Heart, MessageCircle, Bookmark, ChevronLeft, ChevronRight } from 'lucide-react'
+import InstagramComment from './InstagramComment'
 
 interface Post {
   id: string
@@ -15,6 +14,7 @@ interface Post {
   likes: number
   comments: number
   time: string
+  user?: { username: string }
 }
 
 interface PostDetailProps {
@@ -27,18 +27,15 @@ interface PostDetailProps {
   showToast: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void
 }
 
-export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected, showToast }: PostDetailProps) {
-  const navigate = useNavigate()
+export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected }: PostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', handleEsc)
-    
     return () => {
       document.body.style.overflow = 'unset'
       window.removeEventListener('keydown', handleEsc)
@@ -51,106 +48,102 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/20 z-40" onClick={onClose}></div>
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50" onClick={(e) => e.stopPropagation()}>
-        <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl w-[1200px] h-[800px]">
-          <div className="flex-1 flex items-center justify-center relative">
-            <div 
-              className="relative w-full h-full flex items-center justify-center" 
-              onWheel={(e) => {
-                if (e.deltaY > 0 && currentImageIndex < images.length - 1) {
-                  setCurrentImageIndex(currentImageIndex + 1)
-                } else if (e.deltaY < 0 && currentImageIndex > 0) {
-                  setCurrentImageIndex(currentImageIndex - 1)
-                }
-              }}
-            >
-              <img src={images[currentImageIndex]} alt="Post" className="w-full h-full object-contain" />
-              {images.length > 1 && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-                  {images.map((_: any, idx: number) => (
-                    <div 
-                      key={idx} 
-                      className={`h-2 rounded-full transition-all ${
-                        idx === currentImageIndex ? 'bg-white w-8' : 'bg-white/50 w-2'
-                      }`} 
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+      <div className="fixed inset-0 bg-black/90 z-[9998]" onClick={onClose}></div>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div className="w-full max-w-6xl h-[90vh] bg-black flex rounded-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
           
+          {/* 左侧：图片区 */}
+          <div className="flex-1 bg-black flex items-center justify-center relative">
+            {images.length > 0 && (
+              <>
+                <img
+                  src={images[currentImageIndex]}
+                  alt="Post"
+                  className="max-w-full max-h-full object-contain"
+                />
+                {images.length > 1 && (
+                  <>
+                    {currentImageIndex > 0 && (
+                      <button
+                        onClick={() => setCurrentImageIndex(prev => prev - 1)}
+                        className="absolute left-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                    )}
+                    {currentImageIndex < images.length - 1 && (
+                      <button
+                        onClick={() => setCurrentImageIndex(prev => prev + 1)}
+                        className="absolute right-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* 右侧：Instagram风格内容区 */}
           <div className="w-[400px] bg-white flex flex-col">
-            <div className="p-6 border-b flex items-center justify-between">
+            {/* 顶部：用户信息 */}
+            <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center gap-3">
-                <img src={post.avatar} alt={post.author} className="w-12 h-12 rounded-full" />
-                <div>
-                  <div className="font-bold">{post.author}</div>
-                  <div className="text-sm text-gray-500">{post.time}</div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
+                  👤
                 </div>
+                <span className="font-semibold text-sm">{post.user?.username || post.author}</span>
               </div>
-              <button 
-                onClick={onClose} 
-                className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center"
-              >
-                <X size={20} />
+              <button onClick={onClose} className="hover:opacity-50">
+                <X size={24} />
               </button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto p-6">
-              <p className="text-gray-900 mb-4">{post.content}</p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {post.tags.map((tag: string) => (
-                  <span key={tag} className="text-[#0055FF] text-sm">#{tag}</span>
-                ))}
+
+            {/* 中间：帖子内容和评论 */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {/* 帖子内容 */}
+              <div className="px-4 py-3 border-b">
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm flex-shrink-0">
+                    👤
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm">
+                      <span className="font-semibold mr-2">{post.user?.username || post.author}</span>
+                      <span className="text-gray-900">{post.content}</span>
+                    </div>
+                    {post.tags && post.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {post.tags.map((tag: string) => (
+                          <span key={tag} className="text-[#0095f6] text-xs">#{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              
-              {/* 评论列表 */}
-              <CommentSection postId={post.id} showInputAtBottom={true} />
+
+              {/* Instagram评论组件 */}
+              <InstagramComment postId={post.id} />
             </div>
-            
-            {/* 评论输入框 - 在操作栏上方 */}
-            <div className="px-6 py-3 border-t">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="写下你的评论..."
-                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#0055FF]"
-                />
-                <button className="px-4 py-2 bg-[#0055FF] text-white text-sm font-bold rounded-lg hover:bg-[#0044DD] transition-colors">
-                  评论
+
+            {/* 底部：操作栏 */}
+            <div className="border-t">
+              <div className="flex items-center gap-4 px-4 py-3">
+                <button onClick={(e) => { e.stopPropagation(); onLike(post.id); }} className="hover:opacity-50">
+                  <Heart size={24} fill={isLiked ? '#ed4956' : 'none'} stroke={isLiked ? '#ed4956' : 'currentColor'} />
+                </button>
+                <button className="hover:opacity-50">
+                  <MessageCircle size={24} />
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); onCollect(post.id); }} className="ml-auto hover:opacity-50">
+                  <Bookmark size={24} fill={isCollected ? 'currentColor' : 'none'} />
                 </button>
               </div>
-            </div>
-            
-            <div className="px-6 py-4 border-t flex items-center gap-6">
-              <button 
-                onClick={(e) => { e.stopPropagation(); onLike(post.id); }} 
-                className={`flex items-center gap-2 transition-colors ${
-                  isLiked ? 'text-red-500' : 'text-gray-700 hover:text-red-500'
-                }`}
-              >
-                <Heart size={24} fill={isLiked ? 'currentColor' : 'none'} />
-                <span className="font-medium">{post.likes}</span>
-              </button>
-              <button 
-                onClick={(e) => { 
-                  e.stopPropagation();
-                }} 
-                className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"
-              >
-                <MessageCircle size={24} />
-                <span className="font-medium">{post.comments}</span>
-              </button>
-              <button 
-                onClick={(e) => { e.stopPropagation(); onCollect(post.id); }} 
-                className={`flex items-center gap-2 transition-colors ${
-                  isCollected ? 'text-[#FFB800]' : 'text-gray-700 hover:text-[#FFB800]'
-                }`}
-              >
-                <Bookmark size={24} fill={isCollected ? 'currentColor' : 'none'} />
-              </button>
+              <div className="px-4 pb-3">
+                <div className="font-semibold text-sm">{post.likes} 次赞</div>
+              </div>
             </div>
           </div>
         </div>

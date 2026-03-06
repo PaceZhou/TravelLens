@@ -1,4 +1,7 @@
-const API_URL = 'http://192.168.2.33:3001';
+// 动态API地址：支持本地和cloudflared域名
+const API_URL = window.location.hostname === 'mangogo.babascart.cc.cd' 
+  ? 'https://mangogo.babascart.cc.cd' 
+  : 'http://192.168.2.33:3001';
 
 export const authAPI = {
   register: async (username: string, password: string) => {
@@ -7,6 +10,7 @@ export const authAPI = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
+    if (!res.ok) throw new Error('Register failed');
     return res.json();
   },
 
