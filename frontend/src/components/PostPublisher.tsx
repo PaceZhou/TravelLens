@@ -148,15 +148,25 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords
-        // 使用高德地图逆地理编码API获取地址
+        // 使用Nominatim逆地理编码API（免费）
         try {
           const response = await fetch(
-            `https://restapi.amap.com/v3/geocode/regeo?key=YOUR_AMAP_KEY&location=${longitude},${latitude}`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=zh-CN`
           )
           const data = await response.json()
-          if (data.status === '1' && data.regeocode) {
-            const address = data.regeocode.formatted_address
-            setLocation(address)
+          
+          if (data.address) {
+            const city = data.address.city || data.address.town || data.address.village || data.address.county || '未知城市'
+            const district = data.address.suburb || data.address.neighbourhood || ''
+            const locationText = district ? `${city} ${district}` : city
+            
+            setLocation(locationText)
+            
+            // 自动添加城市标签
+            if (city && !selectedTags.includes(city)) {
+              setSelectedTags(prev => [...prev, city])
+            }
+            
             showToast('定位成功', 'success')
           } else {
             setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`)
