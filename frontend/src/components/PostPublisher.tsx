@@ -109,8 +109,13 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
   }
 
   const addCustomTag = () => {
-    if (customTag.trim() && !selectedTags.includes(customTag.trim())) {
-      setSelectedTags(prev => [...prev, customTag.trim()])
+    if (!customTag.trim()) return
+    
+    // 清理标签：移除所有#号和特殊符号，只保留中文、英文、数字
+    let cleanTag = customTag.trim().replace(/[#＃]/g, '').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '')
+    
+    if (cleanTag && !selectedTags.includes(cleanTag)) {
+      setSelectedTags(prev => [...prev, cleanTag])
       setCustomTag('')
     }
   }

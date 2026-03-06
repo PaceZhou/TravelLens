@@ -212,7 +212,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           >
             全部
           </button>
-          {allTags.map(tag => (
+          {allTags.slice(0, 10).map(tag => (
             <button
               key={tag.id}
               onClick={() => setSelectedTag(tag.name)}
