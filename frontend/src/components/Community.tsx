@@ -25,6 +25,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [allTags, setAllTags] = useState<any[]>([])
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [isTagsExpanded, setIsTagsExpanded] = useState(false)
+  const [sortBy, setSortBy] = useState<'default' | 'latest'>('default')
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set())
   const [collectedPosts, setCollectedPosts] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
@@ -59,6 +60,13 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         p.location?.toLowerCase().includes(query) ||
         p.city?.toLowerCase().includes(query) ||
         p.tags?.some(tag => tag.toLowerCase().includes(query))
+      )
+    }
+
+    // 排序
+    if (sortBy === 'latest') {
+      filtered = [...filtered].sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )
     }
 
@@ -262,6 +270,18 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               }`}
             >
               全部
+            </button>
+            
+            {/* 最新按钮 */}
+            <button
+              onClick={() => setSortBy(sortBy === 'latest' ? 'default' : 'latest')}
+              className={`px-5 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                sortBy === 'latest'
+                  ? 'bg-gray-900 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              最新
             </button>
             
             {/* 热门标签 */}
