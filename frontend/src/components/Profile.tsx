@@ -18,6 +18,7 @@ export default function Profile({ username: propUsername }: { username: string }
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
   const [avatar, setAvatar] = useState('👤')
   const [showAvatarSelector, setShowAvatarSelector] = useState(false)
+  const [mangoMoments, setMangoMoments] = useState<any[]>([])
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
@@ -67,7 +68,17 @@ export default function Profile({ username: propUsername }: { username: string }
   useEffect(() => {
     loadUserPosts()
     loadCollectedPosts()
+    loadMangoMoments()
   }, [username])
+
+  const loadMangoMoments = () => {
+    const savedUser = localStorage.getItem('user')
+    const userId = savedUser ? JSON.parse(savedUser).id : ''
+    fetch(`http://192.168.2.33:3001/mango-moments/user/${userId}`)
+      .then(res => res.json())
+      .then(data => setMangoMoments(data))
+      .catch(() => {})
+  }
 
   const loadUserPosts = () => {
     postsAPI.getAll().then(result => {
@@ -252,27 +263,31 @@ export default function Profile({ username: propUsername }: { username: string }
             {/* 芒一下日历 */}
             {activeTab === 'calendar' && (
               <div className="space-y-4">
-                <h2 className="text-2xl font-black mb-6">🥭 {t.profile.calendar}</h2>
-                {mangoCalendar.map(item => (
-                  <div key={item.id} className="bg-gradient-to-br from-[#FFB800]/10 to-[#00D4AA]/10 rounded-2xl p-6 border-2 border-[#FFB800]/30">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="text-sm text-gray-600 mb-1">{item.date}</div>
-                        <h3 className="text-2xl font-black">{item.city}</h3>
-                      </div>
-                      <span className="px-4 py-2 bg-[#CCFF00] rounded-full text-sm font-black">
-                        {item.status === 'planned' ? '计划中' : '已完成'}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {item.spots.map((spot, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-white rounded-full text-sm font-bold">
-                          {idx + 1}. {spot}
-                        </span>
-                      ))}
-                    </div>
+                <h2 className="text-2xl font-black mb-6">🥭 我的芒一下</h2>
+                {mangoMoments.length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    还没有芒一下记录，快去首页抽取吧！
                   </div>
-                ))}
+                ) : (
+                  mangoMoments.map(item => (
+                    <div key={item.id} className="bg-gradient-to-br from-[#FFB800]/10 to-[#00D4AA]/10 rounded-2xl p-6 border-2 border-[#FFB800]/30">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <div className="text-sm text-gray-600 mb-1">{item.date}</div>
+                          <h3 className="text-2xl font-black">{item.destination}</h3>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 mb-4">{item.description}</p>
+                      {item.images && item.images.length > 0 && (
+                        <div className="grid grid-cols-3 gap-2">
+                          {item.images.slice(0, 3).map((img: string, idx: number) => (
+                            <img key={idx} src={img} alt="" className="w-full h-24 object-cover rounded-lg" />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             )}
 
