@@ -131,28 +131,6 @@ export default function BlindBox() {
         </button>
       </div>
 
-      {/* 登录弹窗 - 只在保存时显示 */}
-      {showLogin && (
-        <>
-          <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setShowLogin(false)}></div>
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white/90 backdrop-blur-2xl rounded-3xl z-[9999] p-8 shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black">🔐 {t.auth.loginTitle}</h2>
-              <button onClick={() => setShowLogin(false)} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                <X size={20} />
-              </button>
-            </div>
-            <p className="text-gray-600 mb-6">登录后即可保存抽取结果到日历</p>
-            <button 
-              onClick={handleLogin}
-              className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
-            >
-              {t.auth.loginButton}
-            </button>
-          </div>
-        </>
-      )}
-
       {/* 结果浮窗 */}
       {result && (
         <>
@@ -210,6 +188,28 @@ export default function BlindBox() {
                 {t.blindbox.saveToCalendar}
               </button>
             </div>
+          </div>
+        </>
+      )}
+
+      {/* 登录弹窗 - 在最上层 */}
+      {showLogin && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-[10000]" onClick={() => setShowLogin(false)}></div>
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white/90 backdrop-blur-2xl rounded-3xl z-[10001] p-8 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black">🔐 {t.auth.loginTitle}</h2>
+              <button onClick={() => setShowLogin(false)} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                <X size={20} />
+              </button>
+            </div>
+            <p className="text-gray-600 mb-6">登录后即可保存抽取结果到日历</p>
+            <button 
+              onClick={handleLogin}
+              className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
+            >
+              {t.auth.loginButton}
+            </button>
           </div>
         </>
       )}
