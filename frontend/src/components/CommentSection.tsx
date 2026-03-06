@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { MessageCircle, Send } from 'lucide-react'
+import { MessageCircle, Send, ArrowBigUp, ArrowBigDown } from 'lucide-react'
 
 /**
- * 评论区组件
+ * 评论区组件 - Reddit风格
  * 独立的评论功能模块
  * 
  * Props:
@@ -102,52 +102,64 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
 
   return (
     <div className="space-y-4">
-      {/* 评论标题 */}
-      <div className="flex items-center gap-2">
-        <MessageCircle size={20} />
-        <h3 className="font-bold">评论 ({comments.length})</h3>
-      </div>
-
-      {/* 评论输入框 */}
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <input
-          type="text"
+      {/* Reddit风格评论输入框 */}
+      <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
+        <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder="写下你的评论..."
-          className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:border-[#0055FF]"
+          placeholder="你怎么看？"
+          className="w-full p-3 text-sm resize-none focus:outline-none"
+          rows={3}
           disabled={isSubmitting}
         />
-        <button
-          type="submit"
-          disabled={!newComment.trim() || isSubmitting}
-          className="w-10 h-10 bg-[#0055FF] text-white rounded-full flex items-center justify-center hover:bg-[#0044DD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <Send size={18} />
-        </button>
-      </form>
+        <div className="flex justify-end p-2 bg-gray-50 border-t">
+          <button
+            onClick={handleSubmit}
+            disabled={!newComment.trim() || isSubmitting}
+            className="px-6 py-1.5 bg-[#0055FF] text-white text-sm font-bold rounded-full hover:bg-[#0044DD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            评论
+          </button>
+        </div>
+      </div>
 
-      {/* 评论列表 */}
-      <div className="space-y-3">
+      {/* Reddit风格评论列表 */}
+      <div className="space-y-2">
         {comments.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
-            暂无评论，快来抢沙发吧！
+          <div className="text-center py-12 text-gray-400 text-sm">
+            还没有评论
           </div>
         ) : (
           comments.map(comment => (
-            <div key={comment.id} className="flex gap-3 p-3 bg-gray-50 rounded-2xl">
-              {/* 用户头像 */}
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm flex-shrink-0">
-                {comment.user.avatar || '👤'}
+            <div key={comment.id} className="border-l-2 border-gray-200 pl-4 py-2">
+              {/* 用户信息栏 */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs">
+                  {comment.user.avatar || '👤'}
+                </div>
+                <span className="font-bold text-sm">{comment.user.username}</span>
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-400">{formatTime(comment.createdAt)}</span>
               </div>
               
               {/* 评论内容 */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-bold text-sm">{comment.user.username}</span>
-                  <span className="text-xs text-gray-400">{formatTime(comment.createdAt)}</span>
-                </div>
-                <p className="text-sm text-gray-700 break-words">{comment.content}</p>
+              <p className="text-sm text-gray-800 mb-2 leading-relaxed">{comment.content}</p>
+              
+              {/* Reddit风格操作栏 */}
+              <div className="flex items-center gap-4 text-xs text-gray-500">
+                <button className="flex items-center gap-1 hover:text-[#0055FF] transition-colors">
+                  <ArrowBigUp size={16} />
+                  <span>赞</span>
+                </button>
+                <button className="flex items-center gap-1 hover:text-[#0055FF] transition-colors">
+                  <ArrowBigDown size={16} />
+                </button>
+                <button className="hover:text-[#0055FF] transition-colors">
+                  回复
+                </button>
+                <button className="hover:text-[#0055FF] transition-colors">
+                  分享
+                </button>
               </div>
             </div>
           ))
