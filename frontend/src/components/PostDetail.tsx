@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X, Heart, MessageCircle, Bookmark } from 'lucide-react'
+import CommentSection from './CommentSection'
 
 interface Post {
   id: string
@@ -104,7 +105,9 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
                   <span key={tag} className="text-[#0055FF] text-sm">#{tag}</span>
                 ))}
               </div>
-              <div className="text-gray-500 text-sm">暂无评论</div>
+              
+              {/* 评论区 - 直接在浮窗内显示 */}
+              <CommentSection postId={post.id} />
             </div>
             
             <div className="p-6 border-t flex items-center gap-6">
@@ -119,9 +122,7 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
               </button>
               <button 
                 onClick={(e) => { 
-                  e.stopPropagation(); 
-                  onClose();
-                  navigate(`/posts/${post.id}`);
+                  e.stopPropagation();
                 }} 
                 className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"
               >
