@@ -15,6 +15,11 @@ export class NotificationsController {
     return this.notificationsService.getLikeNotifications(userId);
   }
 
+  @Get('unread/:userId')
+  getUnreadCount(@Param('userId') userId: string) {
+    return this.notificationsService.getUnreadCount(userId);
+  }
+
   @Get(':userId')
   getByUser(@Param('userId') userId: string) {
     return this.notificationsService.getByUser(userId);

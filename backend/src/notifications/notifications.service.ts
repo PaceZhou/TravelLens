@@ -56,4 +56,10 @@ export class NotificationsService {
     
     return query.getMany();
   }
+
+  async getUnreadCount(userId: string) {
+    return this.notificationsRepository.count({
+      where: { userId, isRead: false },
+    });
+  }
 }
