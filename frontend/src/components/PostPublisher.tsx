@@ -21,6 +21,8 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
   const [showCoverSelector, setShowCoverSelector] = useState(false)
   const [coverIndex, setCoverIndex] = useState(0)
   const [allTags, setAllTags] = useState<any[]>([])
+  const [location, setLocation] = useState('')
+  const [isGettingLocation, setIsGettingLocation] = useState(false)
 
   const defaultTags = ['克莱因蓝', '极简', '日系', '城市漫游', '自然', '建筑', '人文', '美食', '夜景', '胶片']
 
@@ -45,11 +47,13 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
       setPostContent(editPost.content || '')
       setSelectedTags(editPost.tags || [])
       setCoverIndex(editPost.coverIndex || 0)
+      setLocation(editPost.location || '')
     } else {
       setUploadedImages([])
       setPostContent('')
       setSelectedTags([])
       setCoverIndex(0)
+      setLocation('')
     }
   }, [editPost])
 
@@ -134,6 +138,48 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     }
   }
 
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      showToast('浏览器不支持定位功能', 'error')
+      return
+    }
+
+    setIsGettingLocation(true)
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords
+        // 使用高德地图逆地理编码API获取地址
+        try {
+          const response = await fetch(
+            `https://restapi.amap.com/v3/geocode/regeo?key=YOUR_AMAP_KEY&location=${longitude},${latitude}`
+          )
+          const data = await response.json()
+          if (data.status === '1' && data.regeocode) {
+            const address = data.regeocode.formatted_address
+            setLocation(address)
+            showToast('定位成功', 'success')
+          } else {
+            setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`)
+            showToast('定位成功', 'success')
+          }
+        } catch (error) {
+          setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`)
+          showToast('定位成功', 'success')
+        }
+        setIsGettingLocation(false)
+      },
+      (error) => {
+        setIsGettingLocation(false)
+        if (error.code === 1) {
+          showToast('请允许访问位置信息', 'warning')
+        } else {
+          showToast('定位失败，请重试', 'error')
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    )
+  }
+
   const handlePublish = async () => {
     if (!postContent.trim() && uploadedImages.length === 0) {
       showToast('请输入内容或上传图片', 'warning')
@@ -160,7 +206,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
           images: uploadedImages,
           coverIndex: coverIndex,
           tags: selectedTags,
-          location: '未知位置',
+          location: location || '未知位置',
           city: currentCity === '全部' ? '北京' : currentCity,
         })
         showToast('发布成功！', 'success')
@@ -194,6 +240,25 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
               placeholder="记录这一刻的美好..."
               className="w-full h-32 p-4 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:border-[#0055FF] transition-colors"
             ></textarea>
+          </div>
+
+          {/* 定位功能 */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="font-bold text-gray-700">📍 位置</span>
+            </div>
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={getLocation}
+                disabled={isGettingLocation}
+                className="px-6 py-2 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full font-bold hover:shadow-lg transition-all disabled:opacity-50"
+              >
+                {isGettingLocation ? '定位中...' : '获取当前位置'}
+              </button>
+              {location && (
+                <span className="text-sm text-gray-600">{location}</span>
+              )}
+            </div>
           </div>
 
           <div>
