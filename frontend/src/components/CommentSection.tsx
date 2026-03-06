@@ -127,43 +127,30 @@ export default function CommentSection({ postId, onCommentAdded, showInputAtBott
         </div>
       )}
 
-      {/* Reddit风格评论列表 */}
-      <div className="space-y-2">
+      {/* Instagram风格评论列表 */}
+      <div className="space-y-3">
         {comments.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 text-sm">
+          <div className="text-center py-8 text-gray-400 text-sm">
             还没有评论
           </div>
         ) : (
           comments.map(comment => (
-            <div key={comment.id} className="border-l-2 border-gray-200 pl-4 py-2">
-              {/* 用户信息栏 */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs">
-                  {comment.user.avatar || '👤'}
-                </div>
-                <span className="font-bold text-sm">{comment.user.username}</span>
-                <span className="text-xs text-gray-400">•</span>
-                <span className="text-xs text-gray-400">{formatTime(comment.createdAt)}</span>
+            <div key={comment.id} className="flex gap-3">
+              {/* 用户头像 */}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
+                {comment.user.avatar || '👤'}
               </div>
               
               {/* 评论内容 */}
-              <p className="text-sm text-gray-800 mb-2 leading-relaxed">{comment.content}</p>
-              
-              {/* Reddit风格操作栏 */}
-              <div className="flex items-center gap-4 text-xs text-gray-500">
-                <button className="flex items-center gap-1 hover:text-[#0055FF] transition-colors">
-                  <ArrowBigUp size={16} />
-                  <span>赞</span>
-                </button>
-                <button className="flex items-center gap-1 hover:text-[#0055FF] transition-colors">
-                  <ArrowBigDown size={16} />
-                </button>
-                <button className="hover:text-[#0055FF] transition-colors">
-                  回复
-                </button>
-                <button className="hover:text-[#0055FF] transition-colors">
-                  分享
-                </button>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm">
+                  <span className="font-bold mr-2">{comment.user.username}</span>
+                  <span className="text-gray-800">{comment.content}</span>
+                </div>
+                <div className="flex items-center gap-4 mt-1 text-xs text-gray-400">
+                  <span>{formatTime(comment.createdAt)}</span>
+                  <button className="hover:text-gray-600">回复</button>
+                </div>
               </div>
             </div>
           ))
