@@ -6,6 +6,8 @@ import Community from './components/Community'
 import Profile from './components/Profile'
 import PostDetailPage from './components/PostDetailPage'
 import Inbox from './components/Inbox'
+import MobileTopBar from './components/MobileTopBar'
+import MobileBottomBar from './components/MobileBottomBar'
 import { useLanguage } from './contexts/LanguageContext'
 import { authAPI } from './api/auth'
 import { API_URL } from './api/config'
@@ -89,7 +91,10 @@ function AppContent() {
 
   return (
     <div className="app">
-      <header className="header">
+      {/* 移动端顶部导航 */}
+      <MobileTopBar />
+      
+      <header className="header md:flex hidden">
         <h1>🥭 {t.app.name}</h1>
         <nav className="nav">
           <Link to="/" className={currentTab === 'gacha' ? 'active' : ''}>
@@ -175,7 +180,7 @@ function AppContent() {
         </div>
       </header>
 
-      <main>
+      <main className="pt-14 pb-16 md:pt-0 md:pb-0">
         <Routes>
           <Route path="/" element={<BlindBox isLoggedIn={isLoggedIn} />} />
           <Route path="/map" element={<MapView />} />
@@ -247,6 +252,9 @@ function AppContent() {
 
       {/* 收件箱 */}
       <Inbox isOpen={showInbox} onClose={() => setShowInbox(false)} />
+      
+      {/* 移动端底部导航 */}
+      <MobileBottomBar />
     </div>
   )
 }

@@ -50,7 +50,7 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
 
   return (
     <div className="space-y-6">
-      <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6">
+      <div className="columns-2 md:columns-3 lg:columns-3 xl:columns-4 gap-2 md:gap-6">
         {posts.map((post, index) => (
           <div
             key={post.id}
