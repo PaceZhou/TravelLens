@@ -202,43 +202,63 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         </div>
 
         {/* 筛选器 */}
-        <div className="mb-4">
-          <div 
-            className="overflow-hidden transition-all duration-300" 
-            style={{ maxHeight: isTagsExpanded ? '300px' : '60px' }}
-          >
-            <div className={`flex flex-wrap gap-3 ${isTagsExpanded ? 'overflow-y-auto' : ''}`} style={{ maxHeight: isTagsExpanded ? '300px' : 'auto' }}>
-              <button
-                onClick={() => setSelectedTag(null)}
-                className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
-                  selectedTag === null
-                    ? 'bg-gray-900 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                全部
-              </button>
-              {allTags.map(tag => (
-                <button
-                  key={tag.id}
-                  onClick={() => setSelectedTag(tag.name)}
-                  className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
-                    selectedTag === tag.name
-                      ? 'bg-gray-900 text-white shadow-lg'
-                      : 'bg-white text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="mb-4 relative">
           <button
             onClick={() => setIsTagsExpanded(!isTagsExpanded)}
-            className="mt-2 text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+            className="px-6 py-3 bg-white rounded-full font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
           >
-            {isTagsExpanded ? '收起标签 ▲' : '展开更多标签 ▼'}
+            <span>标签筛选</span>
+            <span className="text-sm">{isTagsExpanded ? '▲' : '▼'}</span>
           </button>
+          
+          {isTagsExpanded && (
+            <>
+              {/* 透明遮罩 */}
+              <div 
+                className="fixed inset-0 bg-black/30 z-40"
+                onClick={() => setIsTagsExpanded(false)}
+              />
+              
+              {/* 标签弹窗 */}
+              <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-6 z-50 w-[90%] max-w-4xl max-h-[400px] overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-bold">选择标签</h3>
+                  <button 
+                    onClick={() => setIsTagsExpanded(false)}
+                    className="text-2xl text-gray-500 hover:text-gray-900"
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => { setSelectedTag(null); setIsTagsExpanded(false); }}
+                    className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
+                      selectedTag === null
+                        ? 'bg-gray-900 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                    }`}
+                  >
+                    全部
+                  </button>
+                  {allTags.map(tag => (
+                    <button
+                      key={tag.id}
+                      onClick={() => { setSelectedTag(tag.name); setIsTagsExpanded(false); }}
+                      className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
+                        selectedTag === tag.name
+                          ? 'bg-gray-900 text-white shadow-lg'
+                          : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                      }`}
+                    >
+                      #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* 搜索栏 */}
