@@ -13,6 +13,8 @@ interface Comment {
   id: string
   content: string
   createdAt: string
+  replyToUserId?: string
+  replyToUsername?: string
   user: {
     username: string
     avatar?: string
@@ -23,6 +25,7 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [replyTo, setReplyTo] = useState<{ username: string; userId: string } | null>(null)
 
   // 加载评论
   useEffect(() => {
@@ -47,13 +50,26 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
 
     setIsSubmitting(true)
     try {
+      const commentData: any = {
+        userId,
+        postId,
+        content: newComment.trim()
+      }
+
+      // 如果是回复，添加回复信息
+      if (replyTo) {
+        commentData.replyToUserId = replyTo.userId
+        commentData.replyToUsername = replyTo.username
+      }
+
       await fetch('http://192.168.2.33:3001/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, postId, content: newComment.trim() })
+        body: JSON.stringify(commentData)
       })
 
       setNewComment('')
+      setReplyTo(null)
       // 重新加载评论
       const res = await fetch(`http://192.168.2.33:3001/comments/post/${postId}`)
       const data = await res.json()
@@ -63,6 +79,12 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // 处理回复
+  const handleReply = (username: string, userId: string) => {
+    setReplyTo({ username, userId })
+    setNewComment(`@${username} `)
   }
 
   // 格式化时间
@@ -93,28 +115,62 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
         ) : (
           <div className="space-y-4">
             {comments.map(comment => (
-              <div key={comment.id} className="flex gap-3">
-                {/* 头像 */}
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
-                  {comment.user.avatar || '👤'}
-                </div>
-                
-                {/* 评论内容 */}
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm leading-relaxed">
-                    <span className="font-semibold mr-2">{comment.user.username}</span>
-                    <span className="text-gray-900">{comment.content}</span>
+              <div key={comment.id}>
+                {/* 主评论 */}
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
+                    {comment.user.avatar || '👤'}
                   </div>
-                  <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500">
-                    <span>{formatTime(comment.createdAt)}</span>
-                    <button className="font-semibold hover:text-gray-700">回复</button>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm leading-relaxed">
+                      <span className="font-semibold mr-2">{comment.user.username}</span>
+                      <span className="text-gray-900">{comment.content}</span>
+                    </div>
+                    <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500">
+                      <span>{formatTime(comment.createdAt)}</span>
+                      <button 
+                        onClick={() => handleReply(comment.user.username, comment.user.username)}
+                        className="font-semibold hover:text-gray-700"
+                      >
+                        回复
+                      </button>
+                    </div>
                   </div>
+                  
+                  <button className="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                    <Heart size={12} />
+                  </button>
                 </div>
-                
-                {/* 点赞按钮 */}
-                <button className="flex-shrink-0 text-gray-400 hover:text-gray-600">
-                  <Heart size={12} />
-                </button>
+
+                {/* 回复评论 - 缩进显示 */}
+                {comments.filter(c => c.replyToUsername === comment.user.username).map(reply => (
+                  <div key={reply.id} className="flex gap-3 ml-11 mt-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
+                      {reply.user.avatar || '👤'}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm leading-relaxed">
+                        <span className="font-semibold mr-2">{reply.user.username}</span>
+                        <span className="text-gray-900">{reply.content}</span>
+                      </div>
+                      <div className="flex items-center gap-4 mt-1.5 text-xs text-gray-500">
+                        <span>{formatTime(reply.createdAt)}</span>
+                        <button 
+                          onClick={() => handleReply(reply.user.username, reply.user.username)}
+                          className="font-semibold hover:text-gray-700"
+                        >
+                          回复
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <button className="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                      <Heart size={12} />
+                    </button>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
@@ -123,6 +179,14 @@ export default function InstagramComment({ postId }: InstagramCommentProps) {
 
       {/* 评论输入框 - 固定在底部 */}
       <div className="border-t px-4 py-3">
+        {replyTo && (
+          <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
+            <span>回复 @{replyTo.username}</span>
+            <button onClick={() => { setReplyTo(null); setNewComment(''); }} className="text-gray-400 hover:text-gray-600">
+              取消
+            </button>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="flex items-center gap-3">
           <input
             type="text"
