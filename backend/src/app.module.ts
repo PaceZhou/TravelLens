@@ -6,6 +6,7 @@ import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { CollectionsModule } from './collections/collections.module';
 import { TagsModule } from './tags/tags.module';
+import { MangoMomentsModule } from './mango-moments/mango-moments.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TagsModule } from './tags/tags.module';
     LikesModule,
     CollectionsModule,
     TagsModule,
+    MangoMomentsModule,
   ],
 })
 export class AppModule {}

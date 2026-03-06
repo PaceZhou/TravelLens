@@ -174,13 +174,32 @@ export default function BlindBox() {
               </div>
 
               <button 
-                onClick={() => {
+                onClick={async () => {
                   if (!isLoggedIn) {
                     setShowLogin(true)
                   } else {
-                    // 保存到日历逻辑
-                    alert('已保存到日历！')
-                    setResult(null)
+                    // 保存到芒一下数据库
+                    try {
+                      const savedUser = localStorage.getItem('user')
+                      const userId = savedUser ? JSON.parse(savedUser).id : ''
+                      
+                      await fetch('http://192.168.2.33:3001/mango-moments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          userId,
+                          destination: result.destination,
+                          description: result.description,
+                          images: result.images,
+                          date: new Date().toISOString().split('T')[0]
+                        })
+                      })
+                      
+                      alert('已保存到我的芒一下！')
+                      setResult(null)
+                    } catch (error) {
+                      alert('保存失败，请重试')
+                    }
                   }
                 }}
                 className="w-full mt-8 py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
