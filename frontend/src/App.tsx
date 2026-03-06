@@ -20,6 +20,7 @@ function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState('')
   const [showInbox, setShowInbox] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const { lang, switchLanguage, t } = useLanguage()
 
   const languages = [
@@ -57,6 +58,24 @@ function AppContent() {
       setUsername(user.username)
     }
   }, [])
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const savedUser = localStorage.getItem('user')
+      const userId = savedUser ? JSON.parse(savedUser).id : ''
+      
+      const fetchUnreadCount = () => {
+        fetch(`http://192.168.2.33:3001/notifications/unread/${userId}`)
+          .then(res => res.json())
+          .then(count => setUnreadCount(count))
+          .catch(() => {})
+      }
+      
+      fetchUnreadCount()
+      const interval = setInterval(fetchUnreadCount, 30000)
+      return () => clearInterval(interval)
+    }
+  }, [isLoggedIn])
 
   const handleLogout = () => {
     setIsLoggedIn(false)
@@ -109,6 +128,11 @@ function AppContent() {
               className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <InboxIcon size={20} className="text-gray-700" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </button>
             <span className="text-sm font-bold text-gray-700">👋 {username}</span>
             <button 
