@@ -128,6 +128,8 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     
     if (cleanTag) {
       setSelectedTags(prev => [...prev, cleanTag])
+      // 将新标签添加到allTags前面，移除最后一个
+      setAllTags(prev => [{ id: cleanTag, name: cleanTag, count: 0 }, ...prev.slice(0, 13)])
       setCustomTag('')
     }
   }
@@ -200,7 +202,7 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
               <span className="font-bold text-gray-700">选择标签</span>
             </div>
             <div className="flex flex-wrap gap-2 mb-3">
-              {allTags.map(tag => (
+              {allTags.slice(0, 14).map(tag => (
                 <button
                   key={tag.id}
                   onClick={() => toggleTag(tag.name)}
