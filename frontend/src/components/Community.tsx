@@ -239,7 +239,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   return (
     <div className="flex-1 bg-[#F8F9FA] px-4 py-8 min-h-screen max-w-[1600px] mx-auto w-full">
       {/* 筛选器 */}
-      <div className="mb-4 sticky top-20 z-30 bg-[#F8F9FA]/90 backdrop-blur-xl pt-3 pb-2">
+      <div className="mb-2 sticky top-20 z-30 bg-[#F8F9FA]/90 backdrop-blur-xl pt-1.5 pb-1">
         <div className="mb-4 relative">
           <div className="flex items-center gap-3 flex-wrap">
             <button
