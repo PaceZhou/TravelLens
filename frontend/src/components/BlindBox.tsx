@@ -183,16 +183,21 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                       const savedUser = localStorage.getItem('user')
                       const userId = savedUser ? JSON.parse(savedUser).id : ''
                       
-                      console.log('保存芒一下:', { userId, destination: result.destination })
+                      // 提取数据
+                      const destination = result.city || '未知目的地'
+                      const description = result.spots?.map((s: any) => s.name).join('、') || ''
+                      const images = result.spots?.map((s: any) => s.image) || []
+                      
+                      console.log('保存芒一下:', { userId, destination, description })
                       
                       const response = await fetch('http://192.168.2.33:3001/mango-moments', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                           userId,
-                          destination: result.destination,
-                          description: result.description,
-                          images: result.images,
+                          destination,
+                          description,
+                          images,
                           date: new Date().toISOString().split('T')[0]
                         })
                       })
