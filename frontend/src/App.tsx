@@ -5,9 +5,10 @@ import MapView from './components/MapView'
 import Community from './components/Community'
 import Profile from './components/Profile'
 import PostDetailPage from './components/PostDetailPage'
+import Inbox from './components/Inbox'
 import { useLanguage } from './contexts/LanguageContext'
 import { authAPI } from './api/auth'
-import { User, Globe, ChevronDown } from 'lucide-react'
+import { User, Globe, ChevronDown, Inbox as InboxIcon } from 'lucide-react'
 import './App.css'
 
 function AppContent() {
@@ -18,6 +19,7 @@ function AppContent() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState('')
+  const [showInbox, setShowInbox] = useState(false)
   const { lang, switchLanguage, t } = useLanguage()
 
   const languages = [
@@ -102,6 +104,12 @@ function AppContent() {
           </div>
         ) : (
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowInbox(true)}
+              className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <InboxIcon size={20} className="text-gray-700" />
+            </button>
             <span className="text-sm font-bold text-gray-700">👋 {username}</span>
             <button 
               onClick={handleLogout}
@@ -211,6 +219,9 @@ function AppContent() {
           </div>
         </>
       )}
+
+      {/* 收件箱 */}
+      <Inbox isOpen={showInbox} onClose={() => setShowInbox(false)} />
     </div>
   )
 }
