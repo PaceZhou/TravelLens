@@ -212,6 +212,18 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               <span className="text-sm">{isTagsExpanded ? '▲' : '▼'}</span>
             </button>
             
+            {/* 全部按钮 */}
+            <button
+              onClick={() => setSelectedTag(null)}
+              className={`px-5 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                selectedTag === null
+                  ? 'bg-gray-900 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              全部
+            </button>
+            
             {/* 热门标签 */}
             {allTags.slice(0, 6).map(tag => (
               <button
@@ -236,8 +248,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
                 onClick={() => setIsTagsExpanded(false)}
               />
               
-              {/* 标签弹窗 */}
-              <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-6 z-50 w-[90%] max-w-4xl max-h-[400px] overflow-y-auto">
+              {/* 标签弹窗 - 从标签筛选按钮下方展开 */}
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-3xl shadow-2xl p-6 z-50 w-[800px] max-h-[400px] overflow-y-auto">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold">选择标签</h3>
                   <button 
