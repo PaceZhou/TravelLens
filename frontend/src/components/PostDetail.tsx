@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { X, Heart, MessageCircle, Bookmark } from 'lucide-react'
 
 interface Post {
@@ -26,6 +27,7 @@ interface PostDetailProps {
 }
 
 export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected, showToast }: PostDetailProps) {
+  const navigate = useNavigate()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
@@ -116,7 +118,11 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
                 <span className="font-medium">{post.likes}</span>
               </button>
               <button 
-                onClick={(e) => { e.stopPropagation(); showToast('评论功能开发中', 'info'); }} 
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  onClose();
+                  navigate(`/posts/${post.id}`);
+                }} 
                 className="flex items-center gap-2 text-gray-700 hover:text-[#0055FF]"
               >
                 <MessageCircle size={24} />
