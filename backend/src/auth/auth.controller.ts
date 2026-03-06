@@ -17,11 +17,17 @@ export class AuthController {
 
   @Get('stats/:username')
   async getStats(@Param('username') username: string) {
+    // 获取用户的帖子数
+    const posts = await this.authService.getUserPostsCount(username);
+    
+    // 获取用户的总点赞数
+    const likes = await this.authService.getUserTotalLikes(username);
+    
     return {
-      posts: 0,
+      posts,
       following: 0,
       followers: 0,
-      likes: 0
+      likes
     };
   }
 }
