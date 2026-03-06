@@ -6,6 +6,7 @@ import { postsAPI } from '../api/posts'
 import { collectionsAPI } from '../api/collections'
 import ConfirmDialog from './ConfirmDialog'
 import CoverSelector from './CoverSelector'
+import AvatarSelector from './AvatarSelector'
 import PostPublisher from './PostPublisher'
 import PostDetail from './PostDetail'
 import Toast from './Toast'
@@ -15,6 +16,8 @@ export default function Profile({ username: propUsername }: { username: string }
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('calendar')
   const [stats, setStats] = useState({ posts: 0, following: 0, followers: 0, likes: 0 })
+  const [avatar, setAvatar] = useState('👤')
+  const [showAvatarSelector, setShowAvatarSelector] = useState(false)
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
@@ -36,6 +39,29 @@ export default function Profile({ username: propUsername }: { username: string }
       .then(data => setStats(data))
       .catch(() => {})
   }, [username])
+
+  // 获取用户头像
+  useEffect(() => {
+    fetch(`http://192.168.2.33:3001/auth/user/${username}`)
+      .then(res => res.json())
+      .then(data => setAvatar(data.avatar || '👤'))
+      .catch(() => {})
+  }, [username])
+
+  // 更新头像
+  const handleAvatarUpdate = async (newAvatar: string) => {
+    try {
+      await fetch('http://192.168.2.33:3001/auth/avatar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, avatar: newAvatar })
+      })
+      setAvatar(newAvatar)
+      showToast('头像更新成功', 'success')
+    } catch {
+      showToast('头像更新失败', 'error')
+    }
+  }
 
   // 获取用户帖子
   useEffect(() => {
@@ -146,7 +172,17 @@ export default function Profile({ username: propUsername }: { username: string }
         {/* 用户信息卡片 */}
         <div className="bg-white rounded-3xl p-8 mb-6 shadow-lg">
           <div className="flex items-center gap-6">
-            <img src={user.avatar} alt={user.username} className="w-24 h-24 rounded-full" />
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-5xl">
+                {avatar}
+              </div>
+              <button
+                onClick={() => setShowAvatarSelector(true)}
+                className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+              >
+                <Camera size={16} />
+              </button>
+            </div>
             <div className="flex-1">
               <h1 className="text-3xl font-black mb-2">{user.username}</h1>
               <p className="text-gray-600 mb-4">{user.bio}</p>
@@ -423,6 +459,14 @@ export default function Profile({ username: propUsername }: { username: string }
 
       {/* Toast通知 */}
       {toast && <Toast type={toast.type} message={toast.message} />}
+
+      {/* 头像选择器 */}
+      <AvatarSelector
+        isOpen={showAvatarSelector}
+        onClose={() => setShowAvatarSelector(false)}
+        onSelect={handleAvatarUpdate}
+        currentAvatar={avatar}
+      />
 
       {/* 帖子详情浮窗 */}
       {selectedPost !== null && (
