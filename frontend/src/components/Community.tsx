@@ -24,6 +24,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [posts, setPosts] = useState<any[]>([])
   const [allTags, setAllTags] = useState<any[]>([])
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [isTagsExpanded, setIsTagsExpanded] = useState(false)
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set())
   const [collectedPosts, setCollectedPosts] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
@@ -201,32 +202,43 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         </div>
 
         {/* 筛选器 */}
-        <div className="overflow-y-auto mb-4" style={{ maxHeight: '450px' }}>
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setSelectedTag(null)}
-              className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
-                selectedTag === null
-                  ? 'bg-gray-900 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              全部
-            </button>
-            {allTags.map(tag => (
+        <div className="mb-4">
+          <div 
+            className="overflow-hidden transition-all duration-300" 
+            style={{ maxHeight: isTagsExpanded ? '300px' : '60px' }}
+          >
+            <div className={`flex flex-wrap gap-3 ${isTagsExpanded ? 'overflow-y-auto' : ''}`} style={{ maxHeight: isTagsExpanded ? '300px' : 'auto' }}>
               <button
-                key={tag.id}
-                onClick={() => setSelectedTag(tag.name)}
+                onClick={() => setSelectedTag(null)}
                 className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
-                  selectedTag === tag.name
+                  selectedTag === null
                     ? 'bg-gray-900 text-white shadow-lg'
                     : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
+                全部
               </button>
-            ))}
+              {allTags.map(tag => (
+                <button
+                  key={tag.id}
+                  onClick={() => setSelectedTag(tag.name)}
+                  className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
+                    selectedTag === tag.name
+                      ? 'bg-gray-900 text-white shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
+                </button>
+              ))}
+            </div>
           </div>
+          <button
+            onClick={() => setIsTagsExpanded(!isTagsExpanded)}
+            className="mt-2 text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+          >
+            {isTagsExpanded ? '收起标签 ▲' : '展开更多标签 ▼'}
+          </button>
         </div>
 
         {/* 搜索栏 */}
