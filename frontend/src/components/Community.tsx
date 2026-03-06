@@ -242,14 +242,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           
           {isTagsExpanded && (
             <>
-              {/* 透明遮罩 */}
-              <div 
-                className="fixed inset-0 bg-black/30 z-40"
-                onClick={() => setIsTagsExpanded(false)}
-              />
-              
               {/* 标签弹窗 - 从标签筛选按钮下方展开 */}
-              <div className="absolute top-full left-0 mt-2 bg-white/50 backdrop-blur-md rounded-3xl shadow-2xl p-6 z-50 w-[800px] max-h-[400px] overflow-y-auto scrollbar-hide">
+              <div className="absolute top-full left-0 mt-2 bg-white/75 backdrop-blur-md rounded-3xl shadow-2xl p-6 z-50 w-[800px] max-h-[400px] overflow-y-auto scrollbar-hide">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold text-gray-900">选择标签</h3>
                   <button 
