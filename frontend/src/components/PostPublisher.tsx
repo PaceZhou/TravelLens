@@ -120,7 +120,13 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
       return
     }
     
-    if (cleanTag && !selectedTags.includes(cleanTag)) {
+    // 检查是否重复
+    if (selectedTags.includes(cleanTag)) {
+      showToast('标签已存在', 'warning')
+      return
+    }
+    
+    if (cleanTag) {
       setSelectedTags(prev => [...prev, cleanTag])
       setCustomTag('')
     }

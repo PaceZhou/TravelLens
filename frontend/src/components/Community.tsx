@@ -201,8 +201,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         </div>
 
         {/* 筛选器 */}
-        <div className="overflow-x-auto mb-4">
-          <div className="flex gap-3 min-w-max">
+        <div className="overflow-y-auto mb-4" style={{ maxHeight: '450px' }}>
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setSelectedTag(null)}
               className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
