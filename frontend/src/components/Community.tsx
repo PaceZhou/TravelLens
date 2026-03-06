@@ -249,12 +249,12 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               />
               
               {/* 标签弹窗 - 从标签筛选按钮下方展开 */}
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-3xl shadow-2xl p-6 z-50 w-[800px] max-h-[400px] overflow-y-auto">
+              <div className="absolute top-full left-0 mt-2 bg-white/50 backdrop-blur-md rounded-3xl shadow-2xl p-6 z-50 w-[800px] max-h-[400px] overflow-y-auto scrollbar-hide">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold">选择标签</h3>
+                  <h3 className="text-xl font-bold text-gray-900">选择标签</h3>
                   <button 
                     onClick={() => setIsTagsExpanded(false)}
-                    className="text-2xl text-gray-500 hover:text-gray-900"
+                    className="text-2xl text-gray-700 hover:text-gray-900"
                   >
                     ×
                   </button>
