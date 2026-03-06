@@ -34,11 +34,15 @@ export class AuthService {
   }
 
   async getUserPostsCount(username: string): Promise<number> {
-    return this.postRepository.count({ where: { userId: username } });
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (!user) return 0;
+    return this.postRepository.count({ where: { userId: user.id } });
   }
 
   async getUserTotalLikes(username: string): Promise<number> {
-    const posts = await this.postRepository.find({ where: { userId: username } });
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (!user) return 0;
+    const posts = await this.postRepository.find({ where: { userId: user.id } });
     const postIds = posts.map(p => p.id);
     if (postIds.length === 0) return 0;
     return this.likeRepository.count({ where: { postId: In(postIds) } });
