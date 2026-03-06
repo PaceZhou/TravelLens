@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Gift, Crosshair, Sparkles, Zap, Lock, Calendar, MapPin, X } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import Toast from './Toast'
 
 const SCOPE_OPTIONS = [
   { id: 'city', icon: '📍' },
@@ -28,6 +29,12 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [drawText, setDrawText] = useState('')
   const [result, setResult] = useState(null)
   const [showLogin, setShowLogin] = useState(false)
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
+    setToast({ type, message })
+    setTimeout(() => setToast(null), 3000)
+  }
 
   // 移除24小时限制相关代码
 
@@ -188,10 +195,10 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                         })
                       })
                       
-                      alert('已保存到我的芒一下！')
+                      showToast('已保存到我的芒一下！', 'success')
                       setResult(null)
                     } catch (error) {
-                      alert('保存失败，请重试')
+                      showToast('保存失败，请重试', 'error')
                     }
                   }
                 }}
@@ -225,6 +232,9 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
           </div>
         </>
       )}
+
+      {/* Toast通知 */}
+      {toast && <Toast type={toast.type} message={toast.message} />}
     </div>
   )
 }
