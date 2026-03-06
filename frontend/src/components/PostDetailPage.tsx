@@ -4,6 +4,7 @@ import { X, Heart, MessageCircle, Bookmark } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 import { likesAPI } from '../api/likes'
 import { collectionsAPI } from '../api/collections'
+import CommentSection from './CommentSection'
 
 export default function PostDetailPage() {
   const { postId } = useParams()
@@ -127,7 +128,9 @@ export default function PostDetailPage() {
                   <span key={tag} className="text-[#0055FF] text-sm">#{tag}</span>
                 ))}
               </div>
-              <div className="text-gray-500 text-sm">暂无评论</div>
+              
+              {/* 评论区 */}
+              <CommentSection postId={post.id} />
             </div>
             
             <div className="p-6 border-t flex items-center gap-6">
