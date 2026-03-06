@@ -30,4 +30,14 @@ export class AuthController {
       likes
     };
   }
+
+  @Post('avatar')
+  async updateAvatar(@Body() body: { username: string; avatar: string }) {
+    return this.authService.updateAvatar(body.username, body.avatar);
+  }
+
+  @Get('user/:username')
+  async getUser(@Param('username') username: string) {
+    return this.authService.getUser(username);
+  }
 }

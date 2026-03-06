@@ -43,4 +43,13 @@ export class AuthService {
     if (postIds.length === 0) return 0;
     return this.likeRepository.count({ where: { postId: In(postIds) } });
   }
+
+  async updateAvatar(username: string, avatar: string) {
+    await this.userRepository.update({ username }, { avatar });
+    return { success: true };
+  }
+
+  async getUser(username: string) {
+    return this.userRepository.findOne({ where: { username } });
+  }
 }
