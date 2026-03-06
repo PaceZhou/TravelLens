@@ -21,13 +21,12 @@ const MYSTERY_RESULT = {
   ]
 }
 
-export default function BlindBox() {
+export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { t } = useLanguage()
   const [selectedScope, setSelectedScope] = useState('national')
   const [isDrawing, setIsDrawing] = useState(false)
   const [drawText, setDrawText] = useState('')
   const [result, setResult] = useState(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
 
   // 移除24小时限制相关代码
@@ -56,12 +55,6 @@ export default function BlindBox() {
       setIsDrawing(false)
       setResult(MYSTERY_RESULT)
     }, 2500)
-  }
-
-  // 模拟登录
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-    setShowLogin(false)
   }
 
   return (
@@ -224,7 +217,7 @@ export default function BlindBox() {
             </div>
             <p className="text-gray-600 mb-6">登录后即可保存抽取结果到日历</p>
             <button 
-              onClick={handleLogin}
+              onClick={() => setShowLogin(false)}
               className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4FF] text-white font-black rounded-2xl hover:shadow-xl transition-all"
             >
               {t.auth.loginButton}

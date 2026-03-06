@@ -144,7 +144,7 @@ function AppContent() {
 
       <main>
         <Routes>
-          <Route path="/" element={<BlindBox />} />
+          <Route path="/" element={<BlindBox isLoggedIn={isLoggedIn} />} />
           <Route path="/map" element={<MapView />} />
           <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
           <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
