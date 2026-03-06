@@ -203,13 +203,30 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
         {/* 筛选器 */}
         <div className="mb-4 relative">
-          <button
-            onClick={() => setIsTagsExpanded(!isTagsExpanded)}
-            className="px-6 py-3 bg-white rounded-full font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
-          >
-            <span>标签筛选</span>
-            <span className="text-sm">{isTagsExpanded ? '▲' : '▼'}</span>
-          </button>
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => setIsTagsExpanded(!isTagsExpanded)}
+              className="px-6 py-3 bg-white rounded-full font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+            >
+              <span>标签筛选</span>
+              <span className="text-sm">{isTagsExpanded ? '▲' : '▼'}</span>
+            </button>
+            
+            {/* 热门标签 */}
+            {allTags.slice(0, 6).map(tag => (
+              <button
+                key={tag.id}
+                onClick={() => setSelectedTag(tag.name)}
+                className={`px-5 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                  selectedTag === tag.name
+                    ? 'bg-gray-900 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
+              </button>
+            ))}
+          </div>
           
           {isTagsExpanded && (
             <>
