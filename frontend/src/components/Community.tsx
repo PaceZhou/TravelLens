@@ -36,6 +36,35 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     setTimeout(() => setToast(null), 3000)
   }
 
+  // 随机排列帖子
+  const handleShuffle = () => {
+    setPosts(prev => [...prev].sort(() => Math.random() - 0.5))
+    showToast('已随机排列', 'success')
+  }
+
+  // 过滤帖子
+  const getFilteredPosts = () => {
+    let filtered = posts
+
+    // 标签筛选
+    if (selectedTag) {
+      filtered = filtered.filter(p => p.tags?.includes(selectedTag))
+    }
+
+    // 搜索筛选
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(p => 
+        p.content?.toLowerCase().includes(query) ||
+        p.location?.toLowerCase().includes(query) ||
+        p.city?.toLowerCase().includes(query) ||
+        p.tags?.some(tag => tag.toLowerCase().includes(query))
+      )
+    }
+
+    return filtered
+  }
+
   const loadPosts = async (pageNum: number = 1) => {
     if (isLoading) return
     setIsLoading(true)
@@ -307,7 +336,10 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
               className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border-2 border-transparent focus:border-[#0055FF] outline-none transition-colors font-medium"
             />
           </div>
-          <button className="px-6 py-4 bg-white rounded-2xl hover:bg-gray-50 transition-colors flex items-center gap-2 font-bold">
+          <button 
+            onClick={handleShuffle}
+            className="px-6 py-4 bg-white rounded-2xl hover:bg-gray-50 transition-colors flex items-center gap-2 font-bold"
+          >
             <Shuffle size={20} />
             随机
           </button>
@@ -316,7 +348,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       {/* 帖子列表 */}
       <PostList
-        posts={selectedTag ? posts.filter(p => p.tags?.includes(selectedTag)) : posts}
+        posts={getFilteredPosts()}
         onPostClick={(index) => setSelectedPost(index)}
         onLoadMore={handleLoadMore}
         hasMore={hasMore}
