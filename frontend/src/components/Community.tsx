@@ -201,30 +201,32 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         </div>
 
         {/* 筛选器 */}
-        <div className="flex flex-wrap gap-3 mb-4">
-          <button
-            onClick={() => setSelectedTag(null)}
-            className={`px-6 py-3 rounded-full font-bold transition-all ${
-              selectedTag === null
-                ? 'bg-gray-900 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            全部
-          </button>
-          {allTags.slice(0, 10).map(tag => (
+        <div className="overflow-x-auto mb-4">
+          <div className="flex gap-3 min-w-max">
             <button
-              key={tag.id}
-              onClick={() => setSelectedTag(tag.name)}
-              className={`px-6 py-3 rounded-full font-bold transition-all ${
-                selectedTag === tag.name
+              onClick={() => setSelectedTag(null)}
+              className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
+                selectedTag === null
                   ? 'bg-gray-900 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               }`}
             >
-              #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
+              全部
             </button>
-          ))}
+            {allTags.map(tag => (
+              <button
+                key={tag.id}
+                onClick={() => setSelectedTag(tag.name)}
+                className={`px-6 py-3 rounded-full font-bold transition-all whitespace-nowrap ${
+                  selectedTag === tag.name
+                    ? 'bg-gray-900 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                #{tag.name} <span className="text-xs opacity-70">({tag.count})</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* 搜索栏 */}

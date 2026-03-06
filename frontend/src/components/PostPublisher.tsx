@@ -114,6 +114,12 @@ export default function PostPublisher({ isOpen, onClose, onPublishSuccess, showT
     // 清理标签：移除所有#号和特殊符号，只保留中文、英文、数字
     let cleanTag = customTag.trim().replace(/[#＃]/g, '').replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '')
     
+    // 限制10个字
+    if (cleanTag.length > 10) {
+      showToast('标签不能超过10个字', 'warning')
+      return
+    }
+    
     if (cleanTag && !selectedTags.includes(cleanTag)) {
       setSelectedTags(prev => [...prev, cleanTag])
       setCustomTag('')
