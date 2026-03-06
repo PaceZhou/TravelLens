@@ -183,7 +183,9 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                       const savedUser = localStorage.getItem('user')
                       const userId = savedUser ? JSON.parse(savedUser).id : ''
                       
-                      await fetch('http://192.168.2.33:3001/mango-moments', {
+                      console.log('保存芒一下:', { userId, destination: result.destination })
+                      
+                      const response = await fetch('http://192.168.2.33:3001/mango-moments', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -195,9 +197,13 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                         })
                       })
                       
+                      const data = await response.json()
+                      console.log('保存结果:', data)
+                      
                       showToast('已保存到我的芒一下！', 'success')
                       setResult(null)
                     } catch (error) {
+                      console.error('保存失败:', error)
                       showToast('保存失败，请重试', 'error')
                     }
                   }
