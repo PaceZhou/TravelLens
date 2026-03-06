@@ -176,7 +176,6 @@ function AppContent() {
               try {
                 if (authMode === 'register') {
                   await authAPI.register(user, pass)
-                  alert('注册成功！')
                 }
                 const result = await authAPI.login(user, pass)
                 setIsLoggedIn(true)
@@ -184,7 +183,8 @@ function AppContent() {
                 localStorage.setItem('user', JSON.stringify(result))
                 setShowAuthModal(false)
               } catch (err) {
-                alert('登录失败：' + (err as Error).message)
+                console.error('认证错误:', err)
+                alert(authMode === 'register' ? '注册失败，用户名可能已存在' : '登录失败，请检查用户名和密码')
               }
             }}>
               <input 
