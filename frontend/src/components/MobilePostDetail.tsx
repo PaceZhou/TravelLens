@@ -69,6 +69,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
             type="text"
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && commentText.trim()) {
+                handleSendComment()
+              }
+            }}
             placeholder="添加评论..."
             className="flex-1 bg-gray-800/50 text-white placeholder-gray-400 rounded-full px-4 py-2 text-sm outline-none"
           />
