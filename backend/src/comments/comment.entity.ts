@@ -22,6 +22,12 @@ export class Comment {
   @Column({ nullable: true })
   replyToUsername: string;
 
+  @Column({ nullable: true })
+  parentCommentId: string; // 一级评论ID，所有回复都挂在这下面
+
+  @Column({ default: 0 })
+  likes: number; // 点赞数
+
   @CreateDateColumn()
   createdAt: Date;
 
