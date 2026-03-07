@@ -24,6 +24,7 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [mangoMoments, setMangoMoments] = useState<any[]>([])
+  const [showMenu, setShowMenu] = useState<string | null>(null) // 当前显示菜单的帖子ID
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user')
@@ -184,22 +185,58 @@ export default function MobileProfile({ username }: MobileProfileProps) {
                     </div>
                     
                     {/* 三点菜单 */}
-                    <button
-                      onClick={() => {
-                        const action = window.confirm('删除这篇帖子？\n\n点击"确定"删除，点击"取消"编辑')
-                        if (action) {
-                          fetch(`${API_URL}/posts/${post.id}`, { method: 'DELETE' })
-                            .then(() => {
-                              setUserPosts(userPosts.filter(p => p.id !== post.id))
-                            })
-                        } else {
-                          console.log('编辑帖子:', post.id)
-                        }
-                      }}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      ⋯
-                    </button>
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowMenu(showMenu === post.id ? null : post.id)}
+                        className="text-gray-400 hover:text-gray-600 text-2xl"
+                      >
+                        ⋯
+                      </button>
+                      
+                      {/* 菜单弹出 */}
+                      {showMenu === post.id && (
+                        <>
+                          <div 
+                            className="fixed inset-0 z-40" 
+                            onClick={() => setShowMenu(null)}
+                          ></div>
+                          <div className="absolute right-0 bottom-full mb-2 bg-white rounded-lg shadow-lg py-2 w-32 z-50">
+                            <button
+                              onClick={() => {
+                                console.log('编辑帖子:', post.id)
+                                setShowMenu(null)
+                              }}
+                              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                            >
+                              编辑帖子
+                            </button>
+                            <button
+                              onClick={() => {
+                                console.log('更改封面:', post.id)
+                                setShowMenu(null)
+                              }}
+                              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                            >
+                              更改封面
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (window.confirm('确定要删除这篇帖子吗？')) {
+                                  fetch(`${API_URL}/posts/${post.id}`, { method: 'DELETE' })
+                                    .then(() => {
+                                      setUserPosts(userPosts.filter(p => p.id !== post.id))
+                                      setShowMenu(null)
+                                    })
+                                }
+                              }}
+                              className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
+                            >
+                              删除帖子
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
