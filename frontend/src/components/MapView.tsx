@@ -237,19 +237,19 @@ export default function MapView() {
         ))}
       </MapContainer>
 
-      {/* 顶部筛选菜单 - 居中 */}
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-[4000] flex gap-2">
+      {/* 顶部筛选菜单 - 移动端固定，去掉图标 */}
+      <div className="absolute top-6 md:top-6 left-1/2 transform -translate-x-1/2 z-[4000] flex gap-2">
         <button 
           onClick={() => handleFilter('random')}
-          className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
+          className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
         >
-          <Shuffle size={16} /> {t.map.filters.random}
+          {t.map.filters.random}
         </button>
         <button 
           onClick={() => handleFilter('nearby')}
-          className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'nearby' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
+          className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all ${filterType === 'nearby' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
         >
-          <Navigation size={16} /> {t.map.filters.nearby}
+          {t.map.filters.nearby}
         </button>
         
         <div className="relative">
@@ -258,9 +258,9 @@ export default function MapView() {
               handleFilter('country')
               setShowDropdown(!showDropdown)
             }}
-            className={`px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${filterType === 'country' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
+            className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm flex items-center gap-1 transition-all ${filterType === 'country' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
           >
-            <Globe size={16} /> {selectedCountry || t.map.filters.country} <ChevronDown size={14} />
+            {selectedCountry || t.map.filters.country} <ChevronDown size={14} />
           </button>
           
           {showDropdown && filterType === 'country' && (
@@ -352,20 +352,20 @@ export default function MapView() {
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-3 md:grid-cols-1 gap-2 md:gap-4 md:space-y-0">
             {filteredSpots.map(spot => (
               <div 
                 key={spot.id}
                 onClick={() => handleSpotClick(spot.id)}
-                className="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 group"
+                className="bg-white/60 backdrop-blur-md rounded-xl md:rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 group"
               >
-                <div className="relative overflow-hidden">
-                  <img src={spot.images[0]} alt={spot.name} className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-500" />
+                <div className="relative overflow-hidden aspect-square md:aspect-auto">
+                  <img src={spot.images[0]} alt={spot.name} className="w-full h-full md:h-40 object-cover group-hover:scale-110 transition-transform duration-500" />
                   {/* 渐变遮罩 */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                   
-                  {/* 统计数据 - 潮流设计 */}
-                  <div className="absolute bottom-3 right-3 flex gap-2">
+                  {/* 统计数据 - PC端显示 */}
+                  <div className="absolute bottom-3 right-3 hidden md:flex gap-2">
                     <div className="flex items-center gap-1 bg-white/20 backdrop-blur-xl border border-white/30 px-3 py-1.5 rounded-full">
                       <span className="text-[#FF6B9D] text-sm">❤</span>
                       <span className="text-white text-xs font-bold">{spot.likes}</span>
@@ -380,9 +380,9 @@ export default function MapView() {
                     </div>
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-black text-lg mb-1 group-hover:text-[#0055FF] transition-colors">{spot.name}</h3>
-                  <p className="text-sm text-gray-600 flex items-center">
+                <div className="p-2 md:p-4">
+                  <h3 className="font-black text-xs md:text-lg mb-0 md:mb-1 group-hover:text-[#0055FF] transition-colors truncate">{spot.name}</h3>
+                  <p className="text-xs md:text-sm text-gray-600 hidden md:flex items-center">
                     <MapPin size={14} className="mr-1 text-[#0055FF]" /> {spot.city}
                   </p>
                 </div>
