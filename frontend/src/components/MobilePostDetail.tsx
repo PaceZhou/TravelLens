@@ -129,8 +129,8 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         </button>
       </div>
 
-      {/* 底部用户信息和内容 */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+      {/* 底部用户信息和内容 - 向上移动40px */}
+      <div className="absolute bottom-16 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
             👤
