@@ -332,17 +332,9 @@ export default function MapView() {
       </div>
 
       {/* 右侧景点列表（二级页面，1/3宽度，增强透明） */}
-      {/* 遮罩层 - 点击收起侧栏 */}
-      {showSidebar && (
-        <div 
-          className="fixed inset-0 bg-black/20 z-[999] md:hidden"
-          onClick={() => setShowSidebar(false)}
-        ></div>
-      )}
-
       {/* 侧栏 - 左右推拉式圆角框 */}
       <div 
-        className={`fixed top-[calc(3.5rem+28px)] right-0 bottom-[calc(3.5rem+14px)] md:top-0 md:bottom-0 w-[calc(35%+120px)] md:w-1/3 bg-white/90 md:bg-white/50 backdrop-blur-3xl shadow-2xl z-10 md:z-[1000] transition-transform duration-300 rounded-l-3xl md:rounded-none md:border-l border-white/30 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-[calc(3.5rem+68px)] right-0 bottom-[calc(3.5rem+14px)] md:top-0 md:bottom-0 w-[calc(35%+120px)] md:w-1/3 bg-white/90 md:bg-white/50 backdrop-blur-3xl shadow-2xl z-10 md:z-[1000] transition-transform duration-300 rounded-l-3xl md:rounded-none md:border-l border-white/30 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="h-full overflow-y-auto p-6">
           <div className="flex items-center justify-between mb-6">
