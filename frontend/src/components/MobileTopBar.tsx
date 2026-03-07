@@ -9,7 +9,7 @@ export default function MobileTopBar() {
   const [activeTab, setActiveTab] = useState<'关注' | '发现' | '同城'>('发现')
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-[#E3F2FF] border-b border-gray-200 md:hidden">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-[#7DF9FF] border-b border-gray-200 md:hidden">
       <div className="flex items-center justify-between h-14 px-4">
         {/* 左侧菜单图标 */}
         <button className="w-8 h-8 flex items-center justify-center">
