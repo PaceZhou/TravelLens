@@ -100,7 +100,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         // 重新加载评论
         fetch(`${API_URL}/comments/post/${post.id}`)
           .then(res => res.json())
-          .then(data => setComments(data))
+          .then(data => setComments(data.map((c: any) => ({
+            ...c,
+            username: c.user?.username ?? c.username,
+            parentCommentId: c.parentCommentId ?? undefined
+          }))))
       })
       .catch(err => console.error('发送评论失败:', err))
   }
@@ -292,7 +296,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
               // 刷新评论列表
               fetch(`${API_URL}/comments/post/${post.id}`)
                 .then(res => res.json())
-                .then(data => setComments(data))
+                .then(data => setComments(data.map((c: any) => ({
+                  ...c,
+                  username: c.user?.username ?? c.username,
+                  parentCommentId: c.parentCommentId ?? undefined
+                }))))
             })
         }}
         likedComments={likedComments}
