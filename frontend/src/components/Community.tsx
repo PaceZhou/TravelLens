@@ -142,7 +142,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   // 监听移动端底部发布按钮
   useEffect(() => {
     const handleOpenPublisher = () => {
-      handlePublishClick()
+      if (!isLoggedIn) {
+        setShowLoginPrompt(true)
+      } else {
+        setShowUpload(true)
+      }
     }
     window.addEventListener('openPublisher', handleOpenPublisher)
     return () => window.removeEventListener('openPublisher', handleOpenPublisher)

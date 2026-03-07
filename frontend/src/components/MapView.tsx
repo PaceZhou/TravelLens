@@ -203,6 +203,14 @@ export default function MapView() {
 
   return (
     <div className="relative h-[calc(100vh-7rem)] md:h-screen w-full z-0">
+      {/* 遮罩层 - 移动端点击收起侧栏 */}
+      {showSidebar && (
+        <div 
+          className="fixed inset-0 z-[5] md:hidden"
+          onClick={() => setShowSidebar(false)}
+        ></div>
+      )}
+
       {/* 地图主界面 - 始终显示，最低层级 */}
       <MapContainer 
         center={[39.916, 116.397]} 
