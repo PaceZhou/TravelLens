@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Send } from 'lucide-react'
+import { X, Heart } from 'lucide-react'
 
 interface Comment {
   id: string
@@ -8,27 +8,37 @@ interface Comment {
   content: string
   createdAt: string
   replyToUsername?: string
+  likes?: number
 }
 
 interface MobileCommentDrawerProps {
   isOpen: boolean
   onClose: () => void
   comments: Comment[]
-  onSendComment: (content: string) => void
+  onSendComment: (content: string, replyToUsername?: string) => void
+  onLikeComment: (commentId: string) => void
+  likedComments: Set<string>
 }
 
 /**
  * 移动端评论抽屉 - Instagram风格
  * 底部滑出，带缩放背景特效
  */
-export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendComment }: MobileCommentDrawerProps) {
+export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendComment, onLikeComment, likedComments }: MobileCommentDrawerProps) {
   const [commentText, setCommentText] = useState('')
+  const [replyTo, setReplyTo] = useState<string | null>(null)
 
   const handleSend = () => {
     if (!commentText.trim()) return
-    onSendComment(commentText)
+    onSendComment(commentText, replyTo || undefined)
     setCommentText('')
+    setReplyTo(null)
   }
+
+  // 只显示顶级评论（没有replyToUsername的）
+  const topLevelComments = comments.filter(c => !c.replyToUsername)
+  // 获取某条评论的回复
+  const getReplies = (username: string) => comments.filter(c => c.replyToUsername === username)
 
   return (
     <>
@@ -60,30 +70,85 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
 
         {/* 评论列表 */}
         <div className="flex-1 overflow-y-auto px-4 py-3" style={{ height: 'calc(75vh - 140px)' }}>
-          {comments.length === 0 ? (
+          {topLevelComments.length === 0 ? (
             <div className="text-center text-gray-400 py-10">暂无评论</div>
           ) : (
-            comments.map((comment) => (
-              <div key={comment.id} className="mb-4">
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
-                    👤
-                  </div>
-                  <div className="flex-1">
-                    <div>
-                      <span className="font-bold text-sm mr-2">{comment.username}</span>
-                      <span className="text-sm text-gray-900">{comment.content}</span>
+            topLevelComments.map((comment) => {
+              const replies = getReplies(comment.username)
+              return (
+                <div key={comment.id} className="mb-4">
+                  {/* 顶级评论 */}
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
+                      👤
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">刚刚</div>
+                    <div className="flex-1">
+                      <div>
+                        <span className="font-bold text-sm mr-2">{comment.username}</span>
+                        <span className="text-sm text-gray-900">{comment.content}</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-xs text-gray-400 mt-1">
+                        <span>刚刚</span>
+                        <button 
+                          onClick={() => setReplyTo(comment.username)}
+                          className="font-medium"
+                        >
+                          回复
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => onLikeComment(comment.id)}
+                      className="flex-shrink-0"
+                    >
+                      <Heart 
+                        size={14} 
+                        className={likedComments.has(comment.id) ? 'text-red-500' : 'text-gray-400'}
+                        fill={likedComments.has(comment.id) ? 'currentColor' : 'none'}
+                      />
+                    </button>
                   </div>
+
+                  {/* 回复列表（缩进显示，不能再回复） */}
+                  {replies.map((reply) => (
+                    <div key={reply.id} className="flex gap-3 ml-11 mt-3">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-[10px] flex-shrink-0">
+                        👤
+                      </div>
+                      <div className="flex-1">
+                        <div>
+                          <span className="font-bold text-xs mr-2">{reply.username}</span>
+                          <span className="text-xs text-gray-500 mr-2">回复 @{reply.replyToUsername}</span>
+                          <span className="text-xs text-gray-900">{reply.content}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-1">刚刚</div>
+                      </div>
+                      <button
+                        onClick={() => onLikeComment(reply.id)}
+                        className="flex-shrink-0"
+                      >
+                        <Heart 
+                          size={12} 
+                          className={likedComments.has(reply.id) ? 'text-red-500' : 'text-gray-400'}
+                          fill={likedComments.has(reply.id) ? 'currentColor' : 'none'}
+                        />
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))
+              )
+            })
           )}
         </div>
 
         {/* 底部输入框 */}
         <div className="border-t px-4 py-3 bg-white">
+          {replyTo && (
+            <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
+              <span>回复 @{replyTo}</span>
+              <button onClick={() => setReplyTo(null)} className="text-[#0055FF]">取消</button>
+            </div>
+          )}
           <div className="flex items-center gap-3">
             <input
               type="text"
@@ -94,7 +159,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                   handleSend()
                 }
               }}
-              placeholder="添加评论..."
+              placeholder={replyTo ? `回复 @${replyTo}...` : "添加评论..."}
               className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
             />
             <button

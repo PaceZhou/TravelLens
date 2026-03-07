@@ -206,6 +206,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         onClose={() => setShowComments(false)}
         comments={[]}
         onSendComment={handleSendComment}
+        onLikeComment={(commentId) => {
+          // TODO: 评论点赞API
+          console.log('点赞评论:', commentId)
+        }}
+        likedComments={new Set()}
       />
     </>
   )
