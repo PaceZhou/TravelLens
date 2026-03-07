@@ -24,7 +24,9 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [mangoMoments, setMangoMoments] = useState<any[]>([])
-  const [showMenu, setShowMenu] = useState<string | null>(null) // 当前显示菜单的帖子ID
+  const [showMenu, setShowMenu] = useState<string | null>(null)
+  const [showCoverSelector, setShowCoverSelector] = useState<string | null>(null)
+  const [editingPost, setEditingPost] = useState<any>(null)
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user')
@@ -82,6 +84,39 @@ export default function MobileProfile({ username }: MobileProfileProps) {
       setAvatar(avatarData)
     } catch (error) {
       console.error('保存头像失败:', error)
+    }
+  }
+
+  const handleDeletePost = async (postId: string) => {
+    if (!window.confirm('确定要删除这篇帖子吗？')) return
+    
+    try {
+      await fetch(`${API_URL}/posts/${postId}`, { method: 'DELETE' })
+      setUserPosts(userPosts.filter(p => p.id !== postId))
+      setShowMenu(null)
+    } catch (error) {
+      console.error('删除失败:', error)
+    }
+  }
+
+  const handleChangeCover = async (postId: string, newCoverIndex: number) => {
+    try {
+      const post = userPosts.find(p => p.id === postId)
+      if (!post) return
+
+      await fetch(`${API_URL}/posts/${postId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...post, coverIndex: newCoverIndex })
+      })
+
+      setUserPosts(userPosts.map(p => 
+        p.id === postId ? { ...p, coverIndex: newCoverIndex } : p
+      ))
+      setShowCoverSelector(null)
+      setShowMenu(null)
+    } catch (error) {
+      console.error('更改封面失败:', error)
     }
   }
 
@@ -164,83 +199,93 @@ export default function MobileProfile({ username }: MobileProfileProps) {
         {/* 内容区域 */}
         <div className="p-4">
           {activeTab === 'posts' && (
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-2">
               {userPosts.map(post => (
-                <div key={post.id} className="bg-white rounded-lg overflow-hidden">
-                  {/* 帖子图片 */}
-                  <div className="aspect-square bg-gray-200">
-                    <img 
-                      src={post.images?.[post.coverIndex || 0] || post.images?.[0]} 
-                      alt="" 
-                      className="w-full h-full object-cover" 
-                    />
-                  </div>
+                <div key={post.id} className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                  <img 
+                    src={post.images?.[post.coverIndex || 0] || post.images?.[0]} 
+                    alt="" 
+                    className="w-full h-full object-cover" 
+                  />
                   
-                  {/* 底部信息栏 */}
-                  <div className="p-3 flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span>❤️ {post.likes || 0}</span>
-                      <span>💬 {post.comments || 0}</span>
-                      <span>⭐ {post.collections || 0}</span>
-                    </div>
-                    
-                    {/* 三点菜单 */}
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowMenu(showMenu === post.id ? null : post.id)}
-                        className="text-gray-400 hover:text-gray-600 text-2xl"
-                      >
-                        ⋯
-                      </button>
-                      
-                      {/* 菜单弹出 */}
-                      {showMenu === post.id && (
-                        <>
-                          <div 
-                            className="fixed inset-0 z-40" 
-                            onClick={() => setShowMenu(null)}
-                          ></div>
-                          <div className="absolute right-0 bottom-full mb-2 bg-white rounded-lg shadow-lg py-2 w-32 z-50">
+                  {/* 三点菜单按钮 - 右上角 */}
+                  <button
+                    onClick={() => setShowMenu(showMenu === post.id ? null : post.id)}
+                    className="absolute top-2 right-2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white text-xl z-10"
+                  >
+                    ⋯
+                  </button>
+                  
+                  {/* 菜单弹出 */}
+                  {showMenu === post.id && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-40" 
+                        onClick={() => setShowMenu(null)}
+                      ></div>
+                      <div className="absolute top-12 right-2 bg-white rounded-lg shadow-lg py-2 w-32 z-50">
+                        <button
+                          onClick={() => {
+                            setEditingPost(post)
+                            setShowMenu(null)
+                            window.dispatchEvent(new CustomEvent('openPublisher'))
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                        >
+                          编辑帖子
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCoverSelector(post.id)
+                            setShowMenu(null)
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                        >
+                          更改封面
+                        </button>
+                        <button
+                          onClick={() => handleDeletePost(post.id)}
+                          className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
+                        >
+                          删除帖子
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {/* 封面选择器 */}
+                  {showCoverSelector === post.id && (
+                    <>
+                      <div 
+                        className="fixed inset-0 bg-black/50 z-[60]" 
+                        onClick={() => setShowCoverSelector(null)}
+                      ></div>
+                      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 z-[70]">
+                        <h3 className="font-bold mb-3">选择封面</h3>
+                        <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                          {post.images?.map((img: string, idx: number) => (
                             <button
-                              onClick={() => {
-                                console.log('编辑帖子:', post.id)
-                                setShowMenu(null)
-                              }}
-                              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                              key={idx}
+                              onClick={() => handleChangeCover(post.id, idx)}
+                              className={`aspect-square rounded-lg overflow-hidden border-2 ${
+                                (post.coverIndex || 0) === idx ? 'border-[#FFB800]' : 'border-gray-200'
+                              }`}
                             >
-                              编辑帖子
+                              <img src={img} alt="" className="w-full h-full object-cover" />
+                              {(post.coverIndex || 0) === idx && (
+                                <div className="absolute inset-0 bg-[#FFB800]/20 flex items-center justify-center">
+                                  <span className="bg-[#FFB800] text-white text-xs px-2 py-1 rounded">封面</span>
+                                </div>
+                              )}
                             </button>
-                            <button
-                              onClick={() => {
-                                console.log('更改封面:', post.id)
-                                setShowMenu(null)
-                              }}
-                              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                            >
-                              更改封面
-                            </button>
-                            <button
-                              onClick={() => {
-                                if (window.confirm('确定要删除这篇帖子吗？')) {
-                                  fetch(`${API_URL}/posts/${post.id}`, { method: 'DELETE' })
-                                    .then(() => {
-                                      setUserPosts(userPosts.filter(p => p.id !== post.id))
-                                      setShowMenu(null)
-                                    })
-                                }
-                              }}
-                              className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-gray-100"
-                            >
-                              删除帖子
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
-              {userPosts.length === 0 && <p className="text-center text-gray-400 py-10">暂无帖子</p>}
+              {userPosts.length === 0 && <p className="col-span-2 text-center text-gray-400 py-10">暂无帖子</p>}
             </div>
           )}
 
