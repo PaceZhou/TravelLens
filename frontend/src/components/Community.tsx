@@ -409,18 +409,29 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       {/* 登录提示 */}
       {showLoginPrompt && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center">
-            <h3 className="text-2xl font-black mb-4">需要登录</h3>
-            <p className="text-gray-600 mb-6">登录后即可发布精彩内容</p>
-            <button
-              onClick={() => setShowLoginPrompt(false)}
-              className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-2xl font-black text-lg"
-            >
-              知道了
-            </button>
+        <>
+          {/* 遮罩层 - 点击关闭 */}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" 
+            onClick={() => setShowLoginPrompt(false)}
+          ></div>
+          {/* 弹窗内容 */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center pointer-events-auto" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-2xl font-black mb-4">需要登录</h3>
+              <p className="text-gray-600 mb-6">登录后即可发布精彩内容</p>
+              <button
+                onClick={() => {
+                  setShowLoginPrompt(false)
+                  window.dispatchEvent(new CustomEvent('openAuth', { detail: { mode: 'login' } }))
+                }}
+                className="w-full py-4 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-2xl font-black text-lg"
+              >
+                登录
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* 右下角悬浮发布按钮 - 移动端隐藏 */}
