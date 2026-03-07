@@ -416,7 +416,6 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         currentCity={currentCity}
         editPost={editPost}
       />
-      />
 
       {/* 详情浮窗 - PC端 */}
       {selectedPost !== null && window.innerWidth >= 768 && (
