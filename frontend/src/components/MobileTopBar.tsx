@@ -1,5 +1,6 @@
 import { Search, Menu } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * 移动端顶部导航栏
@@ -7,6 +8,7 @@ import { useState } from 'react'
  */
 export default function MobileTopBar() {
   const [activeTab, setActiveTab] = useState<'关注' | '发现' | '同城'>('发现')
+  const navigate = useNavigate()
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-[#9DF9FF] border-b border-gray-200 md:hidden">
@@ -40,7 +42,10 @@ export default function MobileTopBar() {
         </div>
 
         {/* 右侧搜索图标 */}
-        <button className="w-8 h-8 flex items-center justify-center">
+        <button 
+          onClick={() => navigate('/search')}
+          className="w-8 h-8 flex items-center justify-center"
+        >
           <Search size={22} className="text-gray-700" />
         </button>
       </div>

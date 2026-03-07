@@ -252,7 +252,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   return (
     <div className="flex-1 bg-[#F8F9FA] px-4 py-8 min-h-screen max-w-[1600px] mx-auto w-full">
       {/* 筛选器 */}
-      <div className="mb-2 sticky top-14 md:top-20 z-30 bg-[#F8F9FA]/90 backdrop-blur-xl pt-1.5 pb-1">
+      <div className="mb-2 sticky top-14 md:top-20 z-30 bg-[#F8F9FA]/90 backdrop-blur-xl pt-0 md:pt-1.5 pb-1">
         <div className="mb-4 relative">
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -362,8 +362,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           )}
         </div>
 
-        {/* 搜索栏 */}
-        <div className="flex gap-3">
+        {/* 搜索栏 - 仅PC端显示 */}
+        <div className="hidden md:flex gap-3">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input

@@ -6,6 +6,7 @@ import Community from './components/Community'
 import Profile from './components/Profile'
 import PostDetailPage from './components/PostDetailPage'
 import Inbox from './components/Inbox'
+import SearchPage from './components/SearchPage'
 import MobileTopBar from './components/MobileTopBar'
 import MobileBottomBar from './components/MobileBottomBar'
 import { useLanguage } from './contexts/LanguageContext'
@@ -206,6 +207,7 @@ function AppContent() {
           } />
           <Route path="/map" element={<MapView />} />
           <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
           <Route path="/users/:userId" element={<Profile username="" />} />
           <Route path="/posts/:postId" element={<PostDetailPage />} />
