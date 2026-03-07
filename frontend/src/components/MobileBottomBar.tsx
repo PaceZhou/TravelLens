@@ -13,6 +13,11 @@ export default function MobileBottomBar() {
 
   // 发布按钮点击 - 触发发布事件
   const handlePublish = () => {
+    const savedUser = localStorage.getItem('user')
+    if (!savedUser) {
+      alert('请先登录')
+      return
+    }
     window.dispatchEvent(new CustomEvent('openPublisher'))
   }
 

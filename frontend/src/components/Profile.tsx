@@ -196,7 +196,18 @@ export default function Profile({ username: propUsername }: { username: string }
               </button>
             </div>
             <div className="flex-1">
-              <h1 className="text-3xl font-black mb-2">{user.username}</h1>
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-black mb-2">{user.username}</h1>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('user')
+                    window.location.href = '/'
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-bold hover:bg-red-600 transition-colors"
+                >
+                  退出登录
+                </button>
+              </div>
               <p className="text-gray-600 mb-4">{user.bio}</p>
               <div className="flex gap-6">
                 <div className="text-center">

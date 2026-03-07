@@ -140,8 +140,11 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                       <div className="flex items-center gap-4 text-xs text-gray-400 mt-1">
                         <span>刚刚</span>
                         <button 
-                          onClick={() => setReplyTo(comment.username)}
-                          className="font-medium"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setReplyTo(comment.username)
+                          }}
+                          className="font-medium hover:text-gray-600 relative z-10"
                         >
                           回复
                         </button>
@@ -233,6 +236,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
               }}
               placeholder={replyTo ? `回复 @${replyTo}...` : "添加评论..."}
               className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
+              style={{ fontSize: '16px' }}
             />
             <button
               onClick={handleSend}

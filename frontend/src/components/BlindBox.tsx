@@ -191,7 +191,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                       
                       console.log('保存芒一下:', { userId, destination, description })
                       
-                      const response = await fetch('${API_URL}/mango-moments', {
+                      const response = await fetch(`${API_URL}/mango-moments`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

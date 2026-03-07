@@ -238,6 +238,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
               }}
               placeholder="添加评论..."
               className="flex-1 bg-gray-800/50 text-white placeholder-gray-400 rounded-full px-4 py-2 text-sm outline-none"
+              style={{ fontSize: '16px' }}
             />
             <button
               onClick={handleQuickSend}
