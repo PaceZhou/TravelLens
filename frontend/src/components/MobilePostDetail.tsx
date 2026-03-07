@@ -65,12 +65,13 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
     const deltaX = touchEndX.current - touchStartX.current
     const deltaY = touchEndY.current - touchStartY.current
     const minSwipeDistance = 50
+    const edgeThreshold = 50 // 左侧边缘阈值
 
     // 判断是横向还是纵向滑动
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       // 横向滑动
-      if (deltaX > minSwipeDistance) {
-        // 向右滑：关闭
+      if (deltaX > minSwipeDistance && touchStartX.current < edgeThreshold) {
+        // 向右滑且从左侧边缘开始：关闭
         onClose()
       }
     } else {
