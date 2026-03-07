@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { X, Heart } from 'lucide-react'
+import MentionTag from './MentionTag'
 
 interface Comment {
   id: string
@@ -42,6 +43,20 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
   
   // 展开状态管理
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
+  const [expandedTexts, setExpandedTexts] = useState<Set<string>>(new Set())
+  
+  // 检查文本是否需要折叠（超过4行或100字）
+  const needsTruncate = (text: string) => {
+    return text.length > 100 || text.split('\n').length > 4
+  }
+  
+  // 获取显示的文本
+  const getDisplayText = (commentId: string, text: string) => {
+    if (!needsTruncate(text) || expandedTexts.has(commentId)) {
+      return text
+    }
+    return text.slice(0, 100)
+  }
   
   // 获取要显示的回复（默认2条点赞最高的）
   const getVisibleReplies = (commentId: string) => {
@@ -104,7 +119,19 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                     <div className="flex-1">
                       <div>
                         <span className="font-bold text-sm mr-2">{comment.username}</span>
-                        <span className="text-sm text-gray-900">{comment.content}</span>
+                        <span className="text-sm text-gray-900">{getDisplayText(comment.id, comment.content)}</span>
+                        {needsTruncate(comment.content) && !expandedTexts.has(comment.id) && (
+                          <button
+                            onClick={() => {
+                              const newExpanded = new Set(expandedTexts)
+                              newExpanded.add(comment.id)
+                              setExpandedTexts(newExpanded)
+                            }}
+                            className="text-gray-400 text-sm ml-1"
+                          >
+                            ...展开
+                          </button>
+                        )}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-gray-400 mt-1">
                         <span>刚刚</span>
@@ -183,9 +210,8 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
         {/* 底部输入框 */}
         <div className="border-t px-4 py-3 bg-white">
           {replyTo && (
-            <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
-              <span>回复 @{replyTo}</span>
-              <button onClick={() => setReplyTo(null)} className="text-[#0055FF]">取消</button>
+            <div className="mb-2">
+              <MentionTag username={replyTo} onRemove={() => setReplyTo(null)} />
             </div>
           )}
           <div className="flex items-center gap-3">
@@ -196,6 +222,9 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && commentText.trim()) {
                   handleSend()
+                } else if (e.key === 'Backspace' && !commentText && replyTo) {
+                  // 按退格键删除@块
+                  setReplyTo(null)
                 }
               }}
               placeholder={replyTo ? `回复 @${replyTo}...` : "添加评论..."}
