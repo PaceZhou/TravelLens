@@ -36,8 +36,10 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem('user')
-    window.location.href = '/'
+    if (window.confirm('确定要退出登录吗？')) {
+      localStorage.removeItem('user')
+      window.location.href = '/'
+    }
   }
 
   return (

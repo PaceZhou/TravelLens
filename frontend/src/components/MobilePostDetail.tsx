@@ -15,6 +15,7 @@ interface Post {
   likes: number
   comments: number
   user?: { username: string }
+  userId?: string
 }
 
 interface MobilePostDetailProps {
@@ -50,11 +51,15 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
       if (!savedUser) return
       const user = JSON.parse(savedUser)
       
-      // 加载评论
+      // 加载评论（扁平化 user.username / parentCommentId 供评论抽屉使用）
       fetch(`${API_URL}/comments/post/${post.id}`)
         .then(res => res.json())
-        .then(data => {
-          setComments(data)
+        .then((data: any[]) => {
+          setComments(data.map((c: any) => ({
+            ...c,
+            username: c.user?.username ?? c.username,
+            parentCommentId: c.parentCommentId ?? undefined
+          })))
           // 加载点赞状态
           const likedSet = new Set<string>()
           Promise.all(
@@ -94,7 +99,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         // 重新加载评论
         fetch(`${API_URL}/comments/post/${post.id}`)
           .then(res => res.json())
-          .then(data => setComments(data))
+          .then((data: any[]) => setComments(data.map((c: any) => ({
+            ...c,
+            username: c.user?.username ?? c.username,
+            parentCommentId: c.parentCommentId ?? undefined
+          }))))
       })
       .catch(err => console.error('发送评论失败:', err))
   }
@@ -286,11 +295,15 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
               // 刷新评论列表
               fetch(`${API_URL}/comments/post/${post.id}`)
                 .then(res => res.json())
-                .then(data => setComments(data))
+                .then((data: any[]) => setComments(data.map((c: any) => ({
+                  ...c,
+                  username: c.user?.username ?? c.username,
+                  parentCommentId: c.parentCommentId ?? undefined
+                }))))
             })
         }}
         likedComments={likedComments}
-        postAuthorId={post.userId}
+        postAuthorId={post.userId ?? undefined}
       />
     </>
   )
