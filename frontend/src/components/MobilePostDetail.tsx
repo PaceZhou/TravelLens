@@ -34,6 +34,7 @@ interface MobilePostDetailProps {
 export default function MobilePostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected, onNext, onPrev }: MobilePostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showComments, setShowComments] = useState(false)
+  const [quickComment, setQuickComment] = useState('')
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchEndX = useRef(0)
@@ -46,6 +47,12 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
   const handleSendComment = (content: string) => {
     // TODO: 发送评论API
     console.log('发送评论:', content)
+  }
+
+  const handleQuickSend = () => {
+    if (!quickComment.trim()) return
+    handleSendComment(quickComment)
+    setQuickComment('')
   }
 
   // 手势滑动处理
@@ -167,17 +174,26 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
           <p className="text-white text-sm leading-relaxed">{post.content}</p>
         </div>
 
-        {/* 底部评论输入框 */}
+        {/* 底部评论输入框 - 独立输入 */}
         <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm border-t border-gray-800 p-3">
           <div className="flex items-center gap-3">
             <input
               type="text"
+              value={quickComment}
+              onChange={(e) => setQuickComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && quickComment.trim()) {
+                  handleQuickSend()
+                }
+              }}
               placeholder="添加评论..."
-              onClick={() => setShowComments(true)}
-              readOnly
               className="flex-1 bg-gray-800/50 text-white placeholder-gray-400 rounded-full px-4 py-2 text-sm outline-none"
             />
-            <button className="text-gray-600 font-bold text-sm">
+            <button
+              onClick={handleQuickSend}
+              disabled={!quickComment.trim()}
+              className={`${quickComment.trim() ? 'text-[#0055FF]' : 'text-gray-600'} font-bold text-sm`}
+            >
               发布
             </button>
           </div>
