@@ -11,20 +11,20 @@ export default function MobileBottomBar() {
   const isActive = (path: string) => location.pathname === path
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#002FA7] border-t border-gray-200 md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#9DF9FF] border-t border-gray-200 md:hidden">
       <div className="flex items-center justify-around h-14">
         {/* 芒一下 */}
         <Link to="/" className="flex flex-col items-center justify-center flex-1 h-full">
-          <Gift size={24} className={isActive('/') ? 'text-[#FFB800]' : 'text-white'} />
-          <span className={`text-xs mt-0.5 ${isActive('/') ? 'text-[#FFB800] font-semibold' : 'text-white'}`}>
+          <Gift size={24} className={isActive('/') ? 'text-[#FFB800]' : 'text-gray-700'} />
+          <span className={`text-xs mt-0.5 ${isActive('/') ? 'text-[#FFB800] font-semibold' : 'text-gray-700'}`}>
             芒一下
           </span>
         </Link>
 
         {/* 芒GO MAP */}
         <Link to="/map" className="flex flex-col items-center justify-center flex-1 h-full">
-          <Map size={24} className={isActive('/map') ? 'text-[#FFB800]' : 'text-white'} />
-          <span className={`text-xs mt-0.5 ${isActive('/map') ? 'text-[#FFB800] font-semibold' : 'text-white'}`}>
+          <Map size={24} className={isActive('/map') ? 'text-[#FFB800]' : 'text-gray-700'} />
+          <span className={`text-xs mt-0.5 ${isActive('/map') ? 'text-[#FFB800] font-semibold' : 'text-gray-700'}`}>
             芒GO MAP
           </span>
         </Link>
@@ -36,16 +36,16 @@ export default function MobileBottomBar() {
 
         {/* 芒GO Show */}
         <Link to="/world" className="flex flex-col items-center justify-center flex-1 h-full">
-          <Globe size={24} className={isActive('/world') ? 'text-[#FFB800]' : 'text-white'} />
-          <span className={`text-xs mt-0.5 ${isActive('/world') ? 'text-[#FFB800] font-semibold' : 'text-white'}`}>
+          <Globe size={24} className={isActive('/world') ? 'text-[#FFB800]' : 'text-gray-700'} />
+          <span className={`text-xs mt-0.5 ${isActive('/world') ? 'text-[#FFB800] font-semibold' : 'text-gray-700'}`}>
             芒GO Show
           </span>
         </Link>
 
         {/* 我的 */}
         <Link to="/profile" className="flex flex-col items-center justify-center flex-1 h-full">
-          <User size={24} className={isActive('/profile') ? 'text-[#FFB800]' : 'text-white'} />
-          <span className={`text-xs mt-0.5 ${isActive('/profile') ? 'text-[#FFB800] font-semibold' : 'text-white'}`}>
+          <User size={24} className={isActive('/profile') ? 'text-[#FFB800]' : 'text-gray-700'} />
+          <span className={`text-xs mt-0.5 ${isActive('/profile') ? 'text-[#FFB800] font-semibold' : 'text-gray-700'}`}>
             我的
           </span>
         </Link>
