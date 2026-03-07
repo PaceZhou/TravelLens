@@ -35,10 +35,25 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
     setReplyTo(null)
   }
 
-  // 只显示顶级评论（没有replyToUsername的）
-  const topLevelComments = comments.filter(c => !c.replyToUsername)
-  // 获取某条评论的回复
-  const getReplies = (username: string) => comments.filter(c => c.replyToUsername === username)
+  // 只显示顶级评论（没有parentCommentId的）
+  const topLevelComments = comments.filter(c => !c.parentCommentId)
+  // 获取某条评论的所有回复
+  const getReplies = (commentId: string) => comments.filter(c => c.parentCommentId === commentId)
+  
+  // 展开状态管理
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
+  
+  // 获取要显示的回复（默认2条点赞最高的）
+  const getVisibleReplies = (commentId: string) => {
+    const allReplies = getReplies(commentId)
+    if (expandedComments.has(commentId)) {
+      // 展开：按时间正序
+      return allReplies.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+    } else {
+      // 折叠：只显示点赞最高的2条
+      return allReplies.sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 2)
+    }
+  }
 
   return (
     <>
@@ -74,7 +89,11 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
             <div className="text-center text-gray-400 py-10">暂无评论</div>
           ) : (
             topLevelComments.map((comment) => {
-              const replies = getReplies(comment.username)
+              const allReplies = getReplies(comment.id)
+              const visibleReplies = getVisibleReplies(comment.id)
+              const hasMore = allReplies.length > 2
+              const isExpanded = expandedComments.has(comment.id)
+              
               return (
                 <div key={comment.id} className="mb-4">
                   {/* 顶级评论 */}
@@ -109,8 +128,8 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                     </button>
                   </div>
 
-                  {/* 回复列表（缩进显示，不能再回复） */}
-                  {replies.map((reply) => (
+                  {/* 回复列表 */}
+                  {visibleReplies.map((reply) => (
                     <div key={reply.id} className="flex gap-3 ml-11 mt-3">
                       <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-[10px] flex-shrink-0">
                         👤
@@ -118,7 +137,9 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                       <div className="flex-1">
                         <div>
                           <span className="font-bold text-xs mr-2">{reply.username}</span>
-                          <span className="text-xs text-gray-500 mr-2">回复 @{reply.replyToUsername}</span>
+                          {reply.replyToUsername && (
+                            <span className="text-xs text-gray-500 mr-2">@{reply.replyToUsername}</span>
+                          )}
                           <span className="text-xs text-gray-900">{reply.content}</span>
                         </div>
                         <div className="text-[10px] text-gray-400 mt-1">刚刚</div>
@@ -135,6 +156,24 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                       </button>
                     </div>
                   ))}
+
+                  {/* 展开/收起按钮 */}
+                  {hasMore && (
+                    <button
+                      onClick={() => {
+                        const newExpanded = new Set(expandedComments)
+                        if (isExpanded) {
+                          newExpanded.delete(comment.id)
+                        } else {
+                          newExpanded.add(comment.id)
+                        }
+                        setExpandedComments(newExpanded)
+                      }}
+                      className="ml-11 mt-2 text-xs text-gray-500 font-medium"
+                    >
+                      {isExpanded ? '收起回复 ∧' : `展开其余 ${allReplies.length - 2} 条回复 ∨`}
+                    </button>
+                  )}
                 </div>
               )
             })

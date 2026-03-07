@@ -43,12 +43,28 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
   const touchEndX = useRef(0)
   const touchEndY = useRef(0)
 
-  // 加载评论
+  // 加载评论和点赞状态
   useEffect(() => {
     if (post) {
+      const savedUser = localStorage.getItem('user')
+      if (!savedUser) return
+      const user = JSON.parse(savedUser)
+      
+      // 加载评论
       fetch(`${API_URL}/comments/post/${post.id}`)
         .then(res => res.json())
-        .then(data => setComments(data))
+        .then(data => {
+          setComments(data)
+          // 加载点赞状态
+          const likedSet = new Set<string>()
+          Promise.all(
+            data.map((comment: any) =>
+              fetch(`${API_URL}/comments/like/check/${user.id}/${comment.id}`)
+                .then(res => res.json())
+                .then(liked => { if (liked) likedSet.add(comment.id) })
+            )
+          ).then(() => setLikedComments(likedSet))
+        })
         .catch(err => console.error('加载评论失败:', err))
     }
   }, [post])
@@ -241,8 +257,31 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         comments={comments}
         onSendComment={handleSendComment}
         onLikeComment={(commentId) => {
-          // TODO: 评论点赞API
-          console.log('点赞评论:', commentId)
+          const savedUser = localStorage.getItem('user')
+          if (!savedUser) return
+          const user = JSON.parse(savedUser)
+          
+          fetch(`${API_URL}/comments/like/toggle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, commentId })
+          })
+            .then(res => res.json())
+            .then(result => {
+              // 更新点赞状态
+              const newLiked = new Set(likedComments)
+              if (result.liked) {
+                newLiked.add(commentId)
+              } else {
+                newLiked.delete(commentId)
+              }
+              setLikedComments(newLiked)
+              
+              // 刷新评论列表
+              fetch(`${API_URL}/comments/post/${post.id}`)
+                .then(res => res.json())
+                .then(data => setComments(data))
+            })
         }}
         likedComments={likedComments}
       />
