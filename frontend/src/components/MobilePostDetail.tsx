@@ -55,7 +55,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
       fetch(`${API_URL}/comments/post/${post.id}`)
         .then(res => res.json())
         .then(data => {
-          setComments(data)
+          setComments(data.map((c: any) => ({
+            ...c,
+            username: c.user?.username ?? c.username,
+            parentCommentId: c.parentCommentId ?? undefined
+          })))
           // 加载点赞状态
           const likedSet = new Set<string>()
           Promise.all(

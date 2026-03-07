@@ -156,6 +156,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                         <button 
                           onClick={(e) => {
                             e.stopPropagation()
+                            console.log('点击回复，设置replyTo:', comment.username)
                             setReplyTo(comment.username)
                             setReplyParentId(comment.id)
                           }}
