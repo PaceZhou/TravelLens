@@ -80,6 +80,23 @@ function AppContent() {
     }
   }, [isLoggedIn])
 
+  // 全局监听发布按钮事件
+  useEffect(() => {
+    const handleOpenPublisher = () => {
+      if (location.pathname === '/world') {
+        // Community页面自己处理
+        return
+      }
+      // 其他页面跳转到Community
+      navigate('/world')
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('openPublisher'))
+      }, 100)
+    }
+    window.addEventListener('openPublisher', handleOpenPublisher)
+    return () => window.removeEventListener('openPublisher', handleOpenPublisher)
+  }, [location.pathname, navigate])
+
   const handleLogout = () => {
     setIsLoggedIn(false)
     setUsername('')
