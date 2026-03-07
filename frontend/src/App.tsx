@@ -219,7 +219,7 @@ function AppContent() {
               <div className="text-center">
                 <p className="text-gray-600 mb-4">请先登录查看个人主页</p>
                 <button
-                  onClick={() => setShowAuth(true)}
+                  onClick={() => setShowAuthModal(true)}
                   className="px-6 py-3 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full font-bold"
                 >
                   立即登录
