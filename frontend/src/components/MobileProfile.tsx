@@ -26,7 +26,6 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [mangoMoments, setMangoMoments] = useState<any[]>([])
   const [showMenu, setShowMenu] = useState<string | null>(null)
   const [showCoverSelector, setShowCoverSelector] = useState<string | null>(null)
-  const [editingPost, setEditingPost] = useState<any>(null)
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user')
@@ -226,9 +225,10 @@ export default function MobileProfile({ username }: MobileProfileProps) {
                       <div className="absolute top-12 right-2 bg-white rounded-lg shadow-lg py-2 w-32 z-50">
                         <button
                           onClick={() => {
-                            setEditingPost(post)
+                            window.dispatchEvent(new CustomEvent('openPublisher', { 
+                              detail: { editPost: post } 
+                            }))
                             setShowMenu(null)
-                            window.dispatchEvent(new CustomEvent('openPublisher'))
                           }}
                           className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
                         >

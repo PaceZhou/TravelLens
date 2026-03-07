@@ -20,6 +20,7 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentCity, setCurrentCity] = useState('全部')
   const [showUpload, setShowUpload] = useState(false)
+  const [editPost, setEditPost] = useState<any>(null)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [posts, setPosts] = useState<any[]>([])
@@ -142,10 +143,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   // 监听移动端底部发布按钮
   useEffect(() => {
-    const handleOpenPublisher = () => {
+    const handleOpenPublisher = (e: any) => {
       if (!isLoggedIn) {
         setShowLoginPrompt(true)
       } else {
+        setEditPost(e.detail?.editPost || null)
         setShowUpload(true)
       }
     }
@@ -401,13 +403,19 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* 发布弹窗 */}
       <PostPublisher
         isOpen={showUpload}
-        onClose={() => setShowUpload(false)}
+        onClose={() => {
+          setShowUpload(false)
+          setEditPost(null)
+        }}
         onPublishSuccess={() => {
           loadPosts(1)
           setPage(1)
+          setEditPost(null)
         }}
         showToast={showToast}
         currentCity={currentCity}
+        editPost={editPost}
+      />
       />
 
       {/* 详情浮窗 - PC端 */}
