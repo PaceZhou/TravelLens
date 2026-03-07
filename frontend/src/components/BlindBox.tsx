@@ -66,7 +66,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center relative px-4 py-10 min-h-screen">
+    <div className="flex-1 flex flex-col items-center justify-center relative px-4 py-6 md:py-10">
       {/* 背景光晕 */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[10%] left-[20%] w-[400px] h-[400px] bg-[#0055FF]/10 rounded-full blur-[100px]"></div>
@@ -79,7 +79,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
           <Zap size={16} className="text-[#0055FF]" /> AI Destiny Radar
         </div>
 
-        <h1 className="text-7xl font-black text-center mb-12 leading-tight tracking-tighter text-gray-900">
+        <h1 className="text-4xl md:text-7xl font-black text-center mb-8 md:mb-12 leading-tight tracking-tighter text-gray-900">
           {t.blindbox.title}<br/>
           <span className="relative inline-block">
             {t.blindbox.subtitle}
@@ -125,7 +125,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <div className="w-20 h-20 bg-[#CCFF00] rounded-full flex items-center justify-center mb-2 group-hover:bg-[#0055FF] transition-colors duration-300">
                   <Gift size={36} className="text-gray-900 group-hover:text-white" />
                 </div>
-                <span className="font-black text-2xl tracking-widest text-gray-900">{t.blindbox.draw}</span>
+                <span className="font-black text-xl md:text-2xl tracking-widest text-gray-900">{t.blindbox.draw}</span>
               </>
             )}
           </div>
@@ -143,7 +143,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#CCFF00] text-gray-900 text-xs font-black uppercase tracking-widest mb-3 rounded-sm">
                     <Sparkles size={14} /> SSR HIT
                   </div>
-                  <h2 className="text-4xl font-black">🎯 {t.blindbox.resultTitle}{result.city}</h2>
+                  <h2 className="text-2xl md:text-4xl font-black">🎯 {t.blindbox.resultTitle}{result.city}</h2>
                 </div>
                 <button onClick={() => setResult(null)} className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
                   <X size={24} />

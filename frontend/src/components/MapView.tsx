@@ -202,7 +202,7 @@ export default function MapView() {
   const selectedSpotData = SPOTS.find(s => s.id === selectedSpot)
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative h-[calc(100vh-3.5rem)] md:h-screen w-full">
       {/* 地图主界面 - 始终显示 */}
       <MapContainer 
         center={[39.916, 116.397]} 
