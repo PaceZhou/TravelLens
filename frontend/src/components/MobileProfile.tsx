@@ -165,8 +165,37 @@ export default function MobileProfile({ username }: MobileProfileProps) {
           {activeTab === 'posts' && (
             <div className="grid grid-cols-3 gap-2">
               {userPosts.map(post => (
-                <div key={post.id} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                  <img src={post.images?.[post.coverIndex || 0] || post.images?.[0]} alt="" className="w-full h-full object-cover" />
+                <div key={post.id} className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden group">
+                  <img 
+                    src={post.images?.[post.coverIndex || 0] || post.images?.[0]} 
+                    alt="" 
+                    className="w-full h-full object-cover" 
+                  />
+                  {/* 悬浮操作按钮 */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-active:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        // TODO: 打开编辑弹窗
+                        console.log('编辑帖子:', post.id)
+                      }}
+                      className="px-3 py-1 bg-white text-black rounded-full text-xs font-medium"
+                    >
+                      编辑
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (window.confirm('确定要删除这篇帖子吗？')) {
+                          fetch(`${API_URL}/posts/${post.id}`, { method: 'DELETE' })
+                            .then(() => {
+                              setUserPosts(userPosts.filter(p => p.id !== post.id))
+                            })
+                        }
+                      }}
+                      className="px-3 py-1 bg-red-500 text-white rounded-full text-xs font-medium"
+                    >
+                      删除
+                    </button>
+                  </div>
                 </div>
               ))}
               {userPosts.length === 0 && <p className="col-span-3 text-center text-gray-400 py-10">暂无帖子</p>}
