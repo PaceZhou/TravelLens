@@ -286,13 +286,28 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
             >
               最新
             </button>
-            
+
+            {/* 最热按钮 */}
+            <button
+              onClick={() => setSortBy(sortBy === 'hot' ? 'default' : 'hot')}
+              className={`px-5 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1 ${
+                sortBy === 'hot'
+                  ? 'bg-gray-900 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              🔥 最热
+            </button>
+          </div>
+
+          {/* 第二排：热门标签 */}
+          <div className="flex items-center gap-2 flex-wrap mt-3">
             {/* 热门标签 */}
-            {allTags.slice(0, 6).map(tag => (
+            {allTags.slice(0, 4).map(tag => (
               <button
                 key={tag.id}
                 onClick={() => setSelectedTag(tag.name)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                className={`px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                   selectedTag === tag.name
                     ? 'bg-gray-900 text-white shadow-lg'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
