@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Camera, LogOut } from 'lucide-react'
 import AvatarSelector from './AvatarSelector'
+import AvatarEditorModal from './AvatarEditorModal'
 import { API_URL } from '../api/config'
 import postsAPI from '../api/posts'
 import collectionsAPI from '../api/collections'
@@ -17,6 +18,7 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [user, setUser] = useState<any>({ username: '', bio: '' })
   const [avatar, setAvatar] = useState('👤')
   const [showAvatarSelector, setShowAvatarSelector] = useState(false)
+  const [showAvatarEditor, setShowAvatarEditor] = useState(false)
   const [stats, setStats] = useState({ posts: 0, likes: 0 })
   const [activeTab, setActiveTab] = useState<'posts' | 'collections' | 'moments'>('posts')
   const [userPosts, setUserPosts] = useState<any[]>([])
@@ -64,6 +66,24 @@ export default function MobileProfile({ username }: MobileProfileProps) {
     }
   }
 
+  const handleSaveAvatar = async (avatarData: string) => {
+    const savedUser = localStorage.getItem('user')
+    if (!savedUser) return
+    
+    const userData = JSON.parse(savedUser)
+    
+    try {
+      await fetch(`${API_URL}/auth/avatar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userData.id, avatar: avatarData })
+      })
+      setAvatar(avatarData)
+    } catch (error) {
+      console.error('保存头像失败:', error)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* 顶部用户卡片 */}
@@ -71,11 +91,15 @@ export default function MobileProfile({ username }: MobileProfileProps) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-4xl">
-                {avatar}
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-4xl overflow-hidden">
+                {avatar.startsWith('data:') ? (
+                  <img src={avatar} alt="头像" className="w-full h-full object-cover" />
+                ) : (
+                  avatar
+                )}
               </div>
               <button
-                onClick={() => setShowAvatarSelector(true)}
+                onClick={() => setShowAvatarEditor(true)}
                 className="absolute bottom-0 right-0 w-6 h-6 bg-white rounded-full shadow-lg flex items-center justify-center"
               >
                 <Camera size={12} />
@@ -184,6 +208,13 @@ export default function MobileProfile({ username }: MobileProfileProps) {
           onClose={() => setShowAvatarSelector(false)}
         />
       )}
+
+      {/* 头像编辑器 */}
+      <AvatarEditorModal
+        isOpen={showAvatarEditor}
+        onClose={() => setShowAvatarEditor(false)}
+        onSave={handleSaveAvatar}
+      />
     </div>
   )
 }
