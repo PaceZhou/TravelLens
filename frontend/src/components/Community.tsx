@@ -139,6 +139,15 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     loadUserLikesAndCollections()
   }, [])
 
+  // 监听移动端底部发布按钮
+  useEffect(() => {
+    const handleOpenPublisher = () => {
+      handlePublishClick()
+    }
+    window.addEventListener('openPublisher', handleOpenPublisher)
+    return () => window.removeEventListener('openPublisher', handleOpenPublisher)
+  }, [isLoggedIn])
+
   const loadUserLikesAndCollections = async () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     if (!user.id) return
@@ -410,10 +419,10 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         </div>
       )}
 
-      {/* 右下角悬浮发布按钮 */}
+      {/* 右下角悬浮发布按钮 - 移动端隐藏 */}
       <button
         onClick={handlePublishClick}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center z-40"
+        className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full shadow-2xl hover:scale-110 transition-transform items-center justify-center z-40"
       >
         <Camera size={28} />
       </button>

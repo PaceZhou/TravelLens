@@ -1,5 +1,5 @@
 import { Gift, Map, Plus, Globe, User } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 /**
  * 移动端底部导航栏
@@ -7,8 +7,14 @@ import { Link, useLocation } from 'react-router-dom'
  */
 export default function MobileBottomBar() {
   const location = useLocation()
+  const navigate = useNavigate()
   
   const isActive = (path: string) => location.pathname === path
+
+  // 发布按钮点击 - 触发发布事件
+  const handlePublish = () => {
+    window.dispatchEvent(new CustomEvent('openPublisher'))
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#9DF9FF] border-t border-gray-200 md:hidden">
@@ -30,7 +36,10 @@ export default function MobileBottomBar() {
         </Link>
 
         {/* 发布按钮 - 芒果黄渐变 */}
-        <button className="flex items-center justify-center w-12 h-12 -mt-2 bg-gradient-to-r from-[#FFB800] to-[#FFCC00] rounded-full shadow-lg">
+        <button 
+          onClick={handlePublish}
+          className="flex items-center justify-center w-12 h-12 -mt-2 bg-gradient-to-r from-[#FFB800] to-[#FFCC00] rounded-full shadow-lg"
+        >
           <Plus size={28} className="text-white" strokeWidth={3} />
         </button>
 
