@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { X, Heart, MessageCircle, Share2, Bookmark, Send } from 'lucide-react'
 
 interface Post {
@@ -22,15 +22,21 @@ interface MobilePostDetailProps {
   onCollect: (postId: string) => void
   isLiked: boolean
   isCollected: boolean
+  onNext?: () => void
+  onPrev?: () => void
 }
 
 /**
  * 移动端全屏帖子详情
  * 类似Instagram Reels风格
  */
-export default function MobilePostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected }: MobilePostDetailProps) {
+export default function MobilePostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected, onNext, onPrev }: MobilePostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [commentText, setCommentText] = useState('')
+  const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
+  const touchEndX = useRef(0)
+  const touchEndY = useRef(0)
 
   if (!post) return null
 
@@ -43,8 +49,48 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
     setCommentText('')
   }
 
+  // 手势滑动处理
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX
+    touchEndY.current = e.changedTouches[0].clientY
+    handleSwipe()
+  }
+
+  const handleSwipe = () => {
+    const deltaX = touchEndX.current - touchStartX.current
+    const deltaY = touchEndY.current - touchStartY.current
+    const minSwipeDistance = 50
+
+    // 判断是横向还是纵向滑动
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // 横向滑动
+      if (deltaX > minSwipeDistance) {
+        // 向右滑：关闭
+        onClose()
+      }
+    } else {
+      // 纵向滑动
+      if (deltaY < -minSwipeDistance && onNext) {
+        // 向上滑：下一个
+        onNext()
+      } else if (deltaY > minSwipeDistance && onPrev) {
+        // 向下滑：上一个
+        onPrev()
+      }
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-[9999] bg-black flex flex-col">
+    <div 
+      className="fixed inset-0 z-[9999] bg-black flex flex-col"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* 顶部关闭按钮 */}
       <button
         onClick={onClose}

@@ -432,6 +432,16 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           onCollect={handleCollect}
           isLiked={likedPosts.has(posts[selectedPost]?.id)}
           isCollected={collectedPosts.has(posts[selectedPost]?.id)}
+          onNext={() => {
+            if (selectedPost < posts.length - 1) {
+              setSelectedPost(selectedPost + 1)
+            }
+          }}
+          onPrev={() => {
+            if (selectedPost > 0) {
+              setSelectedPost(selectedPost - 1)
+            }
+          }}
         />
       )}
 
