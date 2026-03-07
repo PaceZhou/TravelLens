@@ -19,13 +19,14 @@ interface MobileCommentDrawerProps {
   onSendComment: (content: string, replyToUsername?: string) => void
   onLikeComment: (commentId: string) => void
   likedComments: Set<string>
+  postAuthorId?: string // 帖主ID
 }
 
 /**
  * 移动端评论抽屉 - Instagram风格
  * 底部滑出，带缩放背景特效
  */
-export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendComment, onLikeComment, likedComments }: MobileCommentDrawerProps) {
+export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendComment, onLikeComment, likedComments, postAuthorId }: MobileCommentDrawerProps) {
   const [commentText, setCommentText] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
 
@@ -119,6 +120,9 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                     <div className="flex-1">
                       <div>
                         <span className="font-bold text-sm mr-2">{comment.username}</span>
+                        {comment.userId === postAuthorId && (
+                          <span className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded mr-2">作者</span>
+                        )}
                         <span className="text-sm text-gray-900">{getDisplayText(comment.id, comment.content)}</span>
                         {needsTruncate(comment.content) && !expandedTexts.has(comment.id) && (
                           <button

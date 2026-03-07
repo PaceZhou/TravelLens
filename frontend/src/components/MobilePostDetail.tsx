@@ -284,6 +284,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
             })
         }}
         likedComments={likedComments}
+        postAuthorId={post.userId}
       />
     </>
   )
