@@ -36,4 +36,23 @@ export class CommentsController {
   async getCount(@Param('postId') postId: string) {
     return this.commentsService.getCount(postId);
   }
+
+  /**
+   * 切换评论点赞
+   * POST /comments/like/toggle
+   * Body: { userId, commentId }
+   */
+  @Post('like/toggle')
+  async toggleLike(@Body() body: any) {
+    return this.commentsService.toggleLike(body.userId, body.commentId);
+  }
+
+  /**
+   * 检查评论点赞状态
+   * GET /comments/like/check/:userId/:commentId
+   */
+  @Get('like/check/:userId/:commentId')
+  async checkLike(@Param('userId') userId: string, @Param('commentId') commentId: string) {
+    return this.commentsService.checkLike(userId, commentId);
+  }
 }

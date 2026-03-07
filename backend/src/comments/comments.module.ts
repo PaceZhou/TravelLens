@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './comment.entity';
+import { CommentLike } from './comment-like.entity';
 import { CommentsService } from './comments.service';
 import { CommentsController } from './comments.controller';
 import { Post } from '../posts/post.entity';
@@ -12,7 +13,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Comment, Post]),
+    TypeOrmModule.forFeature([Comment, CommentLike, Post]),
     NotificationsModule,
   ],
   controllers: [CommentsController],
