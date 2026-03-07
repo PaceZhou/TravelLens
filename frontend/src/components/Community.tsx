@@ -9,6 +9,7 @@ import { collectionsAPI } from '../api/collections'
 import Toast from './Toast'
 import PostPublisher from './PostPublisher'
 import PostDetail from './PostDetail'
+import MobilePostDetail from './MobilePostDetail'
 import PostList from './PostList'
 
 export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
@@ -409,8 +410,8 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
         currentCity={currentCity}
       />
 
-      {/* 详情浮窗 */}
-      {selectedPost !== null && (
+      {/* 详情浮窗 - PC端 */}
+      {selectedPost !== null && window.innerWidth >= 768 && (
         <PostDetail
           post={posts[selectedPost]}
           onClose={() => setSelectedPost(null)}
@@ -419,6 +420,18 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
           isLiked={likedPosts.has(posts[selectedPost]?.id)}
           isCollected={collectedPosts.has(posts[selectedPost]?.id)}
           showToast={showToast}
+        />
+      )}
+
+      {/* 详情浮窗 - 移动端全屏 */}
+      {selectedPost !== null && window.innerWidth < 768 && (
+        <MobilePostDetail
+          post={posts[selectedPost]}
+          onClose={() => setSelectedPost(null)}
+          onLike={handleLike}
+          onCollect={handleCollect}
+          isLiked={likedPosts.has(posts[selectedPost]?.id)}
+          isCollected={collectedPosts.has(posts[selectedPost]?.id)}
         />
       )}
 
