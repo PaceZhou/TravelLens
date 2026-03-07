@@ -87,7 +87,7 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   }
 
   const handleDeletePost = async (postId: string) => {
-    if (!window.confirm('确定要删除这篇帖子吗？')) return
+    if (!window.confirm('确定要删除这篇帖子吗？删除后无法恢复。')) return
     
     try {
       await fetch(`${API_URL}/posts/${postId}`, { method: 'DELETE' })
@@ -103,17 +103,23 @@ export default function MobileProfile({ username }: MobileProfileProps) {
       const post = userPosts.find(p => p.id === postId)
       if (!post) return
 
-      await fetch(`${API_URL}/posts/${postId}`, {
+      // 使用postsAPI.update，只更新coverIndex
+      const response = await fetch(`${API_URL}/posts/${postId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...post, coverIndex: newCoverIndex })
+        body: JSON.stringify({
+          ...post,
+          coverIndex: newCoverIndex
+        })
       })
 
-      setUserPosts(userPosts.map(p => 
-        p.id === postId ? { ...p, coverIndex: newCoverIndex } : p
-      ))
-      setShowCoverSelector(null)
-      setShowMenu(null)
+      if (response.ok) {
+        setUserPosts(userPosts.map(p => 
+          p.id === postId ? { ...p, coverIndex: newCoverIndex } : p
+        ))
+        setShowCoverSelector(null)
+        setShowMenu(null)
+      }
     } catch (error) {
       console.error('更改封面失败:', error)
     }
