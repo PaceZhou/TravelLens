@@ -57,9 +57,30 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
 
   const images = post.images || [post.image] || []
 
-  const handleSendComment = (content: string) => {
-    // TODO: 发送评论API
-    console.log('发送评论:', content)
+  const handleSendComment = (content: string, replyToUsername?: string) => {
+    const savedUser = localStorage.getItem('user')
+    if (!savedUser) return
+    
+    const user = JSON.parse(savedUser)
+    
+    fetch(`${API_URL}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        postId: post.id,
+        userId: user.id,
+        content,
+        replyToUsername: replyToUsername || null
+      })
+    })
+      .then(res => res.json())
+      .then(() => {
+        // 重新加载评论
+        fetch(`${API_URL}/comments/post/${post.id}`)
+          .then(res => res.json())
+          .then(data => setComments(data))
+      })
+      .catch(err => console.error('发送评论失败:', err))
   }
 
   const handleQuickSend = () => {
