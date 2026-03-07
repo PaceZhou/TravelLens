@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Camera, LogOut } from 'lucide-react'
 import AvatarSelector from './AvatarSelector'
 import { API_URL } from '../api/config'
+import postsAPI from '../api/posts'
+import collectionsAPI from '../api/collections'
 
 interface MobileProfileProps {
   username: string
@@ -16,6 +18,10 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [avatar, setAvatar] = useState('👤')
   const [showAvatarSelector, setShowAvatarSelector] = useState(false)
   const [stats, setStats] = useState({ posts: 0, likes: 0 })
+  const [activeTab, setActiveTab] = useState<'posts' | 'collections' | 'moments'>('posts')
+  const [userPosts, setUserPosts] = useState<any[]>([])
+  const [collectedPosts, setCollectedPosts] = useState<any[]>([])
+  const [mangoMoments, setMangoMoments] = useState<any[]>([])
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user')
@@ -32,6 +38,22 @@ export default function MobileProfile({ username }: MobileProfileProps) {
       fetch(`${API_URL}/auth/stats/${userData.username}`)
         .then(res => res.json())
         .then(data => setStats(data))
+      
+      // 加载我的帖子
+      postsAPI.getAll().then(data => {
+        const myPosts = data.posts.filter((p: any) => p.userId === userData.id)
+        setUserPosts(myPosts)
+      })
+      
+      // 加载我的收藏
+      collectionsAPI.getUserCollections(userData.id).then(data => {
+        setCollectedPosts(data)
+      })
+      
+      // 加载我的芒一下
+      fetch(`${API_URL}/mango-moments/user/${userData.id}`)
+        .then(res => res.json())
+        .then(data => setMangoMoments(data))
     }
   }, [])
 
@@ -85,20 +107,71 @@ export default function MobileProfile({ username }: MobileProfileProps) {
         </div>
       </div>
 
-      {/* 功能列表 */}
+      {/* Tab切换 */}
       <div className="mt-4 bg-white">
-        <button className="w-full px-6 py-4 text-left border-b flex items-center justify-between">
-          <span>我的帖子</span>
-          <span className="text-gray-400">›</span>
-        </button>
-        <button className="w-full px-6 py-4 text-left border-b flex items-center justify-between">
-          <span>我的收藏</span>
-          <span className="text-gray-400">›</span>
-        </button>
-        <button className="w-full px-6 py-4 text-left flex items-center justify-between">
-          <span>我的芒一下</span>
-          <span className="text-gray-400">›</span>
-        </button>
+        <div className="flex border-b">
+          <button
+            onClick={() => setActiveTab('posts')}
+            className={`flex-1 py-3 text-sm font-medium ${
+              activeTab === 'posts' ? 'text-[#0055FF] border-b-2 border-[#0055FF]' : 'text-gray-500'
+            }`}
+          >
+            我的帖子 ({userPosts.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('collections')}
+            className={`flex-1 py-3 text-sm font-medium ${
+              activeTab === 'collections' ? 'text-[#0055FF] border-b-2 border-[#0055FF]' : 'text-gray-500'
+            }`}
+          >
+            我的收藏 ({collectedPosts.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('moments')}
+            className={`flex-1 py-3 text-sm font-medium ${
+              activeTab === 'moments' ? 'text-[#0055FF] border-b-2 border-[#0055FF]' : 'text-gray-500'
+            }`}
+          >
+            芒一下 ({mangoMoments.length})
+          </button>
+        </div>
+
+        {/* 内容区域 */}
+        <div className="p-4">
+          {activeTab === 'posts' && (
+            <div className="grid grid-cols-3 gap-2">
+              {userPosts.map(post => (
+                <div key={post.id} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                  <img src={post.images?.[post.coverIndex || 0] || post.images?.[0]} alt="" className="w-full h-full object-cover" />
+                </div>
+              ))}
+              {userPosts.length === 0 && <p className="col-span-3 text-center text-gray-400 py-10">暂无帖子</p>}
+            </div>
+          )}
+
+          {activeTab === 'collections' && (
+            <div className="grid grid-cols-3 gap-2">
+              {collectedPosts.map(post => (
+                <div key={post.id} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                  <img src={post.images?.[post.coverIndex || 0] || post.images?.[0]} alt="" className="w-full h-full object-cover" />
+                </div>
+              ))}
+              {collectedPosts.length === 0 && <p className="col-span-3 text-center text-gray-400 py-10">暂无收藏</p>}
+            </div>
+          )}
+
+          {activeTab === 'moments' && (
+            <div className="space-y-3">
+              {mangoMoments.map(moment => (
+                <div key={moment.id} className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="font-bold text-sm mb-1">{moment.destination}</h3>
+                  <p className="text-xs text-gray-600">{moment.description}</p>
+                </div>
+              ))}
+              {mangoMoments.length === 0 && <p className="text-center text-gray-400 py-10">暂无芒一下</p>}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 头像选择器 */}

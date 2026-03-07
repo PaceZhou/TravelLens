@@ -9,7 +9,6 @@ interface Comment {
   content: string
   createdAt: string
   replyToUsername?: string
-  parentCommentId?: string
   likes?: number
 }
 
@@ -182,18 +181,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                           )}
                           <span className="text-xs text-gray-900">{reply.content}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-[10px] text-gray-400 mt-1">
-                          <span>刚刚</span>
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setReplyTo(reply.username)
-                            }}
-                            className="font-medium hover:text-gray-600 relative z-10"
-                          >
-                            回复
-                          </button>
-                        </div>
+                        <div className="text-[10px] text-gray-400 mt-1">刚刚</div>
                       </div>
                       <button
                         onClick={() => onLikeComment(reply.id)}

@@ -30,15 +30,13 @@ export class CommentsService {
   async create(data: any) {
     // 如果是回复评论，自动设置parentCommentId
     if (data.replyToUsername && !data.parentCommentId) {
-      // 按「被回复人 username」查找该帖子下其最新一条评论，作为回复目标
-      const replyToComment = await this.commentsRepository
-        .createQueryBuilder('c')
-        .leftJoinAndSelect('c.user', 'user')
-        .where('c.postId = :postId', { postId: data.postId })
-        .andWhere('user.username = :username', { username: data.replyToUsername })
-        .orderBy('c.createdAt', 'DESC')
-        .getOne();
-
+      // 查找被回复的评论
+      const replyToComment = await this.commentsRepository.findOne({
+        where: { postId: data.postId },
+        relations: ['user'],
+        order: { createdAt: 'DESC' }
+      });
+      
       if (replyToComment) {
         // 如果被回复的是二级回复，继承其parentCommentId；否则用其自己的id
         data.parentCommentId = replyToComment.parentCommentId || replyToComment.id;
