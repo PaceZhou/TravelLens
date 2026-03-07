@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
-import { X, Heart, MessageCircle, Share2, Bookmark, Send } from 'lucide-react'
+import { X, Heart, MessageCircle, Share2, Bookmark } from 'lucide-react'
+import MobileCommentDrawer from './MobileCommentDrawer'
 
 interface Post {
   id: string
@@ -32,7 +33,7 @@ interface MobilePostDetailProps {
  */
 export default function MobilePostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected, onNext, onPrev }: MobilePostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [commentText, setCommentText] = useState('')
+  const [showComments, setShowComments] = useState(false)
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchEndX = useRef(0)
@@ -42,11 +43,9 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
 
   const images = post.images || [post.image] || []
 
-  const handleSendComment = () => {
-    if (!commentText.trim()) return
+  const handleSendComment = (content: string) => {
     // TODO: 发送评论API
-    console.log('发送评论:', commentText)
-    setCommentText('')
+    console.log('发送评论:', content)
   }
 
   // 手势滑动处理
@@ -65,132 +64,117 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
     const deltaX = touchEndX.current - touchStartX.current
     const deltaY = touchEndY.current - touchStartY.current
     const minSwipeDistance = 50
-    const edgeThreshold = 50 // 左侧边缘阈值
+    const edgeThreshold = 50
 
-    // 判断是横向还是纵向滑动
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // 横向滑动
       if (deltaX > minSwipeDistance && touchStartX.current < edgeThreshold) {
-        // 向右滑且从左侧边缘开始：关闭
         onClose()
       }
     } else {
-      // 纵向滑动
       if (deltaY < -minSwipeDistance && onNext) {
-        // 向上滑：下一个
         onNext()
       } else if (deltaY > minSwipeDistance && onPrev) {
-        // 向下滑：上一个
         onPrev()
       }
     }
   }
 
   return (
-    <div 
-      className="fixed inset-0 z-[9999] bg-black flex flex-col"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* 顶部关闭按钮 */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 left-4 z-50 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center"
+    <>
+      {/* 主内容容器 - 带缩放特效 */}
+      <div 
+        className={`fixed inset-0 z-[9999] bg-black transition-all duration-300 ${
+          showComments ? 'scale-[0.92] rounded-xl overflow-hidden' : 'scale-100'
+        }`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
-        <X size={24} className="text-white" />
-      </button>
+        {/* 顶部关闭按钮 */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 left-4 z-50 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center"
+        >
+          <X size={24} className="text-white" />
+        </button>
 
-      {/* 全屏图片 */}
-      <div className="flex-1 flex items-center justify-center">
-        <img
-          src={images[currentImageIndex]}
-          alt={post.content}
-          className="w-full h-full object-contain"
-        />
-      </div>
-
-      {/* 底部评论输入框 */}
-      <div className="bg-black/80 backdrop-blur-sm border-t border-gray-800 p-3 pb-safe">
-        <div className="flex items-center gap-3">
-          <input
-            type="text"
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && commentText.trim()) {
-                handleSendComment()
-              }
-            }}
-            placeholder="添加评论..."
-            className="flex-1 bg-gray-800/50 text-white placeholder-gray-400 rounded-full px-4 py-2 text-sm outline-none"
+        {/* 全屏图片 */}
+        <div className="w-full h-full flex items-center justify-center">
+          <img
+            src={images[currentImageIndex]}
+            alt={post.content}
+            className="w-full h-full object-contain"
           />
+        </div>
+
+        {/* 右侧功能图标 */}
+        <div className="absolute right-4 bottom-24 flex flex-col gap-6">
+          {/* 点赞 */}
           <button
-            onClick={handleSendComment}
-            disabled={!commentText.trim()}
-            className={`${commentText.trim() ? 'text-[#0055FF]' : 'text-gray-600'} font-bold text-sm`}
+            onClick={() => onLike(post.id)}
+            className="flex flex-col items-center gap-1"
           >
-            发布
+            <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
+              <Heart
+                size={28}
+                className={isLiked ? 'text-red-500' : 'text-white'}
+                fill={isLiked ? 'currentColor' : 'none'}
+              />
+            </div>
+            <span className="text-white text-xs font-bold">{post.likes}</span>
+          </button>
+
+          {/* 评论 */}
+          <button 
+            onClick={() => setShowComments(true)}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
+              <MessageCircle size={28} className="text-white" />
+            </div>
+            <span className="text-white text-xs font-bold">{post.comments}</span>
+          </button>
+
+          {/* 收藏 */}
+          <button
+            onClick={() => onCollect(post.id)}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
+              <Bookmark
+                size={28}
+                className={isCollected ? 'text-[#FFB800]' : 'text-white'}
+                fill={isCollected ? 'currentColor' : 'none'}
+              />
+            </div>
+          </button>
+
+          {/* 分享 */}
+          <button className="flex flex-col items-center gap-1">
+            <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
+              <Share2 size={28} className="text-white" />
+            </div>
           </button>
         </div>
-      </div>
 
-      {/* 右侧功能图标 */}
-      <div className="absolute right-4 bottom-24 flex flex-col gap-6">
-        {/* 点赞 */}
-        <button
-          onClick={() => onLike(post.id)}
-          className="flex flex-col items-center gap-1"
-        >
-          <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
-            <Heart
-              size={28}
-              className={isLiked ? 'text-red-500' : 'text-white'}
-              fill={isLiked ? 'currentColor' : 'none'}
-            />
+        {/* 底部用户信息和内容 */}
+        <div className="absolute bottom-4 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
+              👤
+            </div>
+            <span className="text-white font-bold">{post.user?.username || post.author}</span>
           </div>
-          <span className="text-white text-xs font-bold">{post.likes}</span>
-        </button>
-
-        {/* 评论 */}
-        <button className="flex flex-col items-center gap-1">
-          <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
-            <MessageCircle size={28} className="text-white" />
-          </div>
-          <span className="text-white text-xs font-bold">{post.comments}</span>
-        </button>
-
-        {/* 收藏 */}
-        <button
-          onClick={() => onCollect(post.id)}
-          className="flex flex-col items-center gap-1"
-        >
-          <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
-            <Bookmark
-              size={28}
-              className={isCollected ? 'text-[#FFB800]' : 'text-white'}
-              fill={isCollected ? 'currentColor' : 'none'}
-            />
-          </div>
-        </button>
-
-        {/* 分享 */}
-        <button className="flex flex-col items-center gap-1">
-          <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
-            <Share2 size={28} className="text-white" />
-          </div>
-        </button>
-      </div>
-
-      {/* 底部用户信息和内容 - 向上移动40px */}
-      <div className="absolute bottom-16 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
-            👤
-          </div>
-          <span className="text-white font-bold">{post.user?.username || post.author}</span>
+          <p className="text-white text-sm leading-relaxed">{post.content}</p>
         </div>
-        <p className="text-white text-sm leading-relaxed">{post.content}</p>
       </div>
-    </div>
+
+      {/* 评论抽屉 */}
+      <MobileCommentDrawer
+        isOpen={showComments}
+        onClose={() => setShowComments(false)}
+        comments={[]}
+        onSendComment={handleSendComment}
+      />
+    </>
   )
 }
