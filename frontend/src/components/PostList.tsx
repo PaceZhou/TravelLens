@@ -50,7 +50,40 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
 
   return (
     <div className="space-y-6">
-      <div className="columns-2 md:columns-3 lg:columns-3 xl:columns-4 gap-2 md:gap-6">
+      {/* 移动端：单排列表 */}
+      <div className="md:hidden space-y-3">
+        {posts.map((post, index) => (
+          <div
+            key={post.id}
+            onClick={() => onPostClick(index)}
+            className="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-98 transition-all cursor-pointer flex gap-3 p-3"
+          >
+            {/* 左侧图片 */}
+            <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
+              <img
+                src={post.image}
+                alt={post.location}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            {/* 右侧信息 */}
+            <div className="flex-1 flex flex-col justify-between min-w-0">
+              <p className="text-gray-900 text-sm leading-tight line-clamp-2 font-medium">{post.content}</p>
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span className="truncate">{post.user?.username || post.author}</span>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <Heart size={14} className="text-red-500" fill="currentColor" />
+                  <span>{post.likes}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* PC端：瀑布流 */}
+      <div className="hidden md:block columns-3 lg:columns-3 xl:columns-4 gap-6">
         {posts.map((post, index) => (
           <div
             key={post.id}
