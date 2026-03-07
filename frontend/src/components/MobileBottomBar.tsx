@@ -20,9 +20,9 @@ export default function MobileBottomBar() {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#9DF9FF] border-t border-gray-200 md:hidden">
       <div className="flex items-center justify-around h-14">
         {/* 芒一下 */}
-        <Link to="/" className="flex flex-col items-center justify-center flex-1 h-full">
-          <Gift size={24} className={isActive('/') ? 'text-[#FFB800]' : 'text-gray-700'} />
-          <span className={`text-xs mt-0.5 ${isActive('/') ? 'text-[#FFB800] font-semibold' : 'text-gray-700'}`}>
+        <Link to="/blindbox" className="flex flex-col items-center justify-center flex-1 h-full">
+          <Gift size={24} className={isActive('/blindbox') ? 'text-[#FFB800]' : 'text-gray-700'} />
+          <span className={`text-xs mt-0.5 ${isActive('/blindbox') ? 'text-[#FFB800] font-semibold' : 'text-gray-700'}`}>
             芒一下
           </span>
         </Link>

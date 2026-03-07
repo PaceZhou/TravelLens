@@ -205,6 +205,7 @@ function AppContent() {
             <Community isLoggedIn={isLoggedIn} /> : 
             <BlindBox isLoggedIn={isLoggedIn} />
           } />
+          <Route path="/blindbox" element={<BlindBox isLoggedIn={isLoggedIn} />} />
           <Route path="/map" element={<MapView />} />
           <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
           <Route path="/search" element={<SearchPage />} />
