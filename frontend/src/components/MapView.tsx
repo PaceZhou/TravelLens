@@ -241,13 +241,13 @@ export default function MapView() {
       <div className="fixed top-14 left-0 right-0 md:absolute md:top-6 md:left-1/2 md:right-auto md:transform md:-translate-x-1/2 z-40 bg-white md:bg-transparent py-2 px-4 md:p-0 flex gap-2 justify-center md:justify-start shadow-sm md:shadow-none">
         <button 
           onClick={() => handleFilter('random')}
-          className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
+          className={`px-3 py-2 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center justify-center min-h-[36px] ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
         >
           {t.map.filters.random}
         </button>
         <button 
           onClick={() => handleFilter('nearby')}
-          className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all ${filterType === 'nearby' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
+          className={`px-3 py-2 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center justify-center min-h-[36px] ${filterType === 'nearby' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
         >
           {t.map.filters.nearby}
         </button>
@@ -258,9 +258,9 @@ export default function MapView() {
               handleFilter('country')
               setShowDropdown(!showDropdown)
             }}
-            className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm flex items-center gap-1 transition-all ${filterType === 'country' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
+            className={`px-3 py-2 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm flex items-center justify-center gap-1 min-h-[36px] transition-all ${filterType === 'country' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
           >
-            {selectedCountry || t.map.filters.country} <ChevronDown size={14} />
+            {selectedCountry || t.map.filters.country} <ChevronDown size={12} />
           </button>
           
           {showDropdown && filterType === 'country' && (
