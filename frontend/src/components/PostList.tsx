@@ -50,31 +50,31 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
 
   return (
     <div className="space-y-6">
-      {/* 移动端：单排列表 */}
-      <div className="md:hidden space-y-3">
+      {/* 移动端：双列瀑布流 */}
+      <div className="md:hidden columns-2 gap-3">
         {posts.map((post, index) => (
           <div
             key={post.id}
             onClick={() => onPostClick(index)}
-            className="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-98 transition-all cursor-pointer flex gap-3 p-3"
+            className="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-98 transition-all cursor-pointer mb-3 break-inside-avoid"
           >
-            {/* 左侧图片 */}
-            <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
+            {/* 图片 */}
+            <div className="relative overflow-hidden">
               <img
                 src={post.image}
                 alt={post.location}
-                className="w-full h-full object-cover"
+                className="w-full h-auto object-cover"
               />
             </div>
             
-            {/* 右侧信息 */}
-            <div className="flex-1 flex flex-col justify-between min-w-0">
-              <p className="text-gray-900 text-sm leading-tight line-clamp-2 font-medium">{post.content}</p>
+            {/* 信息 */}
+            <div className="p-3">
+              <p className="text-gray-900 text-xs leading-tight line-clamp-2 font-medium mb-2">{post.content}</p>
               <div className="flex items-center justify-between text-xs text-gray-500">
-                <span className="truncate">{post.user?.username || post.author}</span>
+                <span className="truncate text-[10px]">{post.user?.username || post.author}</span>
                 <div className="flex items-center gap-1 flex-shrink-0">
-                  <Heart size={14} className="text-red-500" fill="currentColor" />
-                  <span>{post.likes}</span>
+                  <Heart size={12} className="text-red-500" fill="currentColor" />
+                  <span className="text-[10px]">{post.likes}</span>
                 </div>
               </div>
             </div>
