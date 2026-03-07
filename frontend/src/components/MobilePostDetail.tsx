@@ -157,7 +157,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         </div>
 
         {/* 底部用户信息和内容 */}
-        <div className="absolute bottom-4 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+        <div className="absolute bottom-20 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
               👤
@@ -165,6 +165,22 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
             <span className="text-white font-bold">{post.user?.username || post.author}</span>
           </div>
           <p className="text-white text-sm leading-relaxed">{post.content}</p>
+        </div>
+
+        {/* 底部评论输入框 */}
+        <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm border-t border-gray-800 p-3">
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              placeholder="添加评论..."
+              onClick={() => setShowComments(true)}
+              readOnly
+              className="flex-1 bg-gray-800/50 text-white placeholder-gray-400 rounded-full px-4 py-2 text-sm outline-none"
+            />
+            <button className="text-gray-600 font-bold text-sm">
+              发布
+            </button>
+          </div>
         </div>
       </div>
 
