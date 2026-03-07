@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Heart, MessageCircle, Share2, Bookmark } from 'lucide-react'
+import { X, Heart, MessageCircle, Share2, Bookmark, Send } from 'lucide-react'
 
 interface Post {
   id: string
@@ -30,13 +30,21 @@ interface MobilePostDetailProps {
  */
 export default function MobilePostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected }: MobilePostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [commentText, setCommentText] = useState('')
 
   if (!post) return null
 
   const images = post.images || [post.image] || []
 
+  const handleSendComment = () => {
+    if (!commentText.trim()) return
+    // TODO: 发送评论API
+    console.log('发送评论:', commentText)
+    setCommentText('')
+  }
+
   return (
-    <div className="fixed inset-0 z-[9999] bg-black">
+    <div className="fixed inset-0 z-[9999] bg-black flex flex-col">
       {/* 顶部关闭按钮 */}
       <button
         onClick={onClose}
@@ -46,12 +54,32 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
       </button>
 
       {/* 全屏图片 */}
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center">
         <img
           src={images[currentImageIndex]}
           alt={post.content}
           className="w-full h-full object-contain"
         />
+      </div>
+
+      {/* 底部评论输入框 */}
+      <div className="bg-black/80 backdrop-blur-sm border-t border-gray-800 p-3 pb-safe">
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            placeholder="添加评论..."
+            className="flex-1 bg-gray-800/50 text-white placeholder-gray-400 rounded-full px-4 py-2 text-sm outline-none"
+          />
+          <button
+            onClick={handleSendComment}
+            disabled={!commentText.trim()}
+            className={`${commentText.trim() ? 'text-[#0055FF]' : 'text-gray-600'} font-bold text-sm`}
+          >
+            发布
+          </button>
+        </div>
       </div>
 
       {/* 右侧功能图标 */}
