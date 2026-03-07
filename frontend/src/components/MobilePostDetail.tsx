@@ -101,6 +101,11 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
 
   const handleQuickSend = () => {
     if (!quickComment.trim()) return
+    const savedUser = localStorage.getItem('user')
+    if (!savedUser) {
+      window.dispatchEvent(new CustomEvent('openAuth', { detail: { mode: 'login' } }))
+      return
+    }
     handleSendComment(quickComment)
     setQuickComment('')
   }

@@ -4,6 +4,7 @@ import BlindBox from './components/BlindBox'
 import MapView from './components/MapView'
 import Community from './components/Community'
 import Profile from './components/Profile'
+import MobileProfile from './components/MobileProfile'
 import PostDetailPage from './components/PostDetailPage'
 import Inbox from './components/Inbox'
 import SearchPage from './components/SearchPage'
@@ -209,7 +210,23 @@ function AppContent() {
           <Route path="/map" element={<MapView />} />
           <Route path="/world" element={<Community isLoggedIn={isLoggedIn} />} />
           <Route path="/search" element={<SearchPage />} />
-          <Route path="/profile" element={isLoggedIn ? <Profile username={username} /> : <div className="text-center py-20"><p>请先登录</p></div>} />
+          <Route path="/profile" element={isLoggedIn ? (
+            window.innerWidth < 768 ? 
+            <MobileProfile username={username} /> : 
+            <Profile username={username} />
+          ) : (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <p className="text-gray-600 mb-4">请先登录查看个人主页</p>
+                <button
+                  onClick={() => setShowAuth(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-[#0055FF] to-[#00D4AA] text-white rounded-full font-bold"
+                >
+                  立即登录
+                </button>
+              </div>
+            </div>
+          )} />
           <Route path="/users/:userId" element={<Profile username="" />} />
           <Route path="/posts/:postId" element={<PostDetailPage />} />
         </Routes>

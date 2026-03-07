@@ -11,11 +11,11 @@ export default function MobileBottomBar() {
   
   const isActive = (path: string) => location.pathname === path
 
-  // 发布按钮点击 - 触发发布事件
+  // 发布按钮点击 - 触发发布事件或登录
   const handlePublish = () => {
     const savedUser = localStorage.getItem('user')
     if (!savedUser) {
-      alert('请先登录')
+      window.dispatchEvent(new CustomEvent('openAuth', { detail: { mode: 'login' } }))
       return
     }
     window.dispatchEvent(new CustomEvent('openPublisher'))

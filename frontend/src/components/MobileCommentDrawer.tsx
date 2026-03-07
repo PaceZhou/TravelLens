@@ -32,6 +32,11 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
 
   const handleSend = () => {
     if (!commentText.trim()) return
+    const savedUser = localStorage.getItem('user')
+    if (!savedUser) {
+      window.dispatchEvent(new CustomEvent('openAuth', { detail: { mode: 'login' } }))
+      return
+    }
     onSendComment(commentText, replyTo || undefined)
     setCommentText('')
     setReplyTo(null)

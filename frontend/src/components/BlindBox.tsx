@@ -177,7 +177,7 @@ export default function BlindBox({ isLoggedIn }: { isLoggedIn: boolean }) {
               <button 
                 onClick={async () => {
                   if (!isLoggedIn) {
-                    setShowLogin(true)
+                    window.dispatchEvent(new CustomEvent('openAuth', { detail: { mode: 'login' } }))
                   } else {
                     // 保存到芒一下数据库
                     try {
