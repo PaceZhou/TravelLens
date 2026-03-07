@@ -3,8 +3,8 @@ import { Camera, LogOut } from 'lucide-react'
 import AvatarSelector from './AvatarSelector'
 import AvatarEditorModal from './AvatarEditorModal'
 import { API_URL } from '../api/config'
-import postsAPI from '../api/posts'
-import collectionsAPI from '../api/collections'
+import { postsAPI } from '../api/posts'
+import { collectionsAPI } from '../api/collections'
 
 interface MobileProfileProps {
   username: string
