@@ -237,8 +237,8 @@ export default function MapView() {
         ))}
       </MapContainer>
 
-      {/* 顶部筛选菜单 - 移动端固定，去掉图标 */}
-      <div className="absolute top-6 md:top-6 left-1/2 transform -translate-x-1/2 z-[4000] flex gap-2">
+      {/* 顶部筛选菜单 - 移动端刘海式菜单 */}
+      <div className="fixed top-14 left-0 right-0 md:absolute md:top-6 md:left-1/2 md:right-auto md:transform md:-translate-x-1/2 z-40 bg-white md:bg-transparent py-2 px-4 md:p-0 flex gap-2 justify-center md:justify-start shadow-sm md:shadow-none">
         <button 
           onClick={() => handleFilter('random')}
           className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-bold text-xs md:text-sm transition-all ${filterType === 'random' ? 'bg-[#0055FF] text-white' : 'bg-white/90 backdrop-blur-md text-gray-700'} shadow-lg`}
