@@ -202,12 +202,12 @@ export default function MapView() {
   const selectedSpotData = SPOTS.find(s => s.id === selectedSpot)
 
   return (
-    <div className="relative h-[calc(100vh-7rem)] md:h-screen w-full">
-      {/* 地图主界面 - 始终显示 */}
+    <div className="relative h-[calc(100vh-7rem)] md:h-screen w-full z-0">
+      {/* 地图主界面 - 始终显示，最低层级 */}
       <MapContainer 
         center={[39.916, 116.397]} 
         zoom={5} 
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: '100%', width: '100%', zIndex: 0 }}
         onClick={() => {
           setShowSidebar(false)
           setShowDropdown(false)
