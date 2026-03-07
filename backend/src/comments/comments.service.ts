@@ -28,7 +28,7 @@ export class CommentsService {
    * @returns 创建的评论对象
    */
   async create(data: any) {
-    // 如果是回复评论，自动设置parentCommentId
+    // 如果是回复评论且前端没有显式指定 parentCommentId，则自动设置
     if (data.replyToUsername && !data.parentCommentId) {
       // 按「被回复人 username」查找该帖子下其最新一条评论，作为回复目标
       const replyToComment = await this.commentsRepository
@@ -42,6 +42,10 @@ export class CommentsService {
       if (replyToComment) {
         // 如果被回复的是二级回复，继承其parentCommentId；否则用其自己的id
         data.parentCommentId = replyToComment.parentCommentId || replyToComment.id;
+        // 兼容旧前端，如果没有显式传递 replyToUserId，则自动补上
+        if (!data.replyToUserId) {
+          data.replyToUserId = replyToComment.userId;
+        }
       }
     }
     

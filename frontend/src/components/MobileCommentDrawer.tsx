@@ -9,6 +9,7 @@ interface Comment {
   content: string
   createdAt: string
   replyToUsername?: string
+  parentCommentId?: string
   likes?: number
 }
 
@@ -16,19 +17,21 @@ interface MobileCommentDrawerProps {
   isOpen: boolean
   onClose: () => void
   comments: Comment[]
-  onSendComment: (content: string, replyToUsername?: string) => void
+  onSendComment: (content: string, replyToUsername?: string, parentCommentId?: string) => void
   onLikeComment: (commentId: string) => void
   likedComments: Set<string>
-  postAuthorId?: string // 帖主ID
+  postAuthorId?: string
+  postAuthorName?: string // 帖主用户名
 }
 
 /**
  * 移动端评论抽屉 - Instagram风格
  * 底部滑出，带缩放背景特效
  */
-export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendComment, onLikeComment, likedComments, postAuthorId }: MobileCommentDrawerProps) {
+export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendComment, onLikeComment, likedComments, postAuthorId, postAuthorName }: MobileCommentDrawerProps) {
   const [commentText, setCommentText] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
+  const [replyParentId, setReplyParentId] = useState<string | null>(null)
 
   const handleSend = () => {
     if (!commentText.trim()) return
@@ -37,9 +40,10 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
       window.dispatchEvent(new CustomEvent('openAuth', { detail: { mode: 'login' } }))
       return
     }
-    onSendComment(commentText, replyTo || undefined)
+    onSendComment(commentText, replyTo || undefined, replyParentId || undefined)
     setCommentText('')
     setReplyTo(null)
+    setReplyParentId(null)
   }
 
   // 只显示顶级评论（没有parentCommentId的）
@@ -98,7 +102,12 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
 
         {/* 标题栏 */}
         <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h3 className="font-bold text-base">评论</h3>
+          <div>
+            <h3 className="font-bold text-base">评论</h3>
+            {postAuthorName && (
+              <p className="text-xs text-gray-500">@{postAuthorName} 的帖子</p>
+            )}
+          </div>
           <button onClick={onClose}>
             <X size={24} className="text-gray-600" />
           </button>
@@ -148,6 +157,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                           onClick={(e) => {
                             e.stopPropagation()
                             setReplyTo(comment.username)
+                            setReplyParentId(comment.id)
                           }}
                           className="font-medium hover:text-gray-600 relative z-10"
                         >
@@ -187,6 +197,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                             onClick={(e) => {
                               e.stopPropagation()
                               setReplyTo(reply.username)
+                              setReplyParentId(comment.id)
                             }}
                             className="font-medium hover:text-gray-600 relative z-10"
                           >
@@ -234,7 +245,13 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
         <div className="border-t px-4 py-3 bg-white">
           {replyTo && (
             <div className="mb-2">
-              <MentionTag username={replyTo} onRemove={() => setReplyTo(null)} />
+              <MentionTag
+                username={replyTo}
+                onRemove={() => {
+                  setReplyTo(null)
+                  setReplyParentId(null)
+                }}
+              />
             </div>
           )}
           <div className="flex items-center gap-3">
@@ -248,6 +265,7 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                 } else if (e.key === 'Backspace' && !commentText && replyTo) {
                   // 按退格键删除@块
                   setReplyTo(null)
+                  setReplyParentId(null)
                 }
               }}
               placeholder={replyTo ? `回复 @${replyTo}...` : "添加评论..."}

@@ -14,6 +14,7 @@ interface Post {
   tags: string[]
   likes: number
   comments: number
+  userId?: string
   user?: { username: string }
 }
 
@@ -73,7 +74,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
 
   const images = post.images || [post.image] || []
 
-  const handleSendComment = (content: string, replyToUsername?: string) => {
+  const handleSendComment = (content: string, replyToUsername?: string, parentCommentId?: string) => {
     const savedUser = localStorage.getItem('user')
     if (!savedUser) return
     
@@ -86,7 +87,8 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         postId: post.id,
         userId: user.id,
         content,
-        replyToUsername: replyToUsername || null
+        replyToUsername: replyToUsername || null,
+        parentCommentId: parentCommentId || null
       })
     })
       .then(res => res.json())
@@ -291,6 +293,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
         }}
         likedComments={likedComments}
         postAuthorId={post.userId}
+        postAuthorName={post.username}
       />
     </>
   )
