@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { X, Heart, MessageCircle, Share2, Bookmark } from 'lucide-react'
 import MobileCommentDrawer from './MobileCommentDrawer'
+import { API_URL } from '../api/config'
 
 interface Post {
   id: string
@@ -35,10 +36,22 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showComments, setShowComments] = useState(false)
   const [quickComment, setQuickComment] = useState('')
+  const [comments, setComments] = useState<any[]>([])
+  const [likedComments, setLikedComments] = useState<Set<string>>(new Set())
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchEndX = useRef(0)
   const touchEndY = useRef(0)
+
+  // 加载评论
+  useEffect(() => {
+    if (post) {
+      fetch(`${API_URL}/comments/post/${post.id}`)
+        .then(res => res.json())
+        .then(data => setComments(data))
+        .catch(err => console.error('加载评论失败:', err))
+    }
+  }, [post])
 
   if (!post) return null
 
@@ -204,13 +217,13 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
       <MobileCommentDrawer
         isOpen={showComments}
         onClose={() => setShowComments(false)}
-        comments={[]}
+        comments={comments}
         onSendComment={handleSendComment}
         onLikeComment={(commentId) => {
           // TODO: 评论点赞API
           console.log('点赞评论:', commentId)
         }}
-        likedComments={new Set()}
+        likedComments={likedComments}
       />
     </>
   )
