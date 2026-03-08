@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Camera, LogOut } from 'lucide-react'
 import AvatarSelector from './AvatarSelector'
 import AvatarEditorModal from './AvatarEditorModal'
+import PostEditor from './PostEditor'
 import { API_URL } from '../api/config'
 import { postsAPI } from '../api/posts'
 import { collectionsAPI } from '../api/collections'
@@ -26,6 +27,12 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [mangoMoments, setMangoMoments] = useState<any[]>([])
   const [showMenu, setShowMenu] = useState<string | null>(null)
   const [showCoverSelector, setShowCoverSelector] = useState<string | null>(null)
+  const [showEditor, setShowEditor] = useState(false)
+  const [editingPost, setEditingPost] = useState<any>(null)
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
+    alert(message)
+  }
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user')
@@ -231,9 +238,8 @@ export default function MobileProfile({ username }: MobileProfileProps) {
                       <div className="absolute top-12 right-2 bg-white rounded-lg shadow-lg py-2 w-32 z-50">
                         <button
                           onClick={() => {
-                            window.dispatchEvent(new CustomEvent('openPublisher', { 
-                              detail: { editPost: post } 
-                            }))
+                            setEditingPost(post)
+                            setShowEditor(true)
                             setShowMenu(null)
                           }}
                           className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
@@ -337,6 +343,56 @@ export default function MobileProfile({ username }: MobileProfileProps) {
         onClose={() => setShowAvatarEditor(false)}
         onSave={handleSaveAvatar}
       />
+
+      {/* 帖子编辑器 */}
+      <PostEditor
+        isOpen={showEditor}
+        onClose={() => {
+          setShowEditor(false)
+          setEditingPost(null)
+        }}
+        onSuccess={() => {
+          // 重新加载帖子列表
+          const savedUser = localStorage.getItem('user')
+          if (savedUser) {
+            const userData = JSON.parse(savedUser)
+            postsAPI.getAll().then(data => {
+              const myPosts = data.posts.filter((p: any) => p.userId === userData.id)
+              setUserPosts(myPosts)
+            })
+          }
+        }}
+        showToast={showToast}
+        post={editingPost}
+      />
+
+      {/* 封面选择器 */}
+      {showCoverSelector && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end">
+          <div 
+            className="fixed inset-0" 
+            onClick={() => setShowCoverSelector(null)}
+          ></div>
+          <div className="bg-white w-full rounded-t-2xl p-4 z-60">
+            <h3 className="text-lg font-bold mb-4">选择封面</h3>
+            <div className="grid grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">
+              {userPosts.find(p => p.id === showCoverSelector)?.images?.map((img: string, idx: number) => (
+                <div
+                  key={idx}
+                  onClick={() => handleChangeCover(showCoverSelector!, idx)}
+                  className={`aspect-square rounded-lg overflow-hidden cursor-pointer ${
+                    userPosts.find(p => p.id === showCoverSelector)?.coverIndex === idx
+                      ? 'ring-4 ring-[#FFB800]'
+                      : ''
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
