@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, Camera, ImageIcon } from 'lucide-react'
-import CoverSelector from './CoverSelector'
+import MobileCoverSelector from './MobileCoverSelector'
 import { tagsAPI } from '../api/tags'
 import { postsAPI } from '../api/posts'
 
@@ -233,7 +233,7 @@ export default function MobilePostEditor({ isOpen, onClose, onSuccess, showToast
         </div>
       </div>
 
-      <CoverSelector
+      <MobileCoverSelector
         isOpen={showCoverSelector}
         images={uploadedImages}
         currentCoverIndex={coverIndex}
