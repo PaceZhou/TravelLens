@@ -265,36 +265,6 @@ export default function MobileProfile({ username }: MobileProfileProps) {
                     </>
                   )}
 
-                  {/* 封面选择器 */}
-                  {showCoverSelector === post.id && (
-                    <>
-                      <div 
-                        className="fixed inset-0 bg-black/50 z-[60]" 
-                        onClick={() => setShowCoverSelector(null)}
-                      ></div>
-                      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 z-[70]">
-                        <h3 className="font-bold mb-3">选择封面</h3>
-                        <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
-                          {post.images?.map((img: string, idx: number) => (
-                            <button
-                              key={idx}
-                              onClick={() => handleChangeCover(post.id, idx)}
-                              className={`aspect-square rounded-lg overflow-hidden border-2 ${
-                                (post.coverIndex || 0) === idx ? 'border-[#FFB800]' : 'border-gray-200'
-                              }`}
-                            >
-                              <img src={img} alt="" className="w-full h-full object-cover" />
-                              {(post.coverIndex || 0) === idx && (
-                                <div className="absolute inset-0 bg-[#FFB800]/20 flex items-center justify-center">
-                                  <span className="bg-[#FFB800] text-white text-xs px-2 py-1 rounded">封面</span>
-                                </div>
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  )}
                 </div>
               ))}
               {userPosts.length === 0 && <p className="col-span-2 text-center text-gray-400 py-10">暂无帖子</p>}
@@ -366,29 +336,39 @@ export default function MobileProfile({ username }: MobileProfileProps) {
         post={editingPost}
       />
 
-      {/* 封面选择器 */}
+      {/* 封面选择器 - 底部弹窗（唯一实现） */}
       {showCoverSelector && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end">
-          <div 
-            className="fixed inset-0" 
+          <div
+            className="fixed inset-0"
             onClick={() => setShowCoverSelector(null)}
           ></div>
           <div className="bg-white w-full rounded-t-2xl p-4 z-60">
-            <h3 className="text-lg font-bold mb-4">选择封面</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">选择封面</h3>
+              <button onClick={() => setShowCoverSelector(null)} className="text-gray-400 text-sm">关闭</button>
+            </div>
             <div className="grid grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">
-              {userPosts.find(p => p.id === showCoverSelector)?.images?.map((img: string, idx: number) => (
-                <div
-                  key={idx}
-                  onClick={() => handleChangeCover(showCoverSelector!, idx)}
-                  className={`aspect-square rounded-lg overflow-hidden cursor-pointer ${
-                    userPosts.find(p => p.id === showCoverSelector)?.coverIndex === idx
-                      ? 'ring-4 ring-[#FFB800]'
-                      : ''
-                  }`}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </div>
-              ))}
+              {userPosts.find(p => p.id === showCoverSelector)?.images?.map((img: string, idx: number) => {
+                const currentCover = userPosts.find(p => p.id === showCoverSelector)?.coverIndex ?? 0
+                const isCurrent = currentCover === idx
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => handleChangeCover(showCoverSelector!, idx)}
+                    className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer ${
+                      isCurrent ? 'ring-4 ring-[#FFB800]' : ''
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    {isCurrent && (
+                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-[#FFB800] text-white text-xs px-2 py-0.5 rounded-full">
+                        当前封面
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
