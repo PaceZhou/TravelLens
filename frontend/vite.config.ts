@@ -6,6 +6,12 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
-    allowedHosts: ['mangogo.babascart.cc.cd']
+    allowedHosts: ['mangogo.babascart.cc.cd'],
+    proxy: {
+      '^/(auth|posts|comments|likes|collections|tags|mango-moments|notifications)': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      }
+    }
   }
 })

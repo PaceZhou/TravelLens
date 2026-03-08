@@ -58,6 +58,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
           setComments(data.map((c: any) => ({
             ...c,
             username: c.user?.username ?? c.username,
+            avatar: c.user?.avatar ?? undefined,
             parentCommentId: c.parentCommentId ?? undefined
           })))
           // 加载点赞状态

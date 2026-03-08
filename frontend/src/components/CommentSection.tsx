@@ -138,8 +138,10 @@ export default function CommentSection({ postId, onCommentAdded, showInputAtBott
           comments.map(comment => (
             <div key={comment.id} className="flex gap-3">
               {/* 用户头像 */}
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
-                {comment.user.avatar || '👤'}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0 overflow-hidden">
+                {comment.user.avatar && (comment.user.avatar.startsWith('data:') || comment.user.avatar.startsWith('http'))
+                  ? <img src={comment.user.avatar} alt={comment.user.username} className="w-full h-full object-cover" />
+                  : (comment.user.avatar || '👤')}
               </div>
               
               {/* 评论内容 */}

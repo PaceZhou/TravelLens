@@ -85,7 +85,7 @@ export default function MobileProfile({ username }: MobileProfileProps) {
       await fetch(`${API_URL}/auth/avatar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userData.id, avatar: avatarData })
+        body: JSON.stringify({ username: userData.username, avatar: avatarData })
       })
       setAvatar(avatarData)
     } catch (error) {

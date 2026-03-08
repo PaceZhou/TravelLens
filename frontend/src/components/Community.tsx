@@ -80,11 +80,11 @@ export default function Community({ isLoggedIn }: { isLoggedIn: boolean }) {
     setIsLoading(true)
     
     try {
-      const result = await postsAPI.getAll(pageNum, 50)
+      const result = await postsAPI.getAll(pageNum, 10)
       const formattedPosts = result.posts.map((p: any) => ({
         id: p.id,
         author: p.user?.username || '未知用户',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+        avatar: p.user?.avatar || '👤',
         location: p.location || '未知位置',
         city: p.city || '未知',
         image: p.images?.[p.coverIndex || 0] || p.images?.[0] || '',

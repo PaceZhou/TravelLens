@@ -6,6 +6,7 @@ interface Comment {
   id: string
   userId: string
   username: string
+  avatar?: string
   content: string
   createdAt: string
   replyToUsername?: string
@@ -128,8 +129,10 @@ export default function MobileCommentDrawer({ isOpen, onClose, comments, onSendC
                 <div key={comment.id} className="mb-4">
                   {/* 顶级评论 */}
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0">
-                      👤
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-xs flex-shrink-0 overflow-hidden">
+                      {comment.avatar && (comment.avatar.startsWith('data:') || comment.avatar.startsWith('http'))
+                        ? <img src={comment.avatar} alt={comment.username} className="w-full h-full object-cover" />
+                        : '👤'}
                     </div>
                     <div className="flex-1">
                       <div>
