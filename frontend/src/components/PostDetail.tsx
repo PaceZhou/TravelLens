@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, Heart, MessageCircle, Bookmark, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import InstagramComment from './InstagramComment'
 
 interface Post {
@@ -29,6 +30,7 @@ interface PostDetailProps {
 
 export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, isCollected }: PostDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const navigate = useNavigate()
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -89,7 +91,10 @@ export default function PostDetail({ post, onClose, onLike, onCollect, isLiked, 
           <div className="w-[400px] bg-white flex flex-col">
             {/* 顶部：用户信息 */}
             <div className="flex items-center justify-between p-4 border-b">
-              <div className="flex items-center gap-3">
+              <div
+                className="flex items-center gap-3 cursor-pointer hover:opacity-75"
+                onClick={() => { navigate(`/users/${post.user?.username || post.author}`); onClose(); }}
+              >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
                   👤
                 </div>

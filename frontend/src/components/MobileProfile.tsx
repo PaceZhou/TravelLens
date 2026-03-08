@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Camera, LogOut } from 'lucide-react'
+import { Camera, LogOut, MessageCircle } from 'lucide-react'
 import AvatarSelector from './AvatarSelector'
 import AvatarEditorModal from './AvatarEditorModal'
 import MobilePostEditor from './MobilePostEditor'
 import { API_URL } from '../api/config'
 import { postsAPI } from '../api/posts'
 import { collectionsAPI } from '../api/collections'
+import FollowListModal from './FollowListModal'
+import Inbox from './Inbox'
+import { messagesAPI } from '../api/messages'
+import { useNavigate } from 'react-router-dom'
 
 interface MobileProfileProps {
   username: string
@@ -21,7 +25,7 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [showAvatarSelector, setShowAvatarSelector] = useState(false)
   const [showAvatarEditor, setShowAvatarEditor] = useState(false)
   const [stats, setStats] = useState({ posts: 0, likes: 0 })
-  const [activeTab, setActiveTab] = useState<'posts' | 'collections' | 'moments'>('posts')
+  const [activeTab, setActiveTab] = useState<'posts' | 'collections' | 'moments' | 'messages'>('posts')
   const [userPosts, setUserPosts] = useState<any[]>([])
   const [collectedPosts, setCollectedPosts] = useState<any[]>([])
   const [mangoMoments, setMangoMoments] = useState<any[]>([])
@@ -29,6 +33,13 @@ export default function MobileProfile({ username }: MobileProfileProps) {
   const [showCoverSelector, setShowCoverSelector] = useState<string | null>(null)
   const [showEditor, setShowEditor] = useState(false)
   const [editingPost, setEditingPost] = useState<any>(null)
+  const [followListModal, setFollowListModal] = useState<{ type: 'following' | 'followers' } | null>(null)
+  const [currentUserId, setCurrentUserId] = useState('')
+  const [followingCount, setFollowingCount] = useState(0)
+  const [followersCount, setFollowersCount] = useState(0)
+  const [showInbox, setShowInbox] = useState(false)
+  const [conversations, setConversations] = useState<any[]>([])
+  const navigate = useNavigate()
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
     alert(message)
@@ -39,32 +50,40 @@ export default function MobileProfile({ username }: MobileProfileProps) {
     if (savedUser) {
       const userData = JSON.parse(savedUser)
       setUser(userData)
-      
+      setCurrentUserId(userData.id)
+
       // 加载头像
       fetch(`${API_URL}/auth/user/${userData.username}`)
         .then(res => res.json())
         .then(data => setAvatar(data.avatar || '👤'))
-      
-      // 加载统计
+
+      // 加载统计（含following/followers）
       fetch(`${API_URL}/auth/stats/${userData.username}`)
         .then(res => res.json())
-        .then(data => setStats(data))
-      
+        .then(data => {
+          setStats(data)
+          setFollowingCount(data.following || 0)
+          setFollowersCount(data.followers || 0)
+        })
+
       // 加载我的帖子
       postsAPI.getAll().then(data => {
         const myPosts = data.posts.filter((p: any) => p.userId === userData.id)
         setUserPosts(myPosts)
       })
-      
+
       // 加载我的收藏
       collectionsAPI.getUserCollections(userData.id).then(data => {
         setCollectedPosts(data)
       })
-      
+
       // 加载我的芒一下
       fetch(`${API_URL}/mango-moments/user/${userData.id}`)
         .then(res => res.json())
         .then(data => setMangoMoments(data))
+
+      // 加载私信
+      messagesAPI.getConversations(userData.id).then(setConversations).catch(() => {})
     }
   }, [])
 
@@ -176,6 +195,20 @@ export default function MobileProfile({ username }: MobileProfileProps) {
             <div className="text-xl font-bold">{stats.likes}</div>
             <div className="text-xs text-gray-500">获赞</div>
           </div>
+          <div
+            className="text-center cursor-pointer"
+            onClick={() => setFollowListModal({ type: 'following' })}
+          >
+            <div className="text-xl font-bold">{followingCount}</div>
+            <div className="text-xs text-gray-500">关注</div>
+          </div>
+          <div
+            className="text-center cursor-pointer"
+            onClick={() => setFollowListModal({ type: 'followers' })}
+          >
+            <div className="text-xl font-bold">{followersCount}</div>
+            <div className="text-xs text-gray-500">粉丝</div>
+          </div>
         </div>
       </div>
 
@@ -205,6 +238,14 @@ export default function MobileProfile({ username }: MobileProfileProps) {
             }`}
           >
             芒一下 ({mangoMoments.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('messages')}
+            className={`flex-1 py-3 text-sm font-medium ${
+              activeTab === 'messages' ? 'text-[#0055FF] border-b-2 border-[#0055FF]' : 'text-gray-500'
+            }`}
+          >
+            消息
           </button>
         </div>
 
@@ -293,6 +334,66 @@ export default function MobileProfile({ username }: MobileProfileProps) {
               {mangoMoments.length === 0 && <p className="text-center text-gray-400 py-10">暂无芒一下</p>}
             </div>
           )}
+
+          {activeTab === 'messages' && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-bold text-sm mb-2">私信</h3>
+                {conversations.length === 0 ? (
+                  <p className="text-center text-gray-400 py-6 text-xs">暂无私信</p>
+                ) : (
+                  <div className="space-y-2">
+                    {conversations.map(conv => (
+                      <div
+                        key={conv.partnerId}
+                        className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 cursor-pointer"
+                        onClick={() => navigate(`/messages/${conv.partnerId}`)}
+                      >
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-base overflow-hidden flex-shrink-0">
+                          {conv.partnerAvatar?.startsWith('data:') ? (
+                            <img src={conv.partnerAvatar} alt="" className="w-full h-full object-cover" />
+                          ) : (conv.partnerAvatar || '👤')}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-bold text-xs">{conv.partnerUsername}</div>
+                          <div className="text-xs text-gray-500 truncate">{conv.lastMessage}</div>
+                        </div>
+                        {conv.unreadCount > 0 && (
+                          <div className="w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                            {conv.unreadCount}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                <h3 className="font-bold text-sm mb-2">通知</h3>
+                <button
+                  onClick={() => setShowInbox(true)}
+                  className="w-full py-3 bg-gray-50 rounded-xl text-gray-600 text-sm"
+                >
+                  查看通知（点赞/评论/收藏）
+                </button>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm mb-2">关注与粉丝</h3>
+                <button
+                  onClick={() => setFollowListModal({ type: 'following' })}
+                  className="w-full py-3 bg-gray-50 rounded-xl text-gray-600 text-sm mb-2"
+                >
+                  我的关注 ({followingCount})
+                </button>
+                <button
+                  onClick={() => setFollowListModal({ type: 'followers' })}
+                  className="w-full py-3 bg-gray-50 rounded-xl text-gray-600 text-sm"
+                >
+                  我的粉丝 ({followersCount})
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -373,6 +474,19 @@ export default function MobileProfile({ username }: MobileProfileProps) {
           </div>
         </div>
       )}
+
+      {/* 关注/粉丝弹窗 */}
+      {followListModal && currentUserId && (
+        <FollowListModal
+          isOpen={true}
+          onClose={() => setFollowListModal(null)}
+          type={followListModal.type}
+          userId={currentUserId}
+        />
+      )}
+
+      {/* 通知弹窗 */}
+      <Inbox isOpen={showInbox} onClose={() => setShowInbox(false)} />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Heart, MessageCircle, MapPin, Bookmark } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 interface Post {
   id: string
@@ -30,6 +31,7 @@ interface PostListProps {
 
 export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLoading, onLike, onCollect, likedPosts, collectedPosts }: PostListProps) {
   const observerRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -71,7 +73,10 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
             <div className="p-3">
               <p className="text-gray-900 text-xs leading-tight line-clamp-2 font-medium mb-2">{post.content}</p>
               <div className="flex items-center justify-between text-xs text-gray-500">
-                <span className="truncate text-[10px]">{post.user?.username || post.author}</span>
+                <span
+                  className="truncate text-[10px] cursor-pointer hover:text-[#0055FF]"
+                  onClick={(e) => { e.stopPropagation(); navigate(`/users/${post.user?.username || post.author}`) }}
+                >{post.user?.username || post.author}</span>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <Heart size={12} className="text-red-500" fill="currentColor" />
                   <span className="text-[10px]">{post.likes}</span>
@@ -113,7 +118,10 @@ export default function PostList({ posts, onPostClick, onLoadMore, hasMore, isLo
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center gap-3 cursor-pointer hover:opacity-75"
+                  onClick={(e) => { e.stopPropagation(); navigate(`/users/${post.user?.username || post.author}`) }}
+                >
                   <img src={post.avatar} alt={post.author} className="w-8 h-8 rounded-full" />
                   <span className="font-bold text-sm">{post.author}</span>
                 </div>

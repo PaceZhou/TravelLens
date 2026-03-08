@@ -10,6 +10,8 @@ import Inbox from './components/Inbox'
 import SearchPage from './components/SearchPage'
 import MobileTopBar from './components/MobileTopBar'
 import MobileBottomBar from './components/MobileBottomBar'
+import UserProfilePage from './components/UserProfilePage'
+import MessagesPage from './components/MessagesPage'
 import { useLanguage } from './contexts/LanguageContext'
 import { authAPI } from './api/auth'
 import { API_URL } from './api/config'
@@ -227,7 +229,9 @@ function AppContent() {
               </div>
             </div>
           )} />
-          <Route path="/users/:userId" element={<Profile username="" />} />
+          <Route path="/users/:userId" element={<UserProfilePage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/messages/:partnerId" element={<MessagesPage />} />
           <Route path="/posts/:postId" element={<PostDetailPage />} />
         </Routes>
       </main>

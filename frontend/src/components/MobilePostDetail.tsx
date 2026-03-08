@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { X, Heart, MessageCircle, Share2, Bookmark } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import MobileCommentDrawer from './MobileCommentDrawer'
 import { API_URL } from '../api/config'
 
@@ -39,6 +40,7 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
   const [quickComment, setQuickComment] = useState('')
   const [comments, setComments] = useState<any[]>([])
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set())
+  const navigate = useNavigate()
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchEndX = useRef(0)
@@ -231,7 +233,10 @@ export default function MobilePostDetail({ post, onClose, onLike, onCollect, isL
 
         {/* 底部用户信息和内容 */}
         <div className="absolute bottom-20 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-          <div className="flex items-center gap-3 mb-3">
+          <div
+            className="flex items-center gap-3 mb-3 cursor-pointer"
+            onClick={() => { navigate(`/users/${post.user?.username || post.author}`); onClose(); }}
+          >
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-sm">
               👤
             </div>

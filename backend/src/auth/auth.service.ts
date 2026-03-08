@@ -4,6 +4,7 @@ import { Repository, In } from 'typeorm';
 import { User } from './user.entity';
 import { Post } from '../posts/post.entity';
 import { Like } from '../likes/like.entity';
+import { Follow } from '../follows/follow.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -15,6 +16,8 @@ export class AuthService {
     private postRepository: Repository<Post>,
     @InjectRepository(Like)
     private likeRepository: Repository<Like>,
+    @InjectRepository(Follow)
+    private followRepository: Repository<Follow>,
   ) {}
 
   async register(username: string, password: string) {
@@ -55,5 +58,13 @@ export class AuthService {
 
   async getUser(username: string) {
     return this.userRepository.findOne({ where: { username } });
+  }
+
+  async getFollowCount(username: string) {
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (!user) return { following: 0, followers: 0 };
+    const following = await this.followRepository.count({ where: { followerId: user.id } });
+    const followers = await this.followRepository.count({ where: { followingId: user.id } });
+    return { following, followers };
   }
 }

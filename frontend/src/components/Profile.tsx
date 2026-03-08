@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-import { Calendar, Heart, Users, UserPlus, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, X, ChevronRight, MessageCircle, Camera } from 'lucide-react'
+import { Calendar, Heart, Users, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, MessageCircle, Camera, Mail, Bell } from 'lucide-react'
 import { postsAPI } from '../api/posts'
 import { API_URL } from '../api/config'
 import { collectionsAPI } from '../api/collections'
+import { messagesAPI } from '../api/messages'
 import ConfirmDialog from './ConfirmDialog'
 import CoverSelector from './CoverSelector'
 import AvatarSelector from './AvatarSelector'
 import PostPublisher from './PostPublisher'
 import PostDetail from './PostDetail'
 import Toast from './Toast'
+import FollowListModal from './FollowListModal'
+import Inbox from './Inbox'
+import { messagesAPI } from '../api/messages'
+import { useNavigate } from 'react-router-dom'
 
 export default function Profile({ username: propUsername }: { username: string }) {
   const { userId } = useParams()
@@ -30,6 +35,11 @@ export default function Profile({ username: propUsername }: { username: string }
   const [showPublisher, setShowPublisher] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info' | 'warning', message: string } | null>(null)
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
+  const [followListModal, setFollowListModal] = useState<{ type: 'following' | 'followers' } | null>(null)
+  const [targetUserId, setTargetUserId] = useState<string>('')
+  const [showInbox, setShowInbox] = useState(false)
+  const [conversations, setConversations] = useState<any[]>([])
+  const navigate = useNavigate()
 
   // 优先使用URL中的userId，否则使用props传入的username
   const username = userId || propUsername
@@ -40,7 +50,18 @@ export default function Profile({ username: propUsername }: { username: string }
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(() => {})
+    // 获取用户ID用于关注列表弹窗
+    fetch(`${API_URL}/auth/user/${username}`)
+      .then(res => res.json())
+      .then(data => setTargetUserId(data?.id || ''))
+      .catch(() => {})
   }, [username])
+
+  // 加载私信会话列表
+  useEffect(() => {
+    if (!targetUserId) return
+    messagesAPI.getConversations(targetUserId).then(setConversations).catch(() => {})
+  }, [targetUserId, activeTab])
 
   // 获取用户头像
   useEffect(() => {
@@ -214,11 +235,17 @@ export default function Profile({ username: propUsername }: { username: string }
                   <div className="text-2xl font-black">{user.stats.posts}</div>
                   <div className="text-sm text-gray-600">{t.profile.myPosts}</div>
                 </div>
-                <div className="text-center">
+                <div
+                  className="text-center cursor-pointer hover:opacity-75"
+                  onClick={() => setFollowListModal({ type: 'following' })}
+                >
                   <div className="text-2xl font-black">{user.stats.following}</div>
                   <div className="text-sm text-gray-600">{t.profile.following}</div>
                 </div>
-                <div className="text-center">
+                <div
+                  className="text-center cursor-pointer hover:opacity-75"
+                  onClick={() => setFollowListModal({ type: 'followers' })}
+                >
                   <div className="text-2xl font-black">{user.stats.followers}</div>
                   <div className="text-sm text-gray-600">{t.profile.followers}</div>
                 </div>
@@ -254,12 +281,12 @@ export default function Profile({ username: propUsername }: { username: string }
               <Image size={20} /> {t.profile.myPosts}
             </button>
             <button
-              onClick={() => setActiveTab('following')}
+              onClick={() => setActiveTab('messages')}
               className={`flex-1 py-4 px-6 font-bold flex items-center justify-center gap-2 transition-colors ${
-                activeTab === 'following' ? 'bg-[#0055FF] text-white' : 'text-gray-600 hover:bg-gray-50'
+                activeTab === 'messages' ? 'bg-[#0055FF] text-white' : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              <UserPlus size={20} /> {t.profile.following}
+              <Mail size={20} /> 消息
             </button>
             <button
               onClick={() => setActiveTab('collections')}
@@ -420,9 +447,83 @@ export default function Profile({ username: propUsername }: { username: string }
               </div>
             )}
 
-            {activeTab !== 'calendar' && activeTab !== 'posts' && activeTab !== 'collections' && (
+            {activeTab !== 'calendar' && activeTab !== 'posts' && activeTab !== 'collections' && activeTab !== 'messages' && (
               <div className="text-center py-20 text-gray-400">
                 <p className="text-lg">功能开发中...</p>
+              </div>
+            )}
+
+            {/* 消息 Tab */}
+            {activeTab === 'messages' && (
+              <div className="space-y-6">
+                {/* 私信区域 */}
+                <div>
+                  <h3 className="text-lg font-black mb-4 flex items-center gap-2">
+                    <MessageCircle size={20} /> 私信会话
+                  </h3>
+                  {conversations.length === 0 ? (
+                    <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-2xl">暂无私信对话</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {conversations.map(conv => (
+                        <div
+                          key={conv.partnerId}
+                          className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 cursor-pointer"
+                          onClick={() => navigate(`/messages/${conv.partnerId}`)}
+                        >
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FFB800] to-[#00D4AA] flex items-center justify-center text-lg overflow-hidden flex-shrink-0">
+                            {conv.partnerAvatar?.startsWith('data:') ? (
+                              <img src={conv.partnerAvatar} alt="" className="w-full h-full object-cover" />
+                            ) : (conv.partnerAvatar || '👤')}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-sm">{conv.partnerUsername}</div>
+                            <div className="text-xs text-gray-500 truncate">{conv.lastMessage}</div>
+                          </div>
+                          {conv.unreadCount > 0 && (
+                            <div className="w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                              {conv.unreadCount}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* 通知区域 */}
+                <div>
+                  <h3 className="text-lg font-black mb-4 flex items-center gap-2">
+                    <Bell size={20} /> 通知
+                  </h3>
+                  <button
+                    onClick={() => setShowInbox(true)}
+                    className="w-full py-4 bg-gray-50 rounded-2xl text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium"
+                  >
+                    查看全部通知（点赞/评论/收藏）
+                  </button>
+                </div>
+
+                {/* 关注列表 */}
+                <div>
+                  <h3 className="text-lg font-black mb-4 flex items-center gap-2">
+                    <Users size={20} /> 我的社交
+                  </h3>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setFollowListModal({ type: 'following' })}
+                      className="flex-1 py-3 bg-gray-50 rounded-2xl text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium"
+                    >
+                      关注 ({user.stats.following})
+                    </button>
+                    <button
+                      onClick={() => setFollowListModal({ type: 'followers' })}
+                      className="flex-1 py-3 bg-gray-50 rounded-2xl text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium"
+                    >
+                      粉丝 ({user.stats.followers})
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -503,6 +604,19 @@ export default function Profile({ username: propUsername }: { username: string }
           showToast={showToast}
         />
       )}
+
+      {/* 关注/粉丝弹窗 */}
+      {followListModal && targetUserId && (
+        <FollowListModal
+          isOpen={true}
+          onClose={() => setFollowListModal(null)}
+          type={followListModal.type}
+          userId={targetUserId}
+        />
+      )}
+
+      {/* 通知弹窗 */}
+      <Inbox isOpen={showInbox} onClose={() => setShowInbox(false)} />
     </div>
   )
 }
