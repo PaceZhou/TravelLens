@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Camera, LogOut } from 'lucide-react'
 import AvatarSelector from './AvatarSelector'
 import AvatarEditorModal from './AvatarEditorModal'
-import PostEditor from './PostEditor'
+import MobilePostEditor from './MobilePostEditor'
 import { API_URL } from '../api/config'
 import { postsAPI } from '../api/posts'
 import { collectionsAPI } from '../api/collections'
@@ -345,7 +345,7 @@ export default function MobileProfile({ username }: MobileProfileProps) {
       />
 
       {/* 帖子编辑器 */}
-      <PostEditor
+      <MobilePostEditor
         isOpen={showEditor}
         onClose={() => {
           setShowEditor(false)
