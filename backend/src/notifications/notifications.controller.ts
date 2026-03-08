@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 
 @Controller('notifications')
@@ -18,6 +18,16 @@ export class NotificationsController {
   @Get('unread/:userId')
   getUnreadCount(@Param('userId') userId: string) {
     return this.notificationsService.getUnreadCount(userId);
+  }
+
+  @Get('comments/:userId')
+  getCommentNotifications(@Param('userId') userId: string) {
+    return this.notificationsService.getCommentNotifications(userId);
+  }
+
+  @Put('read-all/:userId')
+  markAllRead(@Param('userId') userId: string) {
+    return this.notificationsService.markAllRead(userId);
   }
 
   @Get(':userId')

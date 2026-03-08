@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Notification } from './notification.entity';
 import { Post } from '../posts/post.entity';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class NotificationsService {
@@ -11,6 +12,8 @@ export class NotificationsService {
     private notificationsRepository: Repository<Notification>,
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async create(data: any) {
@@ -42,6 +45,33 @@ export class NotificationsService {
     }
 
     return Object.values(grouped);
+  }
+
+  async getCommentNotifications(userId: string) {
+    const notifications = await this.notificationsRepository
+      .createQueryBuilder('n')
+      .where('n.userId = :userId', { userId })
+      .andWhere('n.type = :type', { type: 'comment' })
+      .orderBy('n.createdAt', 'DESC')
+      .getMany();
+
+    return Promise.all(
+      notifications.map(async (n) => {
+        const post = await this.postsRepository.findOne({ where: { id: n.postId } });
+        const fromUser = await this.usersRepository.findOne({ where: { id: n.fromUserId } });
+        return { ...n, post, fromUsername: fromUser?.username || '未知用户' };
+      }),
+    );
+  }
+
+  async markAllRead(userId: string) {
+    await this.notificationsRepository
+      .createQueryBuilder()
+      .update(Notification)
+      .set({ isRead: true })
+      .where('userId = :userId', { userId })
+      .execute();
+    return { success: true };
   }
 
   async getByUser(userId: string, type?: string) {
