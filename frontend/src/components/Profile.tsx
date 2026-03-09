@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Calendar, Heart, Users, Bookmark, Image, Settings, MoreVertical, Trash2, Edit, ImageIcon, MessageCircle, Camera, Mail, Bell } from 'lucide-react'
 import { postsAPI } from '../api/posts'
@@ -14,8 +14,6 @@ import PostDetail from './PostDetail'
 import Toast from './Toast'
 import FollowListModal from './FollowListModal'
 import Inbox from './Inbox'
-import { messagesAPI } from '../api/messages'
-import { useNavigate } from 'react-router-dom'
 
 export default function Profile({ username: propUsername }: { username: string }) {
   const { userId } = useParams()
@@ -74,7 +72,7 @@ export default function Profile({ username: propUsername }: { username: string }
   // 更新头像
   const handleAvatarUpdate = async (newAvatar: string) => {
     try {
-      await fetch('${API_URL}/auth/avatar', {
+      await fetch(`${API_URL}/auth/avatar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, avatar: newAvatar })

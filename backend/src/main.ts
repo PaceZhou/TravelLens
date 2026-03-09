@@ -9,7 +9,7 @@ async function bootstrap() {
   app.use(require('express').json({ limit: '50mb' }));
   app.use(require('express').urlencoded({ limit: '50mb', extended: true }));
   
-  await app.listen(3001, '0.0.0.0');
-  console.log('🥭 MangoGo Backend running on http://0.0.0.0:3001');
+  await app.listen(3001, '127.0.0.1');
+  console.log('🥭 MangoGo Backend running on http://127.0.0.1:3001');
 }
 bootstrap();

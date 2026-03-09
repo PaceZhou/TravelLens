@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     allowedHosts: ['mangogo.babascart.cc.cd'],
     proxy: {
-      '^/(auth|posts|comments|likes|collections|tags|mango-moments|notifications)': {
+      '^/(auth|posts|comments|likes|collections|tags|mango-moments|notifications|messages|follows)': {
         target: 'http://localhost:3001',
         changeOrigin: true,
       }
